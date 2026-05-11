@@ -475,7 +475,7 @@ export function Mascot() {
       ) : (
         <>
           {/* Shell pieces (only show briefly after first hatch via session check) */}
-          {!sessionStorage.getItem("sp_mascot_shellseen") && (
+          {typeof window !== "undefined" && !sessionStorage.getItem("sp_mascot_shellseen") && (
             <ShellPiecesOnce />
           )}
           <motion.button
