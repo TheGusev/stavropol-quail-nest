@@ -9,9 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PerepelinyeYaytsaRouteImport } from './routes/perepelinye-yaytsa'
+import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
+import { Route as MolodnyakRouteImport } from './routes/molodnyak'
+import { Route as InkubatsionnoeYaytsoRouteImport } from './routes/inkubatsionnoe-yaytso'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as IndexRouteImport } from './routes/index'
 
+const PerepelinyeYaytsaRoute = PerepelinyeYaytsaRouteImport.update({
+  id: '/perepelinye-yaytsa',
+  path: '/perepelinye-yaytsa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyasoPerepelaRoute = MyasoPerepelaRouteImport.update({
+  id: '/myaso-perepela',
+  path: '/myaso-perepela',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MolodnyakRoute = MolodnyakRouteImport.update({
+  id: '/molodnyak',
+  path: '/molodnyak',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InkubatsionnoeYaytsoRoute = InkubatsionnoeYaytsoRouteImport.update({
+  id: '/inkubatsionnoe-yaytso',
+  path: '/inkubatsionnoe-yaytso',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CatalogRoute = CatalogRouteImport.update({
   id: '/catalog',
   path: '/catalog',
@@ -26,31 +50,94 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/molodnyak': typeof MolodnyakRoute
+  '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/molodnyak': typeof MolodnyakRoute
+  '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/molodnyak': typeof MolodnyakRoute
+  '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalog'
+  fullPaths:
+    | '/'
+    | '/catalog'
+    | '/inkubatsionnoe-yaytso'
+    | '/molodnyak'
+    | '/myaso-perepela'
+    | '/perepelinye-yaytsa'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalog'
-  id: '__root__' | '/' | '/catalog'
+  to:
+    | '/'
+    | '/catalog'
+    | '/inkubatsionnoe-yaytso'
+    | '/molodnyak'
+    | '/myaso-perepela'
+    | '/perepelinye-yaytsa'
+  id:
+    | '__root__'
+    | '/'
+    | '/catalog'
+    | '/inkubatsionnoe-yaytso'
+    | '/molodnyak'
+    | '/myaso-perepela'
+    | '/perepelinye-yaytsa'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogRoute: typeof CatalogRoute
+  InkubatsionnoeYaytsoRoute: typeof InkubatsionnoeYaytsoRoute
+  MolodnyakRoute: typeof MolodnyakRoute
+  MyasoPerepelaRoute: typeof MyasoPerepelaRoute
+  PerepelinyeYaytsaRoute: typeof PerepelinyeYaytsaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/perepelinye-yaytsa': {
+      id: '/perepelinye-yaytsa'
+      path: '/perepelinye-yaytsa'
+      fullPath: '/perepelinye-yaytsa'
+      preLoaderRoute: typeof PerepelinyeYaytsaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/myaso-perepela': {
+      id: '/myaso-perepela'
+      path: '/myaso-perepela'
+      fullPath: '/myaso-perepela'
+      preLoaderRoute: typeof MyasoPerepelaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/molodnyak': {
+      id: '/molodnyak'
+      path: '/molodnyak'
+      fullPath: '/molodnyak'
+      preLoaderRoute: typeof MolodnyakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inkubatsionnoe-yaytso': {
+      id: '/inkubatsionnoe-yaytso'
+      path: '/inkubatsionnoe-yaytso'
+      fullPath: '/inkubatsionnoe-yaytso'
+      preLoaderRoute: typeof InkubatsionnoeYaytsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/catalog': {
       id: '/catalog'
       path: '/catalog'
@@ -71,6 +158,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogRoute: CatalogRoute,
+  InkubatsionnoeYaytsoRoute: InkubatsionnoeYaytsoRoute,
+  MolodnyakRoute: MolodnyakRoute,
+  MyasoPerepelaRoute: MyasoPerepelaRoute,
+  PerepelinyeYaytsaRoute: PerepelinyeYaytsaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
