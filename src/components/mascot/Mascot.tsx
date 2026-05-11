@@ -310,7 +310,7 @@ function SpeechBubble({ text, cta, onClose }: { text: string; cta?: { label: str
 export function Mascot() {
   const { stage, tip, showTip, hideTip, reducedMotion } = useMascot();
   const containerRef = useRef<HTMLDivElement>(null);
-  const headRef = useRef<HTMLDivElement>(null);
+  const headRef = useRef<HTMLButtonElement | null>(null);
 
   // Wobble timer (drives egg shake)
   const [wobble, setWobble] = useState(0);
@@ -480,7 +480,7 @@ export function Mascot() {
           )}
           <motion.button
             ref={(el) => {
-              headRef.current = el as unknown as HTMLDivElement;
+              headRef.current = el as HTMLButtonElement | null;
             }}
             onClick={onClick}
             className="relative z-10 cursor-pointer bg-transparent"
