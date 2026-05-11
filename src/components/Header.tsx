@@ -3,6 +3,7 @@ import { Phone, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { PHONE_DISPLAY, telUrl, whatsappUrl } from "@/lib/contacts";
 import { Button } from "@/components/ui/button";
+import { Mascot } from "@/components/mascot/Mascot";
 
 const NAV = [
   { to: "/catalog", label: "Каталог" },
@@ -18,11 +19,13 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link to="/" className="flex items-center gap-2 font-serif text-lg font-bold text-foreground">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">СП</span>
-          <span className="hidden sm:inline">Ставропольский Перепел</span>
-          <span className="sm:hidden">СП</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Mascot />
+          <Link to="/" className="font-serif text-lg font-bold leading-tight text-foreground">
+            <span className="hidden sm:inline">Ставропольский Перепел</span>
+            <span className="sm:hidden">Ставропольский<br />Перепел</span>
+          </Link>
+        </div>
         <nav className="hidden items-center gap-6 lg:flex">
           {NAV.map((n) => (
             <Link
