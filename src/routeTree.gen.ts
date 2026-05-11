@@ -9,16 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SertifikatyRouteImport } from './routes/sertifikaty'
 import { Route as PerepelinyeYaytsaRouteImport } from './routes/perepelinye-yaytsa'
+import { Route as OptRouteImport } from './routes/opt'
+import { Route as OFermeRouteImport } from './routes/o-ferme'
 import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
 import { Route as MolodnyakRouteImport } from './routes/molodnyak'
+import { Route as KontaktyRouteImport } from './routes/kontakty'
 import { Route as InkubatsionnoeYaytsoRouteImport } from './routes/inkubatsionnoe-yaytso'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DostavkaRouteImport } from './routes/dostavka'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SertifikatyRoute = SertifikatyRouteImport.update({
+  id: '/sertifikaty',
+  path: '/sertifikaty',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerepelinyeYaytsaRoute = PerepelinyeYaytsaRouteImport.update({
   id: '/perepelinye-yaytsa',
   path: '/perepelinye-yaytsa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OptRoute = OptRouteImport.update({
+  id: '/opt',
+  path: '/opt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OFermeRoute = OFermeRouteImport.update({
+  id: '/o-ferme',
+  path: '/o-ferme',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyasoPerepelaRoute = MyasoPerepelaRouteImport.update({
@@ -31,9 +52,24 @@ const MolodnyakRoute = MolodnyakRouteImport.update({
   path: '/molodnyak',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KontaktyRoute = KontaktyRouteImport.update({
+  id: '/kontakty',
+  path: '/kontakty',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InkubatsionnoeYaytsoRoute = InkubatsionnoeYaytsoRouteImport.update({
   id: '/inkubatsionnoe-yaytso',
   path: '/inkubatsionnoe-yaytso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DostavkaRoute = DostavkaRouteImport.update({
+  id: '/dostavka',
+  path: '/dostavka',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CatalogRoute = CatalogRouteImport.update({
@@ -50,71 +86,134 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/dostavka': typeof DostavkaRoute
+  '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/kontakty': typeof KontaktyRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/o-ferme': typeof OFermeRoute
+  '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/sertifikaty': typeof SertifikatyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/dostavka': typeof DostavkaRoute
+  '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/kontakty': typeof KontaktyRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/o-ferme': typeof OFermeRoute
+  '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/sertifikaty': typeof SertifikatyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/dostavka': typeof DostavkaRoute
+  '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/kontakty': typeof KontaktyRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/o-ferme': typeof OFermeRoute
+  '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/sertifikaty': typeof SertifikatyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/catalog'
+    | '/dostavka'
+    | '/faq'
     | '/inkubatsionnoe-yaytso'
+    | '/kontakty'
     | '/molodnyak'
     | '/myaso-perepela'
+    | '/o-ferme'
+    | '/opt'
     | '/perepelinye-yaytsa'
+    | '/sertifikaty'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/catalog'
+    | '/dostavka'
+    | '/faq'
     | '/inkubatsionnoe-yaytso'
+    | '/kontakty'
     | '/molodnyak'
     | '/myaso-perepela'
+    | '/o-ferme'
+    | '/opt'
     | '/perepelinye-yaytsa'
+    | '/sertifikaty'
   id:
     | '__root__'
     | '/'
     | '/catalog'
+    | '/dostavka'
+    | '/faq'
     | '/inkubatsionnoe-yaytso'
+    | '/kontakty'
     | '/molodnyak'
     | '/myaso-perepela'
+    | '/o-ferme'
+    | '/opt'
     | '/perepelinye-yaytsa'
+    | '/sertifikaty'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogRoute: typeof CatalogRoute
+  DostavkaRoute: typeof DostavkaRoute
+  FaqRoute: typeof FaqRoute
   InkubatsionnoeYaytsoRoute: typeof InkubatsionnoeYaytsoRoute
+  KontaktyRoute: typeof KontaktyRoute
   MolodnyakRoute: typeof MolodnyakRoute
   MyasoPerepelaRoute: typeof MyasoPerepelaRoute
+  OFermeRoute: typeof OFermeRoute
+  OptRoute: typeof OptRoute
   PerepelinyeYaytsaRoute: typeof PerepelinyeYaytsaRoute
+  SertifikatyRoute: typeof SertifikatyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sertifikaty': {
+      id: '/sertifikaty'
+      path: '/sertifikaty'
+      fullPath: '/sertifikaty'
+      preLoaderRoute: typeof SertifikatyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perepelinye-yaytsa': {
       id: '/perepelinye-yaytsa'
       path: '/perepelinye-yaytsa'
       fullPath: '/perepelinye-yaytsa'
       preLoaderRoute: typeof PerepelinyeYaytsaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opt': {
+      id: '/opt'
+      path: '/opt'
+      fullPath: '/opt'
+      preLoaderRoute: typeof OptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/o-ferme': {
+      id: '/o-ferme'
+      path: '/o-ferme'
+      fullPath: '/o-ferme'
+      preLoaderRoute: typeof OFermeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/myaso-perepela': {
@@ -131,11 +230,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MolodnyakRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kontakty': {
+      id: '/kontakty'
+      path: '/kontakty'
+      fullPath: '/kontakty'
+      preLoaderRoute: typeof KontaktyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inkubatsionnoe-yaytso': {
       id: '/inkubatsionnoe-yaytso'
       path: '/inkubatsionnoe-yaytso'
       fullPath: '/inkubatsionnoe-yaytso'
       preLoaderRoute: typeof InkubatsionnoeYaytsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dostavka': {
+      id: '/dostavka'
+      path: '/dostavka'
+      fullPath: '/dostavka'
+      preLoaderRoute: typeof DostavkaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/catalog': {
@@ -158,10 +278,16 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogRoute: CatalogRoute,
+  DostavkaRoute: DostavkaRoute,
+  FaqRoute: FaqRoute,
   InkubatsionnoeYaytsoRoute: InkubatsionnoeYaytsoRoute,
+  KontaktyRoute: KontaktyRoute,
   MolodnyakRoute: MolodnyakRoute,
   MyasoPerepelaRoute: MyasoPerepelaRoute,
+  OFermeRoute: OFermeRoute,
+  OptRoute: OptRoute,
   PerepelinyeYaytsaRoute: PerepelinyeYaytsaRoute,
+  SertifikatyRoute: SertifikatyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
