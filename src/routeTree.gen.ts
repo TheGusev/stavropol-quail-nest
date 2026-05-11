@@ -9,22 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StavropolRouteImport } from './routes/stavropol'
 import { Route as SertifikatyRouteImport } from './routes/sertifikaty'
+import { Route as PyatigorskRouteImport } from './routes/pyatigorsk'
 import { Route as PerepelinyeYaytsaRouteImport } from './routes/perepelinye-yaytsa'
 import { Route as OptRouteImport } from './routes/opt'
 import { Route as OFermeRouteImport } from './routes/o-ferme'
+import { Route as NevinnomysskRouteImport } from './routes/nevinnomyssk'
 import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
 import { Route as MolodnyakRouteImport } from './routes/molodnyak'
+import { Route as MihaylovskRouteImport } from './routes/mihaylovsk'
 import { Route as KontaktyRouteImport } from './routes/kontakty'
 import { Route as InkubatsionnoeYaytsoRouteImport } from './routes/inkubatsionnoe-yaytso'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as EssentukiRouteImport } from './routes/essentuki'
 import { Route as DostavkaRouteImport } from './routes/dostavka'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StavropolRoute = StavropolRouteImport.update({
+  id: '/stavropol',
+  path: '/stavropol',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SertifikatyRoute = SertifikatyRouteImport.update({
   id: '/sertifikaty',
   path: '/sertifikaty',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PyatigorskRoute = PyatigorskRouteImport.update({
+  id: '/pyatigorsk',
+  path: '/pyatigorsk',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerepelinyeYaytsaRoute = PerepelinyeYaytsaRouteImport.update({
@@ -42,6 +57,11 @@ const OFermeRoute = OFermeRouteImport.update({
   path: '/o-ferme',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NevinnomysskRoute = NevinnomysskRouteImport.update({
+  id: '/nevinnomyssk',
+  path: '/nevinnomyssk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MyasoPerepelaRoute = MyasoPerepelaRouteImport.update({
   id: '/myaso-perepela',
   path: '/myaso-perepela',
@@ -50,6 +70,11 @@ const MyasoPerepelaRoute = MyasoPerepelaRouteImport.update({
 const MolodnyakRoute = MolodnyakRouteImport.update({
   id: '/molodnyak',
   path: '/molodnyak',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MihaylovskRoute = MihaylovskRouteImport.update({
+  id: '/mihaylovsk',
+  path: '/mihaylovsk',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontaktyRoute = KontaktyRouteImport.update({
@@ -65,6 +90,11 @@ const InkubatsionnoeYaytsoRoute = InkubatsionnoeYaytsoRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EssentukiRoute = EssentukiRouteImport.update({
+  id: '/essentuki',
+  path: '/essentuki',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DostavkaRoute = DostavkaRouteImport.update({
@@ -87,44 +117,59 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
+  '/essentuki': typeof EssentukiRoute
   '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
   '/kontakty': typeof KontaktyRoute
+  '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/nevinnomyssk': typeof NevinnomysskRoute
   '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/pyatigorsk': typeof PyatigorskRoute
   '/sertifikaty': typeof SertifikatyRoute
+  '/stavropol': typeof StavropolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
+  '/essentuki': typeof EssentukiRoute
   '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
   '/kontakty': typeof KontaktyRoute
+  '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/nevinnomyssk': typeof NevinnomysskRoute
   '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/pyatigorsk': typeof PyatigorskRoute
   '/sertifikaty': typeof SertifikatyRoute
+  '/stavropol': typeof StavropolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
+  '/essentuki': typeof EssentukiRoute
   '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
   '/kontakty': typeof KontaktyRoute
+  '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
+  '/nevinnomyssk': typeof NevinnomysskRoute
   '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/pyatigorsk': typeof PyatigorskRoute
   '/sertifikaty': typeof SertifikatyRoute
+  '/stavropol': typeof StavropolRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,67 +177,101 @@ export interface FileRouteTypes {
     | '/'
     | '/catalog'
     | '/dostavka'
+    | '/essentuki'
     | '/faq'
     | '/inkubatsionnoe-yaytso'
     | '/kontakty'
+    | '/mihaylovsk'
     | '/molodnyak'
     | '/myaso-perepela'
+    | '/nevinnomyssk'
     | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/pyatigorsk'
     | '/sertifikaty'
+    | '/stavropol'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/catalog'
     | '/dostavka'
+    | '/essentuki'
     | '/faq'
     | '/inkubatsionnoe-yaytso'
     | '/kontakty'
+    | '/mihaylovsk'
     | '/molodnyak'
     | '/myaso-perepela'
+    | '/nevinnomyssk'
     | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/pyatigorsk'
     | '/sertifikaty'
+    | '/stavropol'
   id:
     | '__root__'
     | '/'
     | '/catalog'
     | '/dostavka'
+    | '/essentuki'
     | '/faq'
     | '/inkubatsionnoe-yaytso'
     | '/kontakty'
+    | '/mihaylovsk'
     | '/molodnyak'
     | '/myaso-perepela'
+    | '/nevinnomyssk'
     | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/pyatigorsk'
     | '/sertifikaty'
+    | '/stavropol'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogRoute: typeof CatalogRoute
   DostavkaRoute: typeof DostavkaRoute
+  EssentukiRoute: typeof EssentukiRoute
   FaqRoute: typeof FaqRoute
   InkubatsionnoeYaytsoRoute: typeof InkubatsionnoeYaytsoRoute
   KontaktyRoute: typeof KontaktyRoute
+  MihaylovskRoute: typeof MihaylovskRoute
   MolodnyakRoute: typeof MolodnyakRoute
   MyasoPerepelaRoute: typeof MyasoPerepelaRoute
+  NevinnomysskRoute: typeof NevinnomysskRoute
   OFermeRoute: typeof OFermeRoute
   OptRoute: typeof OptRoute
   PerepelinyeYaytsaRoute: typeof PerepelinyeYaytsaRoute
+  PyatigorskRoute: typeof PyatigorskRoute
   SertifikatyRoute: typeof SertifikatyRoute
+  StavropolRoute: typeof StavropolRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/stavropol': {
+      id: '/stavropol'
+      path: '/stavropol'
+      fullPath: '/stavropol'
+      preLoaderRoute: typeof StavropolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sertifikaty': {
       id: '/sertifikaty'
       path: '/sertifikaty'
       fullPath: '/sertifikaty'
       preLoaderRoute: typeof SertifikatyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pyatigorsk': {
+      id: '/pyatigorsk'
+      path: '/pyatigorsk'
+      fullPath: '/pyatigorsk'
+      preLoaderRoute: typeof PyatigorskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perepelinye-yaytsa': {
@@ -216,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OFermeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nevinnomyssk': {
+      id: '/nevinnomyssk'
+      path: '/nevinnomyssk'
+      fullPath: '/nevinnomyssk'
+      preLoaderRoute: typeof NevinnomysskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/myaso-perepela': {
       id: '/myaso-perepela'
       path: '/myaso-perepela'
@@ -228,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/molodnyak'
       fullPath: '/molodnyak'
       preLoaderRoute: typeof MolodnyakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mihaylovsk': {
+      id: '/mihaylovsk'
+      path: '/mihaylovsk'
+      fullPath: '/mihaylovsk'
+      preLoaderRoute: typeof MihaylovskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontakty': {
@@ -249,6 +342,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/essentuki': {
+      id: '/essentuki'
+      path: '/essentuki'
+      fullPath: '/essentuki'
+      preLoaderRoute: typeof EssentukiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dostavka': {
@@ -279,16 +379,31 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogRoute: CatalogRoute,
   DostavkaRoute: DostavkaRoute,
+  EssentukiRoute: EssentukiRoute,
   FaqRoute: FaqRoute,
   InkubatsionnoeYaytsoRoute: InkubatsionnoeYaytsoRoute,
   KontaktyRoute: KontaktyRoute,
+  MihaylovskRoute: MihaylovskRoute,
   MolodnyakRoute: MolodnyakRoute,
   MyasoPerepelaRoute: MyasoPerepelaRoute,
+  NevinnomysskRoute: NevinnomysskRoute,
   OFermeRoute: OFermeRoute,
   OptRoute: OptRoute,
   PerepelinyeYaytsaRoute: PerepelinyeYaytsaRoute,
+  PyatigorskRoute: PyatigorskRoute,
   SertifikatyRoute: SertifikatyRoute,
+  StavropolRoute: StavropolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
