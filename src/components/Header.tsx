@@ -18,12 +18,20 @@ export function Header() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <div className="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        {/* Трек, по которому гуляет маскот — на всю ширину строки шапки */}
+        <div
+          data-mascot-track
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-4 top-0 bottom-0"
+        />
         <div className="flex items-center gap-2">
           <Mascot />
-          <Link to="/" className="font-serif text-lg font-bold leading-tight text-foreground">
-            <span className="hidden sm:inline">Ставропольский Перепел</span>
-            <span className="sm:hidden">Ставропольский<br />Перепел</span>
+          <Link
+            to="/"
+            className="font-serif text-base font-bold leading-tight text-foreground sm:text-lg"
+          >
+            <span className="whitespace-nowrap">Ставропольский Перепел</span>
           </Link>
         </div>
         <nav className="hidden items-center gap-6 lg:flex">
