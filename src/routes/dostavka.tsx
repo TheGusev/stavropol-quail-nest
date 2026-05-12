@@ -2,17 +2,28 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
 import { CtaButtons } from "@/components/CtaButtons";
-import { buildHead } from "@/lib/seo";
+import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
+import { buildHead, jsonLdScript } from "@/lib/seo";
 import heroEggs from "@/assets/hero-eggs.jpg";
 
+const FAQ: FaqItem[] = [
+  { q: "Куда вы доставляете?", a: "По Ставрополю и Михайловску — собственным курьером. По краю (Пятигорск, Ессентуки, Невинномысск, Будённовск и другие города) — транспортной компанией или попутным рейсом." },
+  { q: "Какие сроки доставки?", a: "Заказы до 14:00 по Ставрополю обычно доставляем в этот же день, в соседние города — на следующий рабочий день, в дальние районы края — 1–3 дня." },
+  { q: "Есть ли минимальная сумма заказа для доставки?", a: "Минимальной суммы нет, но стоимость доставки рассчитывается индивидуально и зависит от адреса и веса заказа. Уточняйте при оформлении." },
+  { q: "Можно ли забрать заказ самому?", a: "Да, самовывоз возможен с фермы по предварительной договорённости — согласуем удобное время по телефону или в WhatsApp." },
+  { q: "Как можно оплатить?", a: "Наличные при получении, перевод на карту, безналичный расчёт по счёту для юридических лиц и ИП." },
+];
+
 export const Route = createFileRoute("/dostavka")({
-  head: () =>
-    buildHead({
+  head: () => ({
+    ...buildHead({
       title: "Доставка и самовывоз — Ставрополь, Михайловск и край",
       description:
         "Доставка перепелиных яиц и мяса собственным транспортом по Ставрополю и Михайловску, в другие города — транспортной компанией. Самовывоз с фермы.",
       path: "/dostavka/",
     }),
+    scripts: [jsonLdScript(faqJsonLd(FAQ))],
+  }),
   component: Page,
 });
 
@@ -45,6 +56,10 @@ function Page() {
           </p>
         </Prose>
         <div className="mt-8"><CtaButtons text="Здравствуйте! Хочу уточнить доставку." /></div>
+      </Section>
+      <Section>
+        <h2 className="text-2xl font-bold mb-4">Частые вопросы о доставке</h2>
+        <FaqAccordion items={FAQ} />
       </Section>
     </PageShell>
   );
