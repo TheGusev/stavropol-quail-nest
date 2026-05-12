@@ -116,12 +116,14 @@ function Chick({
   blink,
   headRot,
   beakOpen,
+  wingRaised,
 }: {
   facing: 1 | -1;
   walkPhase: number;
   blink: boolean;
   headRot: number;
   beakOpen: boolean;
+  wingRaised: boolean;
 }) {
   // Walk: leg rotation alternates, body bob
   const bob = Math.abs(Math.sin(walkPhase)) * -2;
