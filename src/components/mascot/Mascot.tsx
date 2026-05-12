@@ -246,10 +246,18 @@ function ShellPieces() {
 }
 
 // ---------- Speech bubble with typewriter ----------
-function SpeechBubble({ text, cta, onClose }: { text: string; cta?: { label: string; whatsapp: string }; onClose: () => void }) {
-  const [shown, setShown] = useState("");
-  const reduced =
-    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function SpeechBubble({
+  text,
+  cta,
+  onClose,
+  reduced,
+}: {
+  text: string;
+  cta?: { label: string; whatsapp: string };
+  onClose: () => void;
+  reduced: boolean;
+}) {
+  const [shown, setShown] = useState(reduced ? text : "");
 
   useEffect(() => {
     if (reduced) {
@@ -266,15 +274,21 @@ function SpeechBubble({ text, cta, onClose }: { text: string; cta?: { label: str
     return () => clearInterval(id);
   }, [text, reduced]);
 
+  const motionProps = reduced
+    ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0 } }
+    : {
+        initial: { opacity: 0, scale: 0.6, y: -6 },
+        animate: { opacity: 1, scale: 1, y: 0 },
+        exit: { opacity: 0, scale: 0.6, y: -6 },
+        transition: { type: "spring" as const, damping: 14, stiffness: 220 },
+      };
+
   return (
     <motion.div
       role="status"
       aria-live="polite"
       className="absolute left-1/2 top-full z-50 mt-3 w-[220px] -translate-x-1/2 rounded-2xl border border-border bg-card px-3 py-2 text-xs leading-snug text-foreground shadow-lg sm:w-[240px]"
-      initial={{ opacity: 0, scale: 0.6, y: -6 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.6, y: -6 }}
-      transition={{ type: "spring", damping: 14, stiffness: 220 }}
+      {...motionProps}
     >
       {/* Tail pointing up to chick */}
       <span
@@ -474,8 +488,8 @@ export function Mascot() {
         <Egg stage={stage} wobble={wobble} />
       ) : (
         <>
-          {/* Shell pieces (only show briefly after first hatch via session check) */}
-          {typeof window !== "undefined" && !sessionStorage.getItem("sp_mascot_shellseen") && (
+          {/* Скорлупки только в обычном режиме и только один раз */}
+          {!reducedMotion && typeof window !== "undefined" && !sessionStorage.getItem("sp_mascot_shellseen") && (
             <ShellPiecesOnce />
           )}
           <motion.button
@@ -484,16 +498,16 @@ export function Mascot() {
             }}
             onClick={onClick}
             className="relative z-10 cursor-pointer bg-transparent"
-            style={{ x: pos }}
+            style={{ x: reducedMotion ? 0 : pos }}
             initial={false}
             aria-label="Перепёлкин — нажмите, чтобы услышать совет"
           >
             <Chick
               facing={facing}
-              walkPhase={walkPhase}
-              blink={blink}
-              headRot={headRot}
-              beakOpen={beakOpen}
+              walkPhase={reducedMotion ? 0 : walkPhase}
+              blink={reducedMotion ? false : blink}
+              headRot={reducedMotion ? 0 : headRot}
+              beakOpen={reducedMotion ? false : beakOpen}
             />
           </motion.button>
         </>
@@ -501,7 +515,7 @@ export function Mascot() {
 
       <AnimatePresence>
         {tip && stage === "hatched" && (
-          <SpeechBubble text={tip.text} cta={tip.cta} onClose={hideTip} />
+          <SpeechBubble text={tip.text} cta={tip.cta} onClose={hideTip} reduced={reducedMotion} />
         )}
       </AnimatePresence>
     </div>

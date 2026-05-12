@@ -25,15 +25,35 @@ const PROGRESS_THRESHOLDS: Array<[number, Stage]> = [
 ];
 const STAGE_ORDER: Stage[] = PROGRESS_THRESHOLDS.map(([, s]) => s);
 
-const STORAGE_KEY = "sp_mascot_hatched";
+const STAGE_KEY = "sp_mascot_stage";
+
+function nextStageOf(s: Stage): Stage {
+  const i = STAGE_ORDER.indexOf(s);
+  return STAGE_ORDER[Math.min(STAGE_ORDER.length - 1, i + 1)];
+}
 
 export function MascotProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [stage, setStage] = useState<Stage>("egg");
+  const [stage, setStageRaw] = useState<Stage>("egg");
   const [tip, setTip] = useState<Tip | null>(null);
   const tipTimer = useRef<number | null>(null);
   const idleTimer = useRef<number | null>(null);
+  const playoutTimer = useRef<number | null>(null);
+  const stageRef = useRef<Stage>("egg");
+
+  const setStage = (updater: Stage | ((prev: Stage) => Stage)) => {
+    setStageRaw((prev) => {
+      const next = typeof updater === "function" ? (updater as (p: Stage) => Stage)(prev) : updater;
+      stageRef.current = next;
+      try {
+        sessionStorage.setItem(STAGE_KEY, next);
+      } catch {
+        // noop
+      }
+      return next;
+    });
+  };
 
   // Initial: check sessionStorage and reduced motion
   useEffect(() => {
@@ -42,17 +62,57 @@ export function MascotProvider({ children }: { children: ReactNode }) {
     const onChange = () => setReducedMotion(mq.matches);
     mq.addEventListener("change", onChange);
 
-    const hatched = sessionStorage.getItem(STORAGE_KEY) === "1";
-    if (hatched || mq.matches) {
+    let initial: Stage | null = null;
+    try {
+      const saved = sessionStorage.getItem(STAGE_KEY) as Stage | null;
+      if (saved && STAGE_ORDER.includes(saved)) initial = saved;
+    } catch {
+      // noop
+    }
+    if (mq.matches) {
       setStage("hatched");
+    } else if (initial) {
+      setStage(initial);
     }
     return () => mq.removeEventListener("change", onChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scroll-driven stage progression (по прогрессу 0..1, не по px)
+  // При reduced-motion — гарантировано hatched при любых раскладах
   useEffect(() => {
-    if (stage === "hatched") return;
+    if (reducedMotion && stageRef.current !== "hatched") setStage("hatched");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reducedMotion]);
+
+  // Scroll-driven stage progression + ResizeObserver + smooth playout
+  useEffect(() => {
+    if (stage === "hatched" || reducedMotion) return;
+
     let raf = 0;
+
+    const cancelPlayout = () => {
+      if (playoutTimer.current) {
+        clearTimeout(playoutTimer.current);
+        playoutTimer.current = null;
+      }
+    };
+
+    const startPlayout = (from: Stage) => {
+      if (playoutTimer.current) return; // уже идёт
+      const step = (cur: Stage) => {
+        if (cur === "hatched") {
+          playoutTimer.current = null;
+          return;
+        }
+        const nxt = nextStageOf(cur);
+        playoutTimer.current = window.setTimeout(() => {
+          setStage((prev) => (STAGE_ORDER.indexOf(nxt) > STAGE_ORDER.indexOf(prev) ? nxt : prev));
+          step(nxt);
+        }, 260);
+      };
+      step(from);
+    };
+
     const compute = () => {
       raf = 0;
       const doc = document.documentElement;
@@ -61,45 +121,60 @@ export function MascotProvider({ children }: { children: ReactNode }) {
       const viewport = window.innerHeight;
       const scrollable = docHeight - viewport;
       const y = window.scrollY || doc.scrollTop;
-      // Если страница не скроллится — сразу вылупляем
-      const progress = scrollable <= 4 ? 1 : Math.min(1, Math.max(0, y / scrollable));
-      let next: Stage = "egg";
-      for (const [t, s] of PROGRESS_THRESHOLDS) {
-        if (progress >= t) next = s;
+
+      // Короткая страница — плавно «доигрываем» до hatched
+      if (scrollable <= 4) {
+        if (stageRef.current !== "hatched") startPlayout(stageRef.current);
+        return;
       }
-      // Bottom guard: если фактически у футера — гарантируем hatched
-      if (scrollable > 4 && y >= scrollable - 8) next = "hatched";
+
+      cancelPlayout();
+      const progress = Math.min(1, Math.max(0, y / scrollable));
+      let target: Stage = "egg";
+      for (const [t, s] of PROGRESS_THRESHOLDS) {
+        if (progress >= t) target = s;
+      }
+      // Bottom guard
+      if (y >= scrollable - 8) target = "hatched";
+
       setStage((prev) => {
-        if (STAGE_ORDER.indexOf(next) > STAGE_ORDER.indexOf(prev)) return next;
-        return prev;
+        const prevIdx = STAGE_ORDER.indexOf(prev);
+        const tgtIdx = STAGE_ORDER.indexOf(target);
+        if (tgtIdx <= prevIdx) return prev;
+        // Шаг максимум +1 за тик при обычной прокрутке (исключение — bottom guard)
+        const stepIdx = target === "hatched" && y >= scrollable - 8 ? tgtIdx : Math.min(tgtIdx, prevIdx + 1);
+        return STAGE_ORDER[stepIdx];
       });
     };
+
     const schedule = () => {
       if (raf) return;
       raf = requestAnimationFrame(compute);
     };
-    schedule();
+
+    // Перепроверяем после смены роута: ждём 1 RAF, чтобы новый layout успел отрендериться
+    const initialId = window.setTimeout(schedule, 0);
+
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     window.addEventListener("orientationchange", schedule);
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(schedule);
+      ro.observe(document.body);
+    }
+
     return () => {
+      clearTimeout(initialId);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       window.removeEventListener("orientationchange", schedule);
+      if (ro) ro.disconnect();
       if (raf) cancelAnimationFrame(raf);
+      cancelPlayout();
     };
-  }, [stage, location.pathname]);
-
-  // Persist hatched
-  useEffect(() => {
-    if (stage === "hatched") {
-      try {
-        sessionStorage.setItem(STORAGE_KEY, "1");
-      } catch {
-        // noop
-      }
-    }
-  }, [stage]);
+  }, [stage, reducedMotion, location.pathname]);
 
   const hideTip = () => {
     setTip(null);
@@ -116,15 +191,21 @@ export function MascotProvider({ children }: { children: ReactNode }) {
     tipTimer.current = window.setTimeout(() => setTip(null), 7000);
   };
 
+  // Сброс tip и пересчёт при смене страницы
+  useEffect(() => {
+    hideTip();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
   // Show tip on route change once hatched
   useEffect(() => {
     if (stage !== "hatched") return;
     const id = window.setTimeout(() => {
       showTip();
-    }, 1200);
+    }, reducedMotion ? 400 : 1200);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, stage]);
+  }, [location.pathname, stage, reducedMotion]);
 
   // Idle tip rotation
   useEffect(() => {
