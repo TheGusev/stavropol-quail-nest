@@ -3,6 +3,7 @@ import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
 import { CtaButtons } from "@/components/CtaButtons";
 import { buildHead } from "@/lib/seo";
+import heroEggs from "@/assets/hero-eggs.jpg";
 
 export const Route = createFileRoute("/dostavka")({
   head: () =>
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/dostavka")({
 function Page() {
   return (
     <PageShell>
-      <PageHero kicker="Условия" title="Доставка и самовывоз" lead="Своим транспортом по Ставрополю и Михайловску, по краю — ТК. Самовывоз с фермы по договорённости." />
+      <PageHero kicker="Условия" title="Доставка и самовывоз" lead="Своим транспортом по Ставрополю и Михайловску, по краю — ТК. Самовывоз с фермы по договорённости." image={heroEggs} imageAlt="Упаковки перепелиных яиц и тушек" />
       <Section>
         <Prose>
           <h2>Способы получения</h2>

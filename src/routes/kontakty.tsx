@@ -5,6 +5,7 @@ import { LeadForm } from "@/components/LeadForm";
 import { buildHead } from "@/lib/seo";
 import { ADDRESS, EMAIL, PHONE_DISPLAY, telUrl, whatsappUrl } from "@/lib/contacts";
 import { Phone, MessageCircle, Mail, MapPin } from "lucide-react";
+import storePack from "@/assets/store-pack.jpg";
 
 export const Route = createFileRoute("/kontakty")({
   head: () =>
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/kontakty")({
 function Page() {
   return (
     <PageShell>
-      <PageHero kicker="Связаться" title="Контакты" lead="Самый быстрый способ — WhatsApp. Или позвоните по телефону." />
+      <PageHero kicker="Связаться" title="Контакты" lead="Самый быстрый способ — WhatsApp. Или позвоните по телефону." image={storePack} imageAlt="Упаковка перепелиных яиц с контактами фермы" />
       <Section>
         <div className="grid gap-10 md:grid-cols-[1fr,1fr]">
           <div className="space-y-4">

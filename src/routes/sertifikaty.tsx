@@ -3,6 +3,7 @@ import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
 import { CtaButtons } from "@/components/CtaButtons";
 import { buildHead } from "@/lib/seo";
+import storePack from "@/assets/store-pack.jpg";
 
 export const Route = createFileRoute("/sertifikaty")({
   head: () =>
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/sertifikaty")({
 function Page() {
   return (
     <PageShell>
-      <PageHero kicker="Качество" title="Документы и качество" lead="Работаем официально. Документы предоставляем по запросу." />
+      <PageHero kicker="Качество" title="Документы и качество" lead="Работаем официально. Документы предоставляем по запросу." image={storePack} imageAlt="Упаковка с маркировкой фермы" />
       <Section>
         <Prose>
           <p>
