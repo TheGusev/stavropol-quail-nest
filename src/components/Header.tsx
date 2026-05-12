@@ -81,6 +81,7 @@ function MenuButton({
   }, []);
 
   useLayoutEffect(() => {
+    if (!isMobile) return;
     let raf = 0;
     const measure = () => {
       raf = 0;
@@ -94,7 +95,6 @@ function MenuButton({
       const ar = anchor.getBoundingClientRect();
       const cx = ar.left + ar.width / 2 - tr.left;
       let left = cx - SIZE / 2;
-      // не вылезаем за правый край
       left = Math.max(0, Math.min(tr.width - SIZE, left));
       setPos({ left, top: 2 });
       btn.setAttribute("data-mascot-menu-button", "");
@@ -122,7 +122,9 @@ function MenuButton({
       window.removeEventListener("resize", schedule);
       window.removeEventListener("orientationchange", schedule);
     };
-  }, []);
+  }, [isMobile]);
+
+  if (!isMobile) return null;
 
   return (
     <button
