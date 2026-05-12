@@ -286,9 +286,10 @@ function SpeechBubble({
 
   // Позиция: фиксированная, относительно анкора, с клампом по вьюпорту
   useLayoutEffect(() => {
+    if (!anchorRef) return;
     let raf = 0;
     const compute = () => {
-      const a = anchorRef.current;
+      const a = anchorRef?.current;
       const b = bubbleRef.current;
       if (!a) return;
       const rect = a.getBoundingClientRect();
