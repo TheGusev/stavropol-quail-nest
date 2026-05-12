@@ -532,7 +532,7 @@ export function Mascot() {
         return Math.max(layout.walkMin, Math.min(layout.walkMax, next));
       });
 
-      if (moving) setWalkPhase((w) => w + dt * 9);
+      if (moving) setWalkPhase((w) => w + dt * 5);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
