@@ -197,12 +197,12 @@ export function MascotProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Show tip on route change once hatched
+  // (Подсказка по смене роута больше не показывается автоматически —
+  // её триггерит сам Mascot, когда птенец остановился. Для reduced-motion
+  // показываем один раз после смены роута, т.к. птенец не ходит.)
   useEffect(() => {
-    if (stage !== "hatched") return;
-    const id = window.setTimeout(() => {
-      showTip();
-    }, reducedMotion ? 400 : 1200);
+    if (stage !== "hatched" || !reducedMotion) return;
+    const id = window.setTimeout(() => showTip(), 400);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, stage, reducedMotion]);
