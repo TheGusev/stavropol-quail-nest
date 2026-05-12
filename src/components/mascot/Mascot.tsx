@@ -496,7 +496,7 @@ export function Mascot() {
       setTarget(t);
     };
     pick();
-    const id = window.setInterval(pick, 4500 + Math.random() * 3500);
+    const id = window.setInterval(pick, 7000 + Math.random() * 5000);
     return () => clearInterval(id);
   }, [stage, reducedMotion, layout.ready, layout.walkMin, layout.walkMax, layout.menuLeft, layout.menuRight]);
 
