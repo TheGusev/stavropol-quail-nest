@@ -244,7 +244,7 @@ export function MascotProvider({ children }: { children: ReactNode }) {
   }, [stage]);
 
   return (
-    <Ctx.Provider value={{ stage, tip, showTip, hideTip, reducedMotion }}>
+    <Ctx.Provider value={{ stage, eggProgress, tip, showTip, hideTip, reducedMotion }}>
       {children}
     </Ctx.Provider>
   );
