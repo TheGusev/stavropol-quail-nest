@@ -526,7 +526,7 @@ export function Mascot() {
         if (!moving) setMoving(true);
         const dir = Math.sign(diff);
         setFacing(dir >= 0 ? 1 : -1);
-        const speed = 46;
+        const speed = 22;
         const step = dir * Math.min(dist, speed * dt);
         const next = p + step;
         return Math.max(layout.walkMin, Math.min(layout.walkMax, next));
