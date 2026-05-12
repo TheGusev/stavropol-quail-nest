@@ -177,7 +177,20 @@ function Chick({
 }
 
 // ---------- Tip — бегущая строка (marquee) ----------
-type TipPos = { top: number; left: number; width: number };
+type TipPos = { top: number; left: number };
+
+// Off-screen измеритель ширины текста
+function measureTextWidth(text: string): number {
+  if (typeof document === "undefined") return 0;
+  const el = document.createElement("span");
+  el.style.cssText =
+    "position:absolute;visibility:hidden;white-space:nowrap;font:500 12px/16px system-ui,-apple-system,Segoe UI,sans-serif;left:-9999px;top:-9999px;";
+  el.textContent = text;
+  document.body.appendChild(el);
+  const w = el.offsetWidth;
+  document.body.removeChild(el);
+  return w;
+}
 
 function MascotTip({
   text,
@@ -189,9 +202,11 @@ function MascotTip({
   anchorRef: RefObject<HTMLElement | null>;
 }) {
   const [pos, setPos] = useState<TipPos | null>(null);
-  const [needsMarquee, setNeedsMarquee] = useState(false);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
+  const textW = useRef(measureTextWidth(text));
+
+  useLayoutEffect(() => {
+    textW.current = measureTextWidth(text);
+  }, [text]);
 
   useLayoutEffect(() => {
     let raf = 0;
@@ -203,29 +218,28 @@ function MascotTip({
       const ar = a.getBoundingClientRect();
       const hr = header.getBoundingClientRect();
       const margin = 8;
+      const tw = textW.current;
 
-      // Доступная ширина в верхней зоне справа от птенца
-      const rightSpace = window.innerWidth - ar.right - margin;
-      const leftSpace = ar.left - margin;
+      const rightSpace = window.innerWidth - ar.right - margin * 2;
+      const leftSpace = ar.left - margin * 2;
+
       let left: number;
-      let width: number;
-      if (rightSpace >= 80) {
+      if (tw <= rightSpace) {
         left = ar.right + margin;
-        width = Math.min(rightSpace, Math.round(window.innerWidth * 0.7));
+      } else if (tw <= leftSpace) {
+        left = ar.left - margin - tw;
       } else {
-        width = Math.min(leftSpace, Math.round(window.innerWidth * 0.7));
-        left = ar.left - margin - width;
+        // Не помещается — не показываем
+        setPos(null);
+        return;
       }
-      if (left < margin) left = margin;
-      if (width < 60) width = 60;
 
-      // Top — по центру головы птенца, в пределах header
       let top = ar.top + 6;
       const minTop = hr.top + 2;
       const maxTop = hr.bottom - 18;
       if (maxTop >= minTop) top = Math.max(minTop, Math.min(maxTop, top));
 
-      setPos({ top, left, width });
+      setPos({ top, left });
     };
     compute();
     const tick = () => {
@@ -240,32 +254,19 @@ function MascotTip({
       window.removeEventListener("scroll", compute);
       window.removeEventListener("resize", compute);
     };
-  }, [anchorRef]);
-
-  // Определяем нужен ли marquee
-  useLayoutEffect(() => {
-    const wrap = wrapRef.current;
-    const t = textRef.current;
-    if (!wrap || !t) return;
-    setNeedsMarquee(t.scrollWidth > wrap.clientWidth + 1);
-  }, [text, pos?.width]);
+  }, [anchorRef, text]);
 
   if (typeof document === "undefined") return null;
-
-  const containerW = pos?.width ?? 0;
-  const textW = textRef.current?.scrollWidth ?? containerW;
-  const duration = Math.max(8, (containerW + textW) / 60);
+  if (!pos) return null;
 
   return createPortal(
     <motion.div
-      ref={wrapRef}
       role="status"
       aria-live="polite"
-      className="pointer-events-none fixed z-[60] overflow-hidden text-[12px] font-medium leading-4 text-foreground"
+      className="pointer-events-none fixed z-[60] whitespace-nowrap text-[12px] font-medium leading-4 text-foreground"
       style={{
-        top: pos?.top ?? -9999,
-        left: pos?.left ?? -9999,
-        width: pos?.width ?? 0,
+        top: pos.top,
+        left: pos.left,
         textShadow: "0 1px 2px rgba(255,255,255,0.9), 0 0 6px rgba(255,255,255,0.7)",
       }}
       initial={reduced ? { opacity: 1 } : { opacity: 0 }}
@@ -273,21 +274,7 @@ function MascotTip({
       exit={{ opacity: 0 }}
       transition={{ duration: reduced ? 0 : 0.18, ease: "easeOut" }}
     >
-      {needsMarquee && !reduced ? (
-        <motion.span
-          ref={textRef}
-          className="inline-block whitespace-nowrap"
-          initial={{ x: containerW }}
-          animate={{ x: -textW }}
-          transition={{ duration, ease: "linear", repeat: Infinity, repeatType: "loop" }}
-        >
-          {text}
-        </motion.span>
-      ) : (
-        <span ref={textRef} className="inline-block whitespace-nowrap">
-          {text}
-        </span>
-      )}
+      {text}
     </motion.div>,
     document.body,
   );
