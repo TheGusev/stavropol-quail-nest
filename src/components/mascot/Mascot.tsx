@@ -99,13 +99,13 @@ function Chick({
   walkPhase,
   blink,
   beakOpen,
-  wingRaised,
+  wingAngle,
 }: {
   facing: 1 | -1;
   walkPhase: number;
   blink: boolean;
   beakOpen: boolean;
-  wingRaised: boolean;
+  wingAngle: number; // в градусах, 0 — крыло прижато
 }) {
   const bob = Math.abs(Math.sin(walkPhase)) * -2;
   const leftLeg = Math.sin(walkPhase) * 25;
@@ -144,14 +144,13 @@ function Chick({
       </g>
       <g transform={`translate(0 ${bob})`}>
         <ellipse cx="30" cy="40" rx="14" ry="12" fill="url(#chickBody)" stroke="oklch(0.6 0.12 70)" strokeWidth="0.6" />
-        <motion.path
+        {/* Крыло — нативный SVG transform с поворотом вокруг точки крепления к телу (24, 40) */}
+        <path
           d="M22 38 Q18 44 24 48 Q30 46 28 40 Z"
           fill="oklch(0.8 0.13 78)"
           stroke="oklch(0.55 0.1 70)"
           strokeWidth="0.5"
-          style={{ originX: "26px", originY: "44px" }}
-          animate={{ rotate: wingRaised ? -55 : 0, y: wingRaised ? -2 : 0 }}
-          transition={{ type: "spring", damping: 12, stiffness: 180 }}
+          transform={`rotate(${wingAngle} 24 40)`}
         />
         <path d="M42 36 Q47 36 46 40 Q44 39 42 40 Z" fill="oklch(0.78 0.13 75)" />
         <g transform={`translate(30 26)`}>
@@ -177,8 +176,8 @@ function Chick({
   );
 }
 
-// ---------- Plain-text tip — без облачка, одна строка ----------
-type TipPos = { top: number; left: number; side: "left" | "right" };
+// ---------- Tip — бегущая строка (marquee) ----------
+type TipPos = { top: number; left: number; width: number };
 
 function MascotTip({
   text,
@@ -190,36 +189,45 @@ function MascotTip({
   anchorRef: RefObject<HTMLElement | null>;
 }) {
   const [pos, setPos] = useState<TipPos | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
+  const [needsMarquee, setNeedsMarquee] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
     let raf = 0;
     const compute = () => {
+      raf = 0;
       const a = anchorRef.current;
-      const el = ref.current;
       const header = document.querySelector("header");
       if (!a || !header) return;
       const ar = a.getBoundingClientRect();
       const hr = header.getBoundingClientRect();
-      const w = el?.offsetWidth ?? 180;
-      const h = el?.offsetHeight ?? 18;
       const margin = 8;
 
-      let side: "left" | "right" = "right";
-      let left = ar.right + margin;
-      if (left + w > window.innerWidth - margin) {
-        left = ar.left - w - margin;
-        side = "left";
+      // Доступная ширина в верхней зоне справа от птенца
+      const rightSpace = window.innerWidth - ar.right - margin;
+      const leftSpace = ar.left - margin;
+      let left: number;
+      let width: number;
+      if (rightSpace >= 80) {
+        left = ar.right + margin;
+        width = Math.min(rightSpace, Math.round(window.innerWidth * 0.7));
+      } else {
+        width = Math.min(leftSpace, Math.round(window.innerWidth * 0.7));
+        left = ar.left - margin - width;
       }
-      left = Math.max(margin, Math.min(window.innerWidth - w - margin, left));
+      if (left < margin) left = margin;
+      if (width < 60) width = 60;
 
-      let top = ar.top + ar.height / 2 - h / 2;
+      // Top — по центру головы птенца, в пределах header
+      let top = ar.top + 6;
       const minTop = hr.top + 2;
-      const maxTop = hr.bottom - h - 2;
+      const maxTop = hr.bottom - 18;
       if (maxTop >= minTop) top = Math.max(minTop, Math.min(maxTop, top));
 
-      setPos({ top, left, side });
+      setPos({ top, left, width });
     };
+    compute();
     const tick = () => {
       compute();
       raf = requestAnimationFrame(tick);
@@ -234,32 +242,52 @@ function MascotTip({
     };
   }, [anchorRef]);
 
+  // Определяем нужен ли marquee
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const t = textRef.current;
+    if (!wrap || !t) return;
+    setNeedsMarquee(t.scrollWidth > wrap.clientWidth + 1);
+  }, [text, pos?.width]);
+
   if (typeof document === "undefined") return null;
 
-  const motionProps = reduced
-    ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0 } }
-    : {
-        initial: { opacity: 0, x: 4 },
-        animate: { opacity: 1, x: 0 },
-        exit: { opacity: 0 },
-        transition: { duration: 0.18, ease: "easeOut" as const },
-      };
+  const containerW = pos?.width ?? 0;
+  const textW = textRef.current?.scrollWidth ?? containerW;
+  const duration = Math.max(8, (containerW + textW) / 60);
 
   return createPortal(
     <motion.div
-      ref={ref}
+      ref={wrapRef}
       role="status"
       aria-live="polite"
-      className="pointer-events-none fixed z-[60] whitespace-nowrap overflow-hidden text-ellipsis text-[12px] font-medium leading-4 text-foreground"
+      className="pointer-events-none fixed z-[60] overflow-hidden text-[12px] font-medium leading-4 text-foreground"
       style={{
         top: pos?.top ?? -9999,
         left: pos?.left ?? -9999,
-        maxWidth: "min(60vw, 260px)",
+        width: pos?.width ?? 0,
         textShadow: "0 1px 2px rgba(255,255,255,0.9), 0 0 6px rgba(255,255,255,0.7)",
       }}
-      {...motionProps}
+      initial={reduced ? { opacity: 1 } : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: reduced ? 0 : 0.18, ease: "easeOut" }}
     >
-      {text}
+      {needsMarquee && !reduced ? (
+        <motion.span
+          ref={textRef}
+          className="inline-block whitespace-nowrap"
+          initial={{ x: containerW }}
+          animate={{ x: -textW }}
+          transition={{ duration, ease: "linear", repeat: Infinity, repeatType: "loop" }}
+        >
+          {text}
+        </motion.span>
+      ) : (
+        <span ref={textRef} className="inline-block whitespace-nowrap">
+          {text}
+        </span>
+      )}
     </motion.div>,
     document.body,
   );
@@ -268,25 +296,27 @@ function MascotTip({
 // ---------- Layout measurements from title letters ----------
 type Layout = {
   trackW: number;
+  trackH: number;
   textTop: number;
   eggStartX: number;
   eggEndX: number;
   walkMin: number;
   walkMax: number;
-  jumpLeft: number;
-  jumpRight: number;
+  menuLeft: number;
+  menuRight: number;
   ready: boolean;
 };
 
 const EMPTY_LAYOUT: Layout = {
   trackW: 0,
+  trackH: 0,
   textTop: 0,
   eggStartX: 0,
   eggEndX: 0,
   walkMin: 0,
   walkMax: 0,
-  jumpLeft: 0,
-  jumpRight: 0,
+  menuLeft: 0,
+  menuRight: 0,
   ready: false,
 };
 
@@ -302,7 +332,6 @@ export function Mascot() {
   const [layout, setLayout] = useState<Layout>(EMPTY_LAYOUT);
   const [unsafe, setUnsafe] = useState(false);
 
-  // Measure letter anchors via ResizeObserver + key events (no infinite rAF loop)
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -321,21 +350,29 @@ export function Mascot() {
       const hatchStart = track.querySelector<HTMLElement>("[data-mascot-hatch-zone-start]");
       const walkStart = track.querySelector<HTMLElement>("[data-mascot-walk-start]");
       const walkEnd = track.querySelector<HTMLElement>("[data-mascot-walk-end]");
-      const jump = track.querySelector<HTMLElement>("[data-mascot-jump]");
-      if (!eggStart || !hatchStart || !walkStart || !walkEnd || !jump) return;
+      if (!eggStart || !hatchStart || !walkStart || !walkEnd) return;
 
       const er = eggStart.getBoundingClientRect();
       const hr = hatchStart.getBoundingClientRect();
       const wsr = walkStart.getBoundingClientRect();
       const wer = walkEnd.getBoundingClientRect();
-      const jr = jump.getBoundingClientRect();
 
       const eggStartX = er.left + er.width / 2 - tr.left;
       const eggEndX = hr.left + hr.width / 2 - tr.left;
-      const walkMin = wsr.left - tr.left;
-      const walkMax = wer.right - tr.left - CHICK_W;
+      // Зона хода — вся ширина трека, с небольшими отступами
+      const walkMin = Math.max(0, wsr.left - tr.left - 4);
+      const walkMax = Math.min(tr.width - CHICK_W, wer.right - tr.left + 4 - CHICK_W + 8);
 
-      // Sanity checks — иначе не помечаем layout как ready
+      // Зона бургера — для обхода
+      const menuBtn = track.querySelector<HTMLElement>("[data-mascot-menu-button]");
+      let menuLeft = 0;
+      let menuRight = 0;
+      if (menuBtn) {
+        const mb = menuBtn.getBoundingClientRect();
+        menuLeft = mb.left - tr.left - 4;
+        menuRight = mb.right - tr.left + 4;
+      }
+
       if (
         !(tr.width > 0) ||
         !(eggEndX > eggStartX) ||
@@ -346,13 +383,14 @@ export function Mascot() {
 
       setLayout({
         trackW: tr.width,
+        trackH: tr.height,
         textTop: er.top - tr.top,
         eggStartX,
         eggEndX,
         walkMin,
         walkMax,
-        jumpLeft: jr.left - tr.left - 2,
-        jumpRight: jr.right - tr.left + 2,
+        menuLeft,
+        menuRight,
         ready: true,
       });
       setUnsafe(false);
@@ -365,14 +403,12 @@ export function Mascot() {
 
     schedule();
 
-    // Если за FALLBACK_TIMEOUT_MS не нашли все якоря — переходим в безопасный режим
     const fallbackId = window.setTimeout(() => {
       const ok =
         track.querySelector("[data-mascot-egg-start]") &&
         track.querySelector("[data-mascot-hatch-zone-start]") &&
         track.querySelector("[data-mascot-walk-start]") &&
-        track.querySelector("[data-mascot-walk-end]") &&
-        track.querySelector("[data-mascot-jump]");
+        track.querySelector("[data-mascot-walk-end]");
       if (!ok) {
         setUnsafe(true);
         if (!warned) {
@@ -393,13 +429,18 @@ export function Mascot() {
     window.addEventListener("resize", schedule);
     window.addEventListener("orientationchange", schedule);
     window.addEventListener("load", schedule);
-    // Шрифты — после загрузки fonts пересчитываем
     const fonts = (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts;
     if (fonts?.ready) fonts.ready.then(schedule).catch(() => {});
+
+    // Доп. отложенный пересчёт после монтирования бургера
+    const t1 = window.setTimeout(schedule, 60);
+    const t2 = window.setTimeout(schedule, 300);
 
     return () => {
       cancelled = true;
       clearTimeout(fallbackId);
+      clearTimeout(t1);
+      clearTimeout(t2);
       if (raf) cancelAnimationFrame(raf);
       if (ro) ro.disconnect();
       window.removeEventListener("resize", schedule);
@@ -416,37 +457,63 @@ export function Mascot() {
   const [target, setTarget] = useState(0);
   const [blink, setBlink] = useState(false);
   const [beakOpen, setBeakOpen] = useState(false);
-  const [wingRaised, setWingRaised] = useState(false);
-  const [jumpY, setJumpY] = useState(0);
-  const jumpStateRef = useRef<{ active: boolean; t0: number; fromX: number; toX: number } | null>(null);
+  const [wingAngle, setWingAngle] = useState(0);
+  const wingTargetRef = useRef(0);
   const wasMovingRef = useRef(false);
   const wingTimerRef = useRef<number | null>(null);
   const initializedRef = useRef(false);
 
+  // Авто-пружинка крыла
+  useEffect(() => {
+    let raf = 0;
+    const tick = () => {
+      setWingAngle((cur) => {
+        const t = wingTargetRef.current;
+        const diff = t - cur;
+        if (Math.abs(diff) < 0.1) return t;
+        return cur + diff * 0.18;
+      });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const raiseWing = (raised: boolean) => {
+    wingTargetRef.current = raised ? -38 : 0;
+  };
+
   // После hatched — поставить птенца у конца зоны «пол»
   useEffect(() => {
     if (stage === "hatched" && layout.ready && !initializedRef.current) {
-      const x = Math.max(0, Math.min(layout.trackW - CHICK_W, layout.eggEndX - CHICK_W / 2));
+      const x = Math.max(layout.walkMin, Math.min(layout.walkMax, layout.eggEndX - CHICK_W / 2));
       setPos(x);
       setTarget(x);
       initializedRef.current = true;
     }
-  }, [stage, layout.ready, layout.eggEndX, layout.trackW]);
+  }, [stage, layout.ready, layout.eggEndX, layout.walkMin, layout.walkMax]);
 
-  // Wander target picker
+  // Wander target picker (с обходом зоны бургера)
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion || !layout.ready) return;
     const pick = () => {
       const minX = layout.walkMin;
       const maxX = Math.max(minX + 24, layout.walkMax);
-      setTarget(Math.round(minX + Math.random() * (maxX - minX)));
+      let t = Math.round(minX + Math.random() * (maxX - minX));
+      // Обход зоны бургера
+      const mL = layout.menuLeft - CHICK_W;
+      const mR = layout.menuRight;
+      if (mR > mL && t > mL && t < mR) {
+        t = Math.random() < 0.5 ? Math.max(minX, mL - 4) : Math.min(maxX, mR + 4);
+      }
+      setTarget(t);
     };
     pick();
     const id = window.setInterval(pick, 4500 + Math.random() * 3500);
     return () => clearInterval(id);
-  }, [stage, reducedMotion, layout.ready, layout.walkMin, layout.walkMax]);
+  }, [stage, reducedMotion, layout.ready, layout.walkMin, layout.walkMax, layout.menuLeft, layout.menuRight]);
 
-  // Walk loop with jump-over-«П»
+  // Walk loop (без прыжков, с обходом бургера)
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion || !layout.ready) return;
     let raf = 0;
@@ -456,21 +523,14 @@ export function Mascot() {
       last = now;
 
       setPos((p) => {
-        const j = jumpStateRef.current;
-        if (j && j.active) {
-          const dur = 480;
-          const t = Math.min(1, (now - j.t0) / dur);
-          const x = j.fromX + (j.toX - j.fromX) * t;
-          setJumpY(-Math.sin(t * Math.PI) * 22);
-          if (t >= 1) {
-            jumpStateRef.current = null;
-            setJumpY(0);
-          }
-          setFacing(j.toX >= j.fromX ? 1 : -1);
-          return Math.max(0, Math.min(layout.trackW - CHICK_W, x));
+        let t = target;
+        // Если таргет внутри зоны бургера — отодвинуть
+        const mL = layout.menuLeft - CHICK_W;
+        const mR = layout.menuRight;
+        if (mR > mL && t > mL && t < mR) {
+          t = p < mL ? mL - 4 : mR + 4;
         }
-
-        const diff = target - p;
+        const diff = t - p;
         const dist = Math.abs(diff);
         if (dist < 1) {
           if (moving) setMoving(false);
@@ -482,50 +542,39 @@ export function Mascot() {
         const speed = 46;
         const step = dir * Math.min(dist, speed * dt);
         const next = p + step;
-
-        const jl = layout.jumpLeft - CHICK_W / 2;
-        const jr = layout.jumpRight - CHICK_W / 2;
-        if (dir > 0 && p < jl && next >= jl) {
-          jumpStateRef.current = { active: true, t0: now, fromX: p, toX: jr + 4 };
-          return p;
-        }
-        if (dir < 0 && p > jr && next <= jr) {
-          jumpStateRef.current = { active: true, t0: now, fromX: p, toX: jl - 4 };
-          return p;
-        }
-        return Math.max(0, Math.min(layout.trackW - CHICK_W, next));
+        return Math.max(layout.walkMin, Math.min(layout.walkMax, next));
       });
 
-      if (moving && !jumpStateRef.current?.active) setWalkPhase((w) => w + dt * 9);
+      if (moving) setWalkPhase((w) => w + dt * 9);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [stage, target, moving, reducedMotion, layout.ready, layout.jumpLeft, layout.jumpRight, layout.trackW]);
+  }, [stage, target, moving, reducedMotion, layout.ready, layout.walkMin, layout.walkMax, layout.menuLeft, layout.menuRight]);
 
   // Stop → maybe show tip + raise wing
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion) return;
     if (wasMovingRef.current && !moving) {
       if (Math.random() < 0.65) {
-        setWingRaised(true);
+        raiseWing(true);
         showTip();
         if (wingTimerRef.current) clearTimeout(wingTimerRef.current);
-        wingTimerRef.current = window.setTimeout(() => setWingRaised(false), 6500);
+        wingTimerRef.current = window.setTimeout(() => raiseWing(false), 6500);
       }
     }
     wasMovingRef.current = moving;
   }, [moving, stage, reducedMotion, showTip]);
 
   useEffect(() => {
-    if (!tip && wingRaised) {
-      setWingRaised(false);
+    if (!tip) {
+      raiseWing(false);
       if (wingTimerRef.current) {
         clearTimeout(wingTimerRef.current);
         wingTimerRef.current = null;
       }
     }
-  }, [tip, wingRaised]);
+  }, [tip]);
 
   // Blink
   useEffect(() => {
@@ -562,9 +611,9 @@ export function Mascot() {
     if (!reducedMotion) {
       setBeakOpen(true);
       window.setTimeout(() => setBeakOpen(false), 300);
-      setWingRaised(true);
+      raiseWing(true);
       if (wingTimerRef.current) clearTimeout(wingTimerRef.current);
-      wingTimerRef.current = window.setTimeout(() => setWingRaised(false), 6500);
+      wingTimerRef.current = window.setTimeout(() => raiseWing(false), 6500);
     }
     showTip();
   };
@@ -573,9 +622,10 @@ export function Mascot() {
   const eggXraw = layout.ready ? layout.eggStartX + eggProgress * (layout.eggEndX - layout.eggStartX) : 0;
   const eggX = Math.max(EGG_W / 2, Math.min(layout.trackW - EGG_W / 2, eggXraw));
   const rolling = layout.ready ? (eggX - layout.eggStartX) * 1.4 : 0;
-  const baseTop = layout.textTop;
 
-  // Безопасный режим — не рендерим ничего, не ломаем шапку
+  // Птенец — в верхней свободной зоне трека
+  const chickTop = 0;
+
   if (unsafe) return null;
 
   return (
@@ -585,7 +635,7 @@ export function Mascot() {
           className="absolute"
           style={{
             left: eggX - EGG_W / 2,
-            top: baseTop - 44,
+            top: layout.textTop - 44,
             width: EGG_W,
           }}
           aria-hidden="true"
@@ -603,9 +653,9 @@ export function Mascot() {
           className="absolute cursor-pointer bg-transparent"
           style={{
             left: reducedMotion
-              ? Math.max(0, Math.min(layout.trackW - CHICK_W, layout.eggEndX - CHICK_W / 2))
+              ? Math.max(layout.walkMin, Math.min(layout.walkMax, layout.eggEndX - CHICK_W / 2))
               : pos,
-            top: baseTop - 34 + jumpY,
+            top: chickTop,
             pointerEvents: "auto",
           }}
           initial={false}
@@ -616,7 +666,7 @@ export function Mascot() {
             walkPhase={reducedMotion ? 0 : walkPhase}
             blink={reducedMotion ? false : blink}
             beakOpen={reducedMotion ? false : beakOpen}
-            wingRaised={wingRaised}
+            wingAngle={wingAngle}
           />
         </motion.button>
       )}
