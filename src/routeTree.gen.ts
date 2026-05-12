@@ -25,6 +25,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EssentukiRouteImport } from './routes/essentuki'
 import { Route as DostavkaRouteImport } from './routes/dostavka'
 import { Route as CatalogRouteImport } from './routes/catalog'
+import { Route as BudyonnovskRouteImport } from './routes/budyonnovsk'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StavropolRoute = StavropolRouteImport.update({
@@ -107,6 +108,11 @@ const CatalogRoute = CatalogRouteImport.update({
   path: '/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BudyonnovskRoute = BudyonnovskRouteImport.update({
+  id: '/budyonnovsk',
+  path: '/budyonnovsk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -115,6 +121,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/budyonnovsk': typeof BudyonnovskRoute
   '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
   '/essentuki': typeof EssentukiRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/budyonnovsk': typeof BudyonnovskRoute
   '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
   '/essentuki': typeof EssentukiRoute
@@ -154,6 +162,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/budyonnovsk': typeof BudyonnovskRoute
   '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
   '/essentuki': typeof EssentukiRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/budyonnovsk'
     | '/catalog'
     | '/dostavka'
     | '/essentuki'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/budyonnovsk'
     | '/catalog'
     | '/dostavka'
     | '/essentuki'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/budyonnovsk'
     | '/catalog'
     | '/dostavka'
     | '/essentuki'
@@ -233,6 +245,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BudyonnovskRoute: typeof BudyonnovskRoute
   CatalogRoute: typeof CatalogRoute
   DostavkaRoute: typeof DostavkaRoute
   EssentukiRoute: typeof EssentukiRoute
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/budyonnovsk': {
+      id: '/budyonnovsk'
+      path: '/budyonnovsk'
+      fullPath: '/budyonnovsk'
+      preLoaderRoute: typeof BudyonnovskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -377,6 +397,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BudyonnovskRoute: BudyonnovskRoute,
   CatalogRoute: CatalogRoute,
   DostavkaRoute: DostavkaRoute,
   EssentukiRoute: EssentukiRoute,
