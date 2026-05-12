@@ -81,8 +81,11 @@ export function MascotProvider({ children }: { children: ReactNode }) {
     }
     if (mq.matches) {
       setStage("hatched");
+      bumpProgress(1);
     } else if (initial) {
       setStage(initial);
+      const idx = STAGE_ORDER.indexOf(initial);
+      bumpProgress(idx / (STAGE_ORDER.length - 1));
     }
     return () => mq.removeEventListener("change", onChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +93,10 @@ export function MascotProvider({ children }: { children: ReactNode }) {
 
   // При reduced-motion — гарантировано hatched при любых раскладах
   useEffect(() => {
-    if (reducedMotion && stageRef.current !== "hatched") setStage("hatched");
+    if (reducedMotion && stageRef.current !== "hatched") {
+      setStage("hatched");
+      bumpProgress(1);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reducedMotion]);
 
