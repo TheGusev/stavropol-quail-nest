@@ -37,11 +37,20 @@ export function MascotProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [reducedMotion, setReducedMotion] = useState(false);
   const [stage, setStageRaw] = useState<Stage>("egg");
+  const [eggProgress, setEggProgress] = useState(0);
+  const eggProgressRef = useRef(0);
   const [tip, setTip] = useState<Tip | null>(null);
   const tipTimer = useRef<number | null>(null);
   const idleTimer = useRef<number | null>(null);
   const playoutTimer = useRef<number | null>(null);
   const stageRef = useRef<Stage>("egg");
+
+  const bumpProgress = (p: number) => {
+    if (p > eggProgressRef.current) {
+      eggProgressRef.current = p;
+      setEggProgress(p);
+    }
+  };
 
   const setStage = (updater: Stage | ((prev: Stage) => Stage)) => {
     setStageRaw((prev) => {
