@@ -6,6 +6,7 @@ export type Stage = "egg" | "wobble" | "crack-1" | "crack-2" | "peek" | "hatched
 
 type MascotState = {
   stage: Stage;
+  eggProgress: number;
   tip: Tip | null;
   showTip: (tip?: Tip) => void;
   hideTip: () => void;
@@ -36,11 +37,20 @@ export function MascotProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [reducedMotion, setReducedMotion] = useState(false);
   const [stage, setStageRaw] = useState<Stage>("egg");
+  const [eggProgress, setEggProgress] = useState(0);
+  const eggProgressRef = useRef(0);
   const [tip, setTip] = useState<Tip | null>(null);
   const tipTimer = useRef<number | null>(null);
   const idleTimer = useRef<number | null>(null);
   const playoutTimer = useRef<number | null>(null);
   const stageRef = useRef<Stage>("egg");
+
+  const bumpProgress = (p: number) => {
+    if (p > eggProgressRef.current) {
+      eggProgressRef.current = p;
+      setEggProgress(p);
+    }
+  };
 
   const setStage = (updater: Stage | ((prev: Stage) => Stage)) => {
     setStageRaw((prev) => {
@@ -71,8 +81,11 @@ export function MascotProvider({ children }: { children: ReactNode }) {
     }
     if (mq.matches) {
       setStage("hatched");
+      bumpProgress(1);
     } else if (initial) {
       setStage(initial);
+      const idx = STAGE_ORDER.indexOf(initial);
+      bumpProgress(idx / (STAGE_ORDER.length - 1));
     }
     return () => mq.removeEventListener("change", onChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,7 +93,10 @@ export function MascotProvider({ children }: { children: ReactNode }) {
 
   // При reduced-motion — гарантировано hatched при любых раскладах
   useEffect(() => {
-    if (reducedMotion && stageRef.current !== "hatched") setStage("hatched");
+    if (reducedMotion && stageRef.current !== "hatched") {
+      setStage("hatched");
+      bumpProgress(1);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reducedMotion]);
 
@@ -107,6 +123,9 @@ export function MascotProvider({ children }: { children: ReactNode }) {
         const nxt = nextStageOf(cur);
         playoutTimer.current = window.setTimeout(() => {
           setStage((prev) => (STAGE_ORDER.indexOf(nxt) > STAGE_ORDER.indexOf(prev) ? nxt : prev));
+          // Параллельно подтягиваем eggProgress по индексу стадии
+          const idx = STAGE_ORDER.indexOf(nxt);
+          bumpProgress(idx / (STAGE_ORDER.length - 1));
           step(nxt);
         }, 260);
       };
@@ -130,6 +149,7 @@ export function MascotProvider({ children }: { children: ReactNode }) {
 
       cancelPlayout();
       const progress = Math.min(1, Math.max(0, y / scrollable));
+      bumpProgress(progress);
       let target: Stage = "egg";
       for (const [t, s] of PROGRESS_THRESHOLDS) {
         if (progress >= t) target = s;
@@ -224,7 +244,7 @@ export function MascotProvider({ children }: { children: ReactNode }) {
   }, [stage]);
 
   return (
-    <Ctx.Provider value={{ stage, tip, showTip, hideTip, reducedMotion }}>
+    <Ctx.Provider value={{ stage, eggProgress, tip, showTip, hideTip, reducedMotion }}>
       {children}
     </Ctx.Provider>
   );

@@ -1,27 +1,21 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMascot, type Stage } from "./MascotProvider";
 import { whatsappUrl } from "@/lib/contacts";
 
-// ---------- Egg SVG with progressive cracks ----------
-function Egg({ stage, wobble }: { stage: Stage; wobble: number }) {
-  // crack progress mapping
+// ---------- Egg SVG ----------
+function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
   const showCrack1 = stage === "crack-1" || stage === "crack-2" || stage === "peek";
   const showCrack2 = stage === "crack-2" || stage === "peek";
   const showPeek = stage === "peek";
 
-  // Tilt animation based on stage intensity
-  const intensity =
-    stage === "wobble" ? 1 : stage === "crack-1" ? 1.6 : stage === "crack-2" ? 2.4 : stage === "peek" ? 1.2 : 0;
-  const rot = intensity > 0 ? Math.sin(wobble * 0.012) * 4 * intensity : 0;
-
   return (
-    <motion.svg
+    <svg
       viewBox="0 0 60 70"
-      width="40"
-      height="46"
-      style={{ rotate: rot, transformOrigin: "50% 90%" }}
+      width="34"
+      height="40"
+      style={{ overflow: "visible", transform: `rotate(${rolling}deg)`, transformOrigin: "50% 60%" }}
       aria-hidden="true"
     >
       <defs>
@@ -35,16 +29,13 @@ function Egg({ stage, wobble }: { stage: Stage; wobble: number }) {
           <stop offset="100%" stopColor="rgba(255,255,255,0)" />
         </radialGradient>
       </defs>
-      {/* Ground shadow */}
-      <ellipse cx="30" cy="66" rx="16" ry="2.5" fill="rgba(0,0,0,0.18)" />
-      {/* Egg body */}
+      <ellipse cx="30" cy="66" rx="14" ry="2" fill="rgba(0,0,0,0.18)" />
       <path
         d="M30 4 C46 4 54 26 54 44 C54 58 44 66 30 66 C16 66 6 58 6 44 C6 26 14 4 30 4 Z"
         fill="url(#eggBody)"
         stroke="oklch(0.5 0.12 145)"
         strokeWidth="1"
       />
-      {/* Quail speckles */}
       {[
         [18, 22, 1.6],
         [38, 18, 1.2],
@@ -58,9 +49,7 @@ function Egg({ stage, wobble }: { stage: Stage; wobble: number }) {
       ].map(([cx, cy, r], i) => (
         <circle key={i} cx={cx} cy={cy} r={r} fill="oklch(0.32 0.06 60)" opacity="0.7" />
       ))}
-      {/* Highlight */}
       <ellipse cx="22" cy="20" rx="7" ry="10" fill="url(#eggHL)" />
-      {/* Cracks */}
       {showCrack1 && (
         <path
           d="M14 30 L20 28 L24 32 L30 28 L34 33"
@@ -88,10 +77,8 @@ function Egg({ stage, wobble }: { stage: Stage; wobble: number }) {
           />
         </>
       )}
-      {/* Peek: top opens, beak appears */}
       {showPeek && (
         <>
-          {/* shifted top half */}
           <path
             d="M14 22 Q30 -2 46 22 L46 26 Q30 14 14 26 Z"
             fill="url(#eggBody)"
@@ -99,13 +86,11 @@ function Egg({ stage, wobble }: { stage: Stage; wobble: number }) {
             strokeWidth="0.8"
             transform="translate(-2 -4) rotate(-8 30 18)"
           />
-          {/* tiny beak */}
           <polygon points="28,20 32,20 30,24" fill="oklch(0.7 0.16 60)" />
-          {/* tiny eye */}
           <circle cx="33" cy="18" r="1.2" fill="#1a1a1a" />
         </>
       )}
-    </motion.svg>
+    </svg>
   );
 }
 
@@ -114,18 +99,15 @@ function Chick({
   facing,
   walkPhase,
   blink,
-  headRot,
   beakOpen,
   wingRaised,
 }: {
   facing: 1 | -1;
   walkPhase: number;
   blink: boolean;
-  headRot: number;
   beakOpen: boolean;
   wingRaised: boolean;
 }) {
-  // Walk: leg rotation alternates, body bob
   const bob = Math.abs(Math.sin(walkPhase)) * -2;
   const leftLeg = Math.sin(walkPhase) * 25;
   const rightLeg = -Math.sin(walkPhase) * 25;
@@ -134,8 +116,8 @@ function Chick({
   return (
     <svg
       viewBox="0 0 60 60"
-      width="42"
-      height="42"
+      width="38"
+      height="38"
       style={{ transform: `scaleX(${facing})`, overflow: "visible" }}
       aria-hidden="true"
     >
@@ -150,9 +132,7 @@ function Chick({
           <stop offset="100%" stopColor="oklch(0.78 0.14 78)" />
         </radialGradient>
       </defs>
-      {/* Shadow */}
-      <ellipse cx="30" cy="56" rx={14 * shadowScale} ry="2.2" fill="rgba(0,0,0,0.22)" />
-      {/* Legs */}
+      <ellipse cx="30" cy="56" rx={14 * shadowScale} ry="2" fill="rgba(0,0,0,0.22)" />
       <g stroke="oklch(0.65 0.16 55)" strokeWidth="1.6" strokeLinecap="round" fill="none">
         <g transform={`translate(25 ${48 + bob}) rotate(${leftLeg})`}>
           <line x1="0" y1="0" x2="0" y2="6" />
@@ -163,10 +143,8 @@ function Chick({
           <path d="M-2 6 L0 6 L2 6" />
         </g>
       </g>
-      {/* Body */}
       <g transform={`translate(0 ${bob})`}>
         <ellipse cx="30" cy="40" rx="14" ry="12" fill="url(#chickBody)" stroke="oklch(0.6 0.12 70)" strokeWidth="0.6" />
-        {/* Wing — поднимается, когда птенец «показывает подсказку» */}
         <motion.path
           d="M22 38 Q18 44 24 48 Q30 46 28 40 Z"
           fill="oklch(0.8 0.13 78)"
@@ -176,13 +154,9 @@ function Chick({
           animate={{ rotate: wingRaised ? -55 : 0, y: wingRaised ? -2 : 0 }}
           transition={{ type: "spring", damping: 12, stiffness: 180 }}
         />
-        {/* Tail tuft */}
         <path d="M42 36 Q47 36 46 40 Q44 39 42 40 Z" fill="oklch(0.78 0.13 75)" />
-
-        {/* Head */}
-        <g transform={`translate(30 26) rotate(${headRot})`}>
+        <g transform={`translate(30 26)`}>
           <circle cx="0" cy="0" r="11" fill="url(#chickHead)" stroke="oklch(0.6 0.12 70)" strokeWidth="0.6" />
-          {/* Eye */}
           {blink ? (
             <path d="M2 -1 Q5 0 8 -1" stroke="#1a1a1a" strokeWidth="1" fill="none" strokeLinecap="round" />
           ) : (
@@ -191,15 +165,12 @@ function Chick({
               <circle cx="5.8" cy="-1.8" r="0.8" fill="#fff" />
             </>
           )}
-          {/* Beak */}
           {beakOpen ? (
             <polygon points="10,2 14,1 14,5 10,5" fill="oklch(0.7 0.16 55)" />
           ) : (
             <polygon points="10,1 14,3 10,5" fill="oklch(0.7 0.16 55)" />
           )}
-          {/* Cheek */}
           <circle cx="3" cy="3" r="1.4" fill="oklch(0.78 0.12 30)" opacity="0.5" />
-          {/* Top tuft */}
           <path d="M-2 -10 Q0 -14 2 -10 Q1 -11 0 -10 Z" fill="oklch(0.7 0.13 70)" />
         </g>
       </g>
@@ -207,51 +178,9 @@ function Chick({
   );
 }
 
-// ---------- Shell halves (after hatch) ----------
-function ShellPieces() {
-  return (
-    <>
-      <motion.svg
-        viewBox="0 0 30 20"
-        width="22"
-        height="14"
-        className="absolute pointer-events-none"
-        style={{ left: -28, bottom: -2 }}
-        initial={{ x: 0, y: -30, rotate: 0, opacity: 0 }}
-        animate={{ x: -8, y: 0, rotate: -25, opacity: 1 }}
-        transition={{ type: "spring", damping: 8, stiffness: 90, delay: 0.05 }}
-        aria-hidden="true"
-      >
-        <path
-          d="M2 16 Q4 2 16 2 Q26 4 28 12 Q22 14 14 12 Q8 12 2 16 Z"
-          fill="oklch(0.88 0.05 78)"
-          stroke="oklch(0.5 0.12 145)"
-          strokeWidth="0.8"
-        />
-      </motion.svg>
-      <motion.svg
-        viewBox="0 0 30 20"
-        width="22"
-        height="14"
-        className="absolute pointer-events-none"
-        style={{ right: -28, bottom: -2 }}
-        initial={{ x: 0, y: -30, rotate: 0, opacity: 0 }}
-        animate={{ x: 8, y: 0, rotate: 30, opacity: 1 }}
-        transition={{ type: "spring", damping: 8, stiffness: 90 }}
-        aria-hidden="true"
-      >
-        <path
-          d="M28 16 Q26 2 14 2 Q4 4 2 12 Q8 14 16 12 Q22 12 28 16 Z"
-          fill="oklch(0.88 0.05 78)"
-          stroke="oklch(0.5 0.12 145)"
-          strokeWidth="0.8"
-        />
-      </motion.svg>
-    </>
-  );
-}
+// ---------- Speech bubble — anchored inside header ----------
+type BubblePos = { top: number; left: number; arrowSide: "left" | "right"; arrowTop: number };
 
-// ---------- Speech bubble (portal, fixed, never clipped) ----------
 function SpeechBubble({
   text,
   cta,
@@ -263,10 +192,10 @@ function SpeechBubble({
   cta?: { label: string; whatsapp: string };
   onClose: () => void;
   reduced: boolean;
-  anchorRef: React.RefObject<HTMLElement | null>;
+  anchorRef: RefObject<HTMLElement | null>;
 }) {
   const [shown, setShown] = useState(reduced ? text : "");
-  const [pos, setPos] = useState<{ top: number; left: number; arrowLeft: number } | null>(null);
+  const [pos, setPos] = useState<BubblePos | null>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -284,22 +213,41 @@ function SpeechBubble({
     return () => clearInterval(id);
   }, [text, reduced]);
 
-  // Позиция: фиксированная, относительно анкора, с клампом по вьюпорту
   useLayoutEffect(() => {
-    if (!anchorRef) return;
     let raf = 0;
     const compute = () => {
-      const a = anchorRef?.current;
+      const a = anchorRef.current;
       const b = bubbleRef.current;
-      if (!a) return;
-      const rect = a.getBoundingClientRect();
-      const bw = b?.offsetWidth ?? 240;
+      const header = document.querySelector("header");
+      if (!a || !header) return;
+      const ar = a.getBoundingClientRect();
+      const hr = header.getBoundingClientRect();
+      const bw = b?.offsetWidth ?? 200;
+      const bh = b?.offsetHeight ?? 48;
       const margin = 8;
-      const cx = rect.left + rect.width / 2;
-      const left = Math.max(margin, Math.min(window.innerWidth - bw - margin, cx - bw / 2));
-      const top = rect.bottom + 10;
-      const arrowLeft = Math.max(12, Math.min(bw - 12, cx - left));
-      setPos({ top, left, arrowLeft });
+
+      // Try right side of chick
+      let arrowSide: "left" | "right" = "left";
+      let left = ar.right + margin;
+      if (left + bw > window.innerWidth - margin) {
+        // flip to left
+        left = ar.left - bw - margin;
+        arrowSide = "right";
+      }
+      left = Math.max(margin, Math.min(window.innerWidth - bw - margin, left));
+
+      // Vertical: center on chick, then clamp inside header
+      let top = ar.top + ar.height / 2 - bh / 2;
+      const minTop = hr.top + 4;
+      const maxTop = hr.bottom - bh - 4;
+      if (maxTop < minTop) {
+        // header слишком низкое — позволим выйти чуть ниже шапки
+        top = hr.bottom + 4;
+      } else {
+        top = Math.max(minTop, Math.min(maxTop, top));
+      }
+      const arrowTop = Math.max(8, Math.min(bh - 12, ar.top + ar.height / 2 - top - 4));
+      setPos({ top, left, arrowSide, arrowTop });
     };
     const tick = () => {
       compute();
@@ -318,9 +266,9 @@ function SpeechBubble({
   const motionProps = reduced
     ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0 } }
     : {
-        initial: { opacity: 0, scale: 0.85, y: -4 },
-        animate: { opacity: 1, scale: 1, y: 0 },
-        exit: { opacity: 0, scale: 0.85, y: -4 },
+        initial: { opacity: 0, scale: 0.85 },
+        animate: { opacity: 1, scale: 1 },
+        exit: { opacity: 0, scale: 0.85 },
         transition: { type: "spring" as const, damping: 16, stiffness: 240 },
       };
 
@@ -331,26 +279,43 @@ function SpeechBubble({
       ref={bubbleRef}
       role="status"
       aria-live="polite"
-      className="fixed z-[60] rounded-2xl border border-border bg-card px-3 py-2 text-xs leading-snug text-foreground shadow-lg"
+      className="fixed z-[60] rounded-2xl border border-border bg-card px-2.5 py-1.5 text-[11px] leading-snug text-foreground shadow-md"
       style={{
         top: pos?.top ?? -9999,
         left: pos?.left ?? -9999,
-        width: "min(240px, calc(100vw - 16px))",
-        transformOrigin: `${pos?.arrowLeft ?? 120}px -8px`,
+        width: "min(200px, calc(100vw - 24px))",
       }}
       {...motionProps}
     >
-      {/* Хвостик-стрелка вверх к птенцу */}
+      {/* Стрелка к птенцу */}
       <span
-        className="absolute -top-1.5 h-3 w-3 rotate-45 border-l border-t border-border bg-card"
-        style={{ left: (pos?.arrowLeft ?? 120) - 6 }}
+        className="absolute h-2.5 w-2.5 rotate-45 border-border bg-card"
+        style={{
+          top: pos?.arrowTop ?? 12,
+          left: pos?.arrowSide === "left" ? -5 : undefined,
+          right: pos?.arrowSide === "right" ? -5 : undefined,
+          borderLeftWidth: pos?.arrowSide === "left" ? 1 : 0,
+          borderBottomWidth: pos?.arrowSide === "left" ? 1 : 0,
+          borderTopWidth: pos?.arrowSide === "right" ? 1 : 0,
+          borderRightWidth: pos?.arrowSide === "right" ? 1 : 0,
+        }}
         aria-hidden="true"
       />
       <div className="relative">
-        <p className="pr-4">{shown}</p>
+        <p
+          className="pr-3"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {shown}
+        </p>
         <button
           onClick={onClose}
-          className="absolute -right-1 -top-1 text-muted-foreground hover:text-foreground"
+          className="absolute -right-1 -top-1 leading-none text-muted-foreground hover:text-foreground"
           aria-label="Закрыть"
         >
           ×
@@ -360,7 +325,7 @@ function SpeechBubble({
             href={whatsappUrl(cta.whatsapp)}
             target="_blank"
             rel="noopener"
-            className="mt-2 inline-flex items-center gap-1 rounded-full bg-whatsapp px-2.5 py-1 text-[11px] font-medium text-whatsapp-foreground hover:bg-whatsapp/90"
+            className="mt-1 inline-flex items-center gap-1 rounded-full bg-whatsapp px-2 py-0.5 text-[10px] font-medium text-whatsapp-foreground hover:bg-whatsapp/90"
             onClick={onClose}
           >
             {cta.label} →
@@ -372,86 +337,119 @@ function SpeechBubble({
   );
 }
 
+// ---------- Layout measurements from title letters ----------
+type Layout = {
+  trackW: number;
+  textTop: number; // y где «лежат» буквы (относительно трека)
+  eggStartX: number;
+  eggEndX: number; // центр буквы «п» в «пол»
+  walkMin: number;
+  walkMax: number;
+  jumpLeft: number;
+  jumpRight: number;
+  ready: boolean;
+};
+
+const EMPTY_LAYOUT: Layout = {
+  trackW: 0,
+  textTop: 0,
+  eggStartX: 0,
+  eggEndX: 0,
+  walkMin: 0,
+  walkMax: 0,
+  jumpLeft: 0,
+  jumpRight: 0,
+  ready: false,
+};
+
+const CHICK_W = 38;
+const EGG_W = 34;
+
 // ---------- Main Mascot ----------
 export function Mascot() {
-  const { stage, tip, showTip, hideTip, reducedMotion } = useMascot();
-  const slotRef = useRef<HTMLDivElement>(null);
+  const { stage, eggProgress, tip, showTip, hideTip, reducedMotion } = useMascot();
+  const rootRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLButtonElement | null>(null);
+  const [layout, setLayout] = useState<Layout>(EMPTY_LAYOUT);
 
-  // Wobble timer (drives egg shake)
-  const [wobble, setWobble] = useState(0);
+  // Measure letter anchors every frame (cheap on small DOM, keeps in sync with title load + resize)
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const track = root.parentElement; // [data-mascot-track]
+    if (!track) return;
+    let raf = 0;
+    const measure = () => {
+      const tr = track.getBoundingClientRect();
+      const eggStart = track.querySelector<HTMLElement>("[data-mascot-egg-start]");
+      const hatchStart = track.querySelector<HTMLElement>("[data-mascot-hatch-zone-start]");
+      const walkStart = track.querySelector<HTMLElement>("[data-mascot-walk-start]");
+      const walkEnd = track.querySelector<HTMLElement>("[data-mascot-walk-end]");
+      const jump = track.querySelector<HTMLElement>("[data-mascot-jump]");
+      if (eggStart && hatchStart && walkStart && walkEnd && jump) {
+        const er = eggStart.getBoundingClientRect();
+        const hr = hatchStart.getBoundingClientRect();
+        const wsr = walkStart.getBoundingClientRect();
+        const wer = walkEnd.getBoundingClientRect();
+        const jr = jump.getBoundingClientRect();
+        setLayout({
+          trackW: tr.width,
+          textTop: er.top - tr.top,
+          eggStartX: er.left + er.width / 2 - tr.left,
+          eggEndX: hr.left + hr.width / 2 - tr.left,
+          walkMin: wsr.left - tr.left,
+          walkMax: wer.right - tr.left - CHICK_W,
+          jumpLeft: jr.left - tr.left - 2,
+          jumpRight: jr.right - tr.left + 2,
+          ready: true,
+        });
+      }
+      raf = requestAnimationFrame(measure);
+    };
+    raf = requestAnimationFrame(measure);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
-  // Track (header-wide walking area)
-  const [trackEl, setTrackEl] = useState<HTMLElement | null>(null);
-  const [trackWidth, setTrackWidth] = useState(0);
-
-  // Walking state — pos is absolute px from track-left
-  const CHICK_W = 42;
-  const RIGHT_PAD = 56; // не подходить вплотную к бургеру/кнопкам
-  const [pos, setPos] = useState(8);
+  // Walking state
+  const [pos, setPos] = useState(0);
   const [facing, setFacing] = useState<1 | -1>(1);
   const [walkPhase, setWalkPhase] = useState(0);
   const [moving, setMoving] = useState(false);
-  const [target, setTarget] = useState(8);
+  const [target, setTarget] = useState(0);
   const [blink, setBlink] = useState(false);
-  const [headRot, setHeadRot] = useState(0);
   const [beakOpen, setBeakOpen] = useState(false);
   const [wingRaised, setWingRaised] = useState(false);
+  const [jumpY, setJumpY] = useState(0);
+  const jumpStateRef = useRef<{ active: boolean; t0: number; fromX: number; toX: number } | null>(null);
   const wasMovingRef = useRef(false);
   const wingTimerRef = useRef<number | null>(null);
+  const initializedRef = useRef(false);
 
-  // Cursor target tracking for head rotation
-  const cursorRef = useRef<{ x: number; y: number } | null>(null);
-
-  // Locate track once
+  // После hatched — поставить птенца у конца зоны «пол»
   useEffect(() => {
-    const find = () => document.querySelector<HTMLElement>("[data-mascot-track]");
-    let el = find();
-    if (!el) {
-      const id = window.setTimeout(() => setTrackEl(find()), 50);
-      return () => clearTimeout(id);
+    if (stage === "hatched" && layout.ready && !initializedRef.current) {
+      setPos(layout.eggEndX - CHICK_W / 2);
+      setTarget(layout.eggEndX - CHICK_W / 2);
+      initializedRef.current = true;
     }
-    setTrackEl(el);
-  }, []);
+  }, [stage, layout.ready, layout.eggEndX]);
 
-  // Measure track width
+  // Wander target picker
   useEffect(() => {
-    if (!trackEl) return;
-    const measure = () => setTrackWidth(trackEl.clientWidth);
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(trackEl);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
+    if (stage !== "hatched" || reducedMotion || !layout.ready) return;
+    const pick = () => {
+      const minX = layout.walkMin;
+      const maxX = Math.max(minX + 24, layout.walkMax);
+      setTarget(Math.round(minX + Math.random() * (maxX - minX)));
     };
-  }, [trackEl]);
+    pick();
+    const id = window.setInterval(pick, 4500 + Math.random() * 3500);
+    return () => clearInterval(id);
+  }, [stage, reducedMotion, layout.ready, layout.walkMin, layout.walkMax]);
 
-  // Egg wobble animation
+  // Walk loop with jump-over-«П»
   useEffect(() => {
-    if (stage === "egg" || stage === "hatched") return;
-    let raf = 0;
-    const start = performance.now();
-    const tick = () => {
-      setWobble(performance.now() - start);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [stage]);
-
-  // При вылуплении — стартовая позиция у логотипа
-  useEffect(() => {
-    if (stage === "hatched") {
-      // Если ещё не двигались — встаём слева, рядом со слотом
-      setPos((p) => (p === 8 ? 8 : p));
-    }
-  }, [stage]);
-
-  // Walk cycle
-  useEffect(() => {
-    if (stage !== "hatched" || reducedMotion) return;
+    if (stage !== "hatched" || reducedMotion || !layout.ready) return;
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {
@@ -459,6 +457,21 @@ export function Mascot() {
       last = now;
 
       setPos((p) => {
+        // Jumping mode
+        const j = jumpStateRef.current;
+        if (j && j.active) {
+          const dur = 480;
+          const t = Math.min(1, (now - j.t0) / dur);
+          const x = j.fromX + (j.toX - j.fromX) * t;
+          setJumpY(-Math.sin(t * Math.PI) * 22);
+          if (t >= 1) {
+            jumpStateRef.current = null;
+            setJumpY(0);
+          }
+          setFacing(j.toX >= j.fromX ? 1 : -1);
+          return x;
+        }
+
         const diff = target - p;
         const dist = Math.abs(diff);
         if (dist < 1) {
@@ -468,24 +481,35 @@ export function Mascot() {
         if (!moving) setMoving(true);
         const dir = Math.sign(diff);
         setFacing(dir >= 0 ? 1 : -1);
-        const speed = 42; // px/sec
+        const speed = 46;
         const step = dir * Math.min(dist, speed * dt);
-        return p + step;
+        const next = p + step;
+
+        // Detect crossing the jump zone of capital «П»
+        const jl = layout.jumpLeft - CHICK_W / 2;
+        const jr = layout.jumpRight - CHICK_W / 2;
+        if (dir > 0 && p < jl && next >= jl) {
+          jumpStateRef.current = { active: true, t0: now, fromX: p, toX: jr + 4 };
+          return p;
+        }
+        if (dir < 0 && p > jr && next <= jr) {
+          jumpStateRef.current = { active: true, t0: now, fromX: p, toX: jl - 4 };
+          return p;
+        }
+        return next;
       });
 
-      if (moving) setWalkPhase((w) => w + dt * 9);
-
+      if (moving && !jumpStateRef.current?.active) setWalkPhase((w) => w + dt * 9);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [stage, target, moving, reducedMotion]);
+  }, [stage, target, moving, reducedMotion, layout.ready, layout.jumpLeft, layout.jumpRight]);
 
-  // Detect "stop" → with chance show tip + raise wing
+  // Stop → maybe show tip + raise wing
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion) return;
     if (wasMovingRef.current && !moving) {
-      // только что остановился
       if (Math.random() < 0.65) {
         setWingRaised(true);
         showTip();
@@ -496,7 +520,6 @@ export function Mascot() {
     wasMovingRef.current = moving;
   }, [moving, stage, reducedMotion, showTip]);
 
-  // Когда подсказка скрыта — опускаем крыло
   useEffect(() => {
     if (!tip && wingRaised) {
       setWingRaised(false);
@@ -507,20 +530,7 @@ export function Mascot() {
     }
   }, [tip, wingRaised]);
 
-  // Pick a new wander target periodically — по всей ширине трека
-  useEffect(() => {
-    if (stage !== "hatched" || reducedMotion) return;
-    const pickNext = () => {
-      const minX = 8;
-      const maxX = Math.max(minX + 32, trackWidth - CHICK_W - RIGHT_PAD);
-      setTarget(Math.round(minX + Math.random() * (maxX - minX)));
-    };
-    pickNext();
-    const id = window.setInterval(pickNext, 5000 + Math.random() * 4000);
-    return () => clearInterval(id);
-  }, [stage, reducedMotion, trackWidth]);
-
-  // Blink loop
+  // Blink
   useEffect(() => {
     if (stage !== "hatched") return;
     let timeout: number;
@@ -535,7 +545,7 @@ export function Mascot() {
     return () => clearTimeout(timeout);
   }, [stage]);
 
-  // Chirp loop
+  // Chirp
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion) return;
     let timeout: number;
@@ -550,48 +560,7 @@ export function Mascot() {
     return () => clearTimeout(timeout);
   }, [stage, reducedMotion]);
 
-  // Mouse / touch eye tracking
-  useEffect(() => {
-    if (stage !== "hatched" || reducedMotion) return;
-    const onMove = (e: MouseEvent | TouchEvent) => {
-      const point = "touches" in e ? e.touches[0] : (e as MouseEvent);
-      if (!point) return;
-      cursorRef.current = { x: (point as Touch | MouseEvent).clientX, y: (point as Touch | MouseEvent).clientY };
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchstart", onMove);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("touchstart", onMove);
-    };
-  }, [stage, reducedMotion]);
-
-  // Head rotation toward cursor
-  useEffect(() => {
-    if (stage !== "hatched" || reducedMotion) return;
-    let raf = 0;
-    const tick = () => {
-      const head = headRef.current;
-      const cur = cursorRef.current;
-      if (head && cur) {
-        const r = head.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        const dx = cur.x - cx;
-        const dy = cur.y - cy;
-        const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
-        const dist = Math.hypot(dx, dy);
-        const max = 18;
-        const tgt = dist < 400 ? Math.max(-max, Math.min(max, ang * 0.15 * facing)) : 0;
-        setHeadRot((h) => h + (tgt - h) * 0.15);
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [stage, facing, reducedMotion]);
-
-  const onClick = () => {
+  const onChickClick = () => {
     if (stage !== "hatched") return;
     setBeakOpen(true);
     window.setTimeout(() => setBeakOpen(false), 300);
@@ -601,53 +570,54 @@ export function Mascot() {
     showTip();
   };
 
-  // Слот рядом с логотипом: только пока не вылупился
-  const slot = (
-    <div
-      ref={slotRef}
-      className="relative grid h-11 w-11 shrink-0 place-items-center"
-      style={{ overflow: "visible" }}
-    >
-      {stage !== "hatched" && <Egg stage={stage} wobble={wobble} />}
-    </div>
-  );
+  // Egg position derived from progress
+  const eggX = layout.ready ? layout.eggStartX + eggProgress * (layout.eggEndX - layout.eggStartX) : 0;
+  const rolling = layout.ready ? (eggX - layout.eggStartX) * 1.4 : 0;
 
-  // Птенец в портале трека (или на месте при reducedMotion)
-  const chickNode = stage === "hatched" && (
-    <>
-      {!reducedMotion && typeof window !== "undefined" && !sessionStorage.getItem("sp_mascot_shellseen") && (
-        <ShellPiecesOnce />
-      )}
-      <motion.button
-        ref={(el) => {
-          headRef.current = el as HTMLButtonElement | null;
-        }}
-        onClick={onClick}
-        className="absolute bottom-0 cursor-pointer bg-transparent"
-        style={{
-          left: reducedMotion ? 8 : pos,
-          pointerEvents: "auto",
-        }}
-        initial={false}
-        animate={{ x: 0 }}
-        aria-label="Перепёлкин — нажмите, чтобы услышать совет"
-      >
-        <Chick
-          facing={facing}
-          walkPhase={reducedMotion ? 0 : walkPhase}
-          blink={reducedMotion ? false : blink}
-          headRot={reducedMotion ? 0 : headRot}
-          beakOpen={reducedMotion ? false : beakOpen}
-          wingRaised={wingRaised}
-        />
-      </motion.button>
-    </>
-  );
+  // Y where the figure "stands" — на верхней линии букв
+  const baseTop = layout.textTop;
 
   return (
-    <>
-      {slot}
-      {trackEl && chickNode && createPortal(chickNode, trackEl)}
+    <div ref={rootRef} className="pointer-events-none absolute inset-0 z-10">
+      {stage !== "hatched" && layout.ready && (
+        <div
+          className="absolute"
+          style={{
+            left: eggX - EGG_W / 2,
+            top: baseTop - 36,
+            width: EGG_W,
+          }}
+          aria-hidden="true"
+        >
+          <Egg stage={stage} rolling={rolling} />
+        </div>
+      )}
+
+      {stage === "hatched" && layout.ready && (
+        <motion.button
+          ref={(el) => {
+            headRef.current = el;
+          }}
+          onClick={onChickClick}
+          className="absolute cursor-pointer bg-transparent"
+          style={{
+            left: reducedMotion ? layout.eggEndX - CHICK_W / 2 : pos,
+            top: baseTop - 34 + jumpY,
+            pointerEvents: "auto",
+          }}
+          initial={false}
+          aria-label="Перепёлкин — нажмите, чтобы услышать совет"
+        >
+          <Chick
+            facing={facing}
+            walkPhase={reducedMotion ? 0 : walkPhase}
+            blink={reducedMotion ? false : blink}
+            beakOpen={reducedMotion ? false : beakOpen}
+            wingRaised={wingRaised}
+          />
+        </motion.button>
+      )}
+
       <AnimatePresence>
         {tip && stage === "hatched" && (
           <SpeechBubble
@@ -659,21 +629,6 @@ export function Mascot() {
           />
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
-}
-
-// Helper: shell renders once, then sets session flag
-function ShellPiecesOnce() {
-  useEffect(() => {
-    const id = window.setTimeout(() => {
-      try {
-        sessionStorage.setItem("sp_mascot_shellseen", "1");
-      } catch {
-        // noop
-      }
-    }, 3000);
-    return () => clearTimeout(id);
-  }, []);
-  return <ShellPieces />;
 }
