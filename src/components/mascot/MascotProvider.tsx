@@ -117,6 +117,9 @@ export function MascotProvider({ children }: { children: ReactNode }) {
         const nxt = nextStageOf(cur);
         playoutTimer.current = window.setTimeout(() => {
           setStage((prev) => (STAGE_ORDER.indexOf(nxt) > STAGE_ORDER.indexOf(prev) ? nxt : prev));
+          // Параллельно подтягиваем eggProgress по индексу стадии
+          const idx = STAGE_ORDER.indexOf(nxt);
+          bumpProgress(idx / (STAGE_ORDER.length - 1));
           step(nxt);
         }, 260);
       };
@@ -140,6 +143,7 @@ export function MascotProvider({ children }: { children: ReactNode }) {
 
       cancelPlayout();
       const progress = Math.min(1, Math.max(0, y / scrollable));
+      bumpProgress(progress);
       let target: Stage = "egg";
       for (const [t, s] of PROGRESS_THRESHOLDS) {
         if (progress >= t) target = s;
