@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "re
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMascot, type Stage } from "./MascotProvider";
-import { whatsappUrl } from "@/lib/contacts";
 
 // ---------- Egg SVG ----------
 function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
@@ -13,8 +12,8 @@ function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
   return (
     <svg
       viewBox="0 0 60 70"
-      width="34"
-      height="40"
+      width="44"
+      height="52"
       style={{ overflow: "visible", transform: `rotate(${rolling}deg)`, transformOrigin: "50% 60%" }}
       aria-hidden="true"
     >
@@ -178,76 +177,48 @@ function Chick({
   );
 }
 
-// ---------- Speech bubble — anchored inside header ----------
-type BubblePos = { top: number; left: number; arrowSide: "left" | "right"; arrowTop: number };
+// ---------- Plain-text tip — без облачка, одна строка ----------
+type TipPos = { top: number; left: number; side: "left" | "right" };
 
-function SpeechBubble({
+function MascotTip({
   text,
-  cta,
-  onClose,
   reduced,
   anchorRef,
 }: {
   text: string;
-  cta?: { label: string; whatsapp: string };
-  onClose: () => void;
   reduced: boolean;
   anchorRef: RefObject<HTMLElement | null>;
 }) {
-  const [shown, setShown] = useState(reduced ? text : "");
-  const [pos, setPos] = useState<BubblePos | null>(null);
-  const bubbleRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (reduced) {
-      setShown(text);
-      return;
-    }
-    setShown("");
-    let i = 0;
-    const id = window.setInterval(() => {
-      i++;
-      setShown(text.slice(0, i));
-      if (i >= text.length) clearInterval(id);
-    }, 28);
-    return () => clearInterval(id);
-  }, [text, reduced]);
+  const [pos, setPos] = useState<TipPos | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     let raf = 0;
     const compute = () => {
       const a = anchorRef.current;
-      const b = bubbleRef.current;
+      const el = ref.current;
       const header = document.querySelector("header");
       if (!a || !header) return;
       const ar = a.getBoundingClientRect();
       const hr = header.getBoundingClientRect();
-      const bw = b?.offsetWidth ?? 200;
-      const bh = b?.offsetHeight ?? 48;
+      const w = el?.offsetWidth ?? 180;
+      const h = el?.offsetHeight ?? 18;
       const margin = 8;
 
-      // Try right side of chick
-      let arrowSide: "left" | "right" = "left";
+      let side: "left" | "right" = "right";
       let left = ar.right + margin;
-      if (left + bw > window.innerWidth - margin) {
-        // flip to left
-        left = ar.left - bw - margin;
-        arrowSide = "right";
+      if (left + w > window.innerWidth - margin) {
+        left = ar.left - w - margin;
+        side = "left";
       }
-      left = Math.max(margin, Math.min(window.innerWidth - bw - margin, left));
+      left = Math.max(margin, Math.min(window.innerWidth - w - margin, left));
 
-      // Vertical: center on chick, then clamp inside header
-      let top = ar.top + ar.height / 2 - bh / 2;
-      const minTop = hr.top + 4;
-      const maxTop = hr.bottom - bh - 4;
-      if (maxTop < minTop) {
-        // header слишком низкое — позволим выйти чуть ниже шапки
-        top = hr.bottom + 4;
-      } else {
-        top = Math.max(minTop, Math.min(maxTop, top));
-      }
-      const arrowTop = Math.max(8, Math.min(bh - 12, ar.top + ar.height / 2 - top - 4));
-      setPos({ top, left, arrowSide, arrowTop });
+      let top = ar.top + ar.height / 2 - h / 2;
+      const minTop = hr.top + 2;
+      const maxTop = hr.bottom - h - 2;
+      if (maxTop >= minTop) top = Math.max(minTop, Math.min(maxTop, top));
+
+      setPos({ top, left, side });
     };
     const tick = () => {
       compute();
@@ -263,75 +234,32 @@ function SpeechBubble({
     };
   }, [anchorRef]);
 
+  if (typeof document === "undefined") return null;
+
   const motionProps = reduced
     ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0 } }
     : {
-        initial: { opacity: 0, scale: 0.85 },
-        animate: { opacity: 1, scale: 1 },
-        exit: { opacity: 0, scale: 0.85 },
-        transition: { type: "spring" as const, damping: 16, stiffness: 240 },
+        initial: { opacity: 0, x: 4 },
+        animate: { opacity: 1, x: 0 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.18, ease: "easeOut" as const },
       };
-
-  if (typeof document === "undefined") return null;
 
   return createPortal(
     <motion.div
-      ref={bubbleRef}
+      ref={ref}
       role="status"
       aria-live="polite"
-      className="fixed z-[60] rounded-2xl border border-border bg-card px-2.5 py-1.5 text-[11px] leading-snug text-foreground shadow-md"
+      className="pointer-events-none fixed z-[60] whitespace-nowrap overflow-hidden text-ellipsis text-[12px] font-medium leading-4 text-foreground"
       style={{
         top: pos?.top ?? -9999,
         left: pos?.left ?? -9999,
-        width: "min(200px, calc(100vw - 24px))",
+        maxWidth: "min(60vw, 260px)",
+        textShadow: "0 1px 2px rgba(255,255,255,0.9), 0 0 6px rgba(255,255,255,0.7)",
       }}
       {...motionProps}
     >
-      {/* Стрелка к птенцу */}
-      <span
-        className="absolute h-2.5 w-2.5 rotate-45 border-border bg-card"
-        style={{
-          top: pos?.arrowTop ?? 12,
-          left: pos?.arrowSide === "left" ? -5 : undefined,
-          right: pos?.arrowSide === "right" ? -5 : undefined,
-          borderLeftWidth: pos?.arrowSide === "left" ? 1 : 0,
-          borderBottomWidth: pos?.arrowSide === "left" ? 1 : 0,
-          borderTopWidth: pos?.arrowSide === "right" ? 1 : 0,
-          borderRightWidth: pos?.arrowSide === "right" ? 1 : 0,
-        }}
-        aria-hidden="true"
-      />
-      <div className="relative">
-        <p
-          className="pr-3"
-          style={{
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {shown}
-        </p>
-        <button
-          onClick={onClose}
-          className="absolute -right-1 -top-1 leading-none text-muted-foreground hover:text-foreground"
-          aria-label="Закрыть"
-        >
-          ×
-        </button>
-        {cta && shown.length === text.length && (
-          <a
-            href={whatsappUrl(cta.whatsapp)}
-            target="_blank"
-            rel="noopener"
-            className="mt-1 inline-flex items-center gap-1 rounded-full bg-whatsapp px-2 py-0.5 text-[10px] font-medium text-whatsapp-foreground hover:bg-whatsapp/90"
-            onClick={onClose}
-          >
-            {cta.label} →
-          </a>
-        )}
-      </div>
+      {text}
     </motion.div>,
     document.body,
   );
@@ -340,9 +268,9 @@ function SpeechBubble({
 // ---------- Layout measurements from title letters ----------
 type Layout = {
   trackW: number;
-  textTop: number; // y где «лежат» буквы (относительно трека)
+  textTop: number;
   eggStartX: number;
-  eggEndX: number; // центр буквы «п» в «пол»
+  eggEndX: number;
   walkMin: number;
   walkMax: number;
   jumpLeft: number;
@@ -363,7 +291,8 @@ const EMPTY_LAYOUT: Layout = {
 };
 
 const CHICK_W = 38;
-const EGG_W = 34;
+const EGG_W = 44;
+const FALLBACK_TIMEOUT_MS = 1500;
 
 // ---------- Main Mascot ----------
 export function Mascot() {
@@ -371,43 +300,112 @@ export function Mascot() {
   const rootRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLButtonElement | null>(null);
   const [layout, setLayout] = useState<Layout>(EMPTY_LAYOUT);
+  const [unsafe, setUnsafe] = useState(false);
 
-  // Measure letter anchors every frame (cheap on small DOM, keeps in sync with title load + resize)
+  // Measure letter anchors via ResizeObserver + key events (no infinite rAF loop)
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    const track = root.parentElement; // [data-mascot-track]
+    const track = root.parentElement;
     if (!track) return;
+
     let raf = 0;
+    let warned = false;
+    let cancelled = false;
+
     const measure = () => {
+      raf = 0;
+      if (cancelled) return;
       const tr = track.getBoundingClientRect();
       const eggStart = track.querySelector<HTMLElement>("[data-mascot-egg-start]");
       const hatchStart = track.querySelector<HTMLElement>("[data-mascot-hatch-zone-start]");
       const walkStart = track.querySelector<HTMLElement>("[data-mascot-walk-start]");
       const walkEnd = track.querySelector<HTMLElement>("[data-mascot-walk-end]");
       const jump = track.querySelector<HTMLElement>("[data-mascot-jump]");
-      if (eggStart && hatchStart && walkStart && walkEnd && jump) {
-        const er = eggStart.getBoundingClientRect();
-        const hr = hatchStart.getBoundingClientRect();
-        const wsr = walkStart.getBoundingClientRect();
-        const wer = walkEnd.getBoundingClientRect();
-        const jr = jump.getBoundingClientRect();
-        setLayout({
-          trackW: tr.width,
-          textTop: er.top - tr.top,
-          eggStartX: er.left + er.width / 2 - tr.left,
-          eggEndX: hr.left + hr.width / 2 - tr.left,
-          walkMin: wsr.left - tr.left,
-          walkMax: wer.right - tr.left - CHICK_W,
-          jumpLeft: jr.left - tr.left - 2,
-          jumpRight: jr.right - tr.left + 2,
-          ready: true,
-        });
+      if (!eggStart || !hatchStart || !walkStart || !walkEnd || !jump) return;
+
+      const er = eggStart.getBoundingClientRect();
+      const hr = hatchStart.getBoundingClientRect();
+      const wsr = walkStart.getBoundingClientRect();
+      const wer = walkEnd.getBoundingClientRect();
+      const jr = jump.getBoundingClientRect();
+
+      const eggStartX = er.left + er.width / 2 - tr.left;
+      const eggEndX = hr.left + hr.width / 2 - tr.left;
+      const walkMin = wsr.left - tr.left;
+      const walkMax = wer.right - tr.left - CHICK_W;
+
+      // Sanity checks — иначе не помечаем layout как ready
+      if (
+        !(tr.width > 0) ||
+        !(eggEndX > eggStartX) ||
+        !(walkMax > walkMin)
+      ) {
+        return;
       }
+
+      setLayout({
+        trackW: tr.width,
+        textTop: er.top - tr.top,
+        eggStartX,
+        eggEndX,
+        walkMin,
+        walkMax,
+        jumpLeft: jr.left - tr.left - 2,
+        jumpRight: jr.right - tr.left + 2,
+        ready: true,
+      });
+      setUnsafe(false);
+    };
+
+    const schedule = () => {
+      if (raf) return;
       raf = requestAnimationFrame(measure);
     };
-    raf = requestAnimationFrame(measure);
-    return () => cancelAnimationFrame(raf);
+
+    schedule();
+
+    // Если за FALLBACK_TIMEOUT_MS не нашли все якоря — переходим в безопасный режим
+    const fallbackId = window.setTimeout(() => {
+      const ok =
+        track.querySelector("[data-mascot-egg-start]") &&
+        track.querySelector("[data-mascot-hatch-zone-start]") &&
+        track.querySelector("[data-mascot-walk-start]") &&
+        track.querySelector("[data-mascot-walk-end]") &&
+        track.querySelector("[data-mascot-jump]");
+      if (!ok) {
+        setUnsafe(true);
+        if (!warned) {
+          warned = true;
+          // eslint-disable-next-line no-console
+          console.warn("[Mascot] data-mascot-* anchors not found — mascot disabled.");
+        }
+      }
+    }, FALLBACK_TIMEOUT_MS);
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(schedule);
+      ro.observe(track);
+      const header = document.querySelector("header");
+      if (header) ro.observe(header);
+    }
+    window.addEventListener("resize", schedule);
+    window.addEventListener("orientationchange", schedule);
+    window.addEventListener("load", schedule);
+    // Шрифты — после загрузки fonts пересчитываем
+    const fonts = (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts;
+    if (fonts?.ready) fonts.ready.then(schedule).catch(() => {});
+
+    return () => {
+      cancelled = true;
+      clearTimeout(fallbackId);
+      if (raf) cancelAnimationFrame(raf);
+      if (ro) ro.disconnect();
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("orientationchange", schedule);
+      window.removeEventListener("load", schedule);
+    };
   }, []);
 
   // Walking state
@@ -428,11 +426,12 @@ export function Mascot() {
   // После hatched — поставить птенца у конца зоны «пол»
   useEffect(() => {
     if (stage === "hatched" && layout.ready && !initializedRef.current) {
-      setPos(layout.eggEndX - CHICK_W / 2);
-      setTarget(layout.eggEndX - CHICK_W / 2);
+      const x = Math.max(0, Math.min(layout.trackW - CHICK_W, layout.eggEndX - CHICK_W / 2));
+      setPos(x);
+      setTarget(x);
       initializedRef.current = true;
     }
-  }, [stage, layout.ready, layout.eggEndX]);
+  }, [stage, layout.ready, layout.eggEndX, layout.trackW]);
 
   // Wander target picker
   useEffect(() => {
@@ -457,7 +456,6 @@ export function Mascot() {
       last = now;
 
       setPos((p) => {
-        // Jumping mode
         const j = jumpStateRef.current;
         if (j && j.active) {
           const dur = 480;
@@ -469,7 +467,7 @@ export function Mascot() {
             setJumpY(0);
           }
           setFacing(j.toX >= j.fromX ? 1 : -1);
-          return x;
+          return Math.max(0, Math.min(layout.trackW - CHICK_W, x));
         }
 
         const diff = target - p;
@@ -485,7 +483,6 @@ export function Mascot() {
         const step = dir * Math.min(dist, speed * dt);
         const next = p + step;
 
-        // Detect crossing the jump zone of capital «П»
         const jl = layout.jumpLeft - CHICK_W / 2;
         const jr = layout.jumpRight - CHICK_W / 2;
         if (dir > 0 && p < jl && next >= jl) {
@@ -496,7 +493,7 @@ export function Mascot() {
           jumpStateRef.current = { active: true, t0: now, fromX: p, toX: jl - 4 };
           return p;
         }
-        return next;
+        return Math.max(0, Math.min(layout.trackW - CHICK_W, next));
       });
 
       if (moving && !jumpStateRef.current?.active) setWalkPhase((w) => w + dt * 9);
@@ -504,7 +501,7 @@ export function Mascot() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [stage, target, moving, reducedMotion, layout.ready, layout.jumpLeft, layout.jumpRight]);
+  }, [stage, target, moving, reducedMotion, layout.ready, layout.jumpLeft, layout.jumpRight, layout.trackW]);
 
   // Stop → maybe show tip + raise wing
   useEffect(() => {
@@ -532,7 +529,7 @@ export function Mascot() {
 
   // Blink
   useEffect(() => {
-    if (stage !== "hatched") return;
+    if (stage !== "hatched" || reducedMotion) return;
     let timeout: number;
     const loop = () => {
       timeout = window.setTimeout(() => {
@@ -543,7 +540,7 @@ export function Mascot() {
     };
     loop();
     return () => clearTimeout(timeout);
-  }, [stage]);
+  }, [stage, reducedMotion]);
 
   // Chirp
   useEffect(() => {
@@ -562,29 +559,33 @@ export function Mascot() {
 
   const onChickClick = () => {
     if (stage !== "hatched") return;
-    setBeakOpen(true);
-    window.setTimeout(() => setBeakOpen(false), 300);
-    setWingRaised(true);
-    if (wingTimerRef.current) clearTimeout(wingTimerRef.current);
-    wingTimerRef.current = window.setTimeout(() => setWingRaised(false), 6500);
+    if (!reducedMotion) {
+      setBeakOpen(true);
+      window.setTimeout(() => setBeakOpen(false), 300);
+      setWingRaised(true);
+      if (wingTimerRef.current) clearTimeout(wingTimerRef.current);
+      wingTimerRef.current = window.setTimeout(() => setWingRaised(false), 6500);
+    }
     showTip();
   };
 
-  // Egg position derived from progress
-  const eggX = layout.ready ? layout.eggStartX + eggProgress * (layout.eggEndX - layout.eggStartX) : 0;
+  // Egg position derived from progress (clamped)
+  const eggXraw = layout.ready ? layout.eggStartX + eggProgress * (layout.eggEndX - layout.eggStartX) : 0;
+  const eggX = Math.max(EGG_W / 2, Math.min(layout.trackW - EGG_W / 2, eggXraw));
   const rolling = layout.ready ? (eggX - layout.eggStartX) * 1.4 : 0;
-
-  // Y where the figure "stands" — на верхней линии букв
   const baseTop = layout.textTop;
+
+  // Безопасный режим — не рендерим ничего, не ломаем шапку
+  if (unsafe) return null;
 
   return (
     <div ref={rootRef} className="pointer-events-none absolute inset-0 z-10">
-      {stage !== "hatched" && layout.ready && (
+      {stage !== "hatched" && !reducedMotion && layout.ready && (
         <div
           className="absolute"
           style={{
             left: eggX - EGG_W / 2,
-            top: baseTop - 36,
+            top: baseTop - 44,
             width: EGG_W,
           }}
           aria-hidden="true"
@@ -601,7 +602,9 @@ export function Mascot() {
           onClick={onChickClick}
           className="absolute cursor-pointer bg-transparent"
           style={{
-            left: reducedMotion ? layout.eggEndX - CHICK_W / 2 : pos,
+            left: reducedMotion
+              ? Math.max(0, Math.min(layout.trackW - CHICK_W, layout.eggEndX - CHICK_W / 2))
+              : pos,
             top: baseTop - 34 + jumpY,
             pointerEvents: "auto",
           }}
@@ -619,14 +622,8 @@ export function Mascot() {
       )}
 
       <AnimatePresence>
-        {tip && stage === "hatched" && (
-          <SpeechBubble
-            text={tip.text}
-            cta={tip.cta}
-            onClose={hideTip}
-            reduced={reducedMotion}
-            anchorRef={headRef}
-          />
+        {tip && stage === "hatched" && layout.ready && (
+          <MascotTip text={tip.text} reduced={reducedMotion} anchorRef={headRef} />
         )}
       </AnimatePresence>
     </div>

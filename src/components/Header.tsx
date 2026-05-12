@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Phone, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { PHONE_DISPLAY, telUrl, whatsappUrl } from "@/lib/contacts";
 import { Button } from "@/components/ui/button";
 import { Mascot } from "@/components/mascot/Mascot";
@@ -26,7 +26,7 @@ const SPECIAL_ATTRS: Record<number, string> = {
   21: "data-mascot-walk-end",
 };
 
-function LogoTitle() {
+function LogoTitle({ reduced }: { reduced: boolean }) {
   return (
     <Link
       to="/"
@@ -44,9 +44,9 @@ function LogoTitle() {
               key={i}
               {...extra}
               className="inline-block"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.025 * i, duration: 0.32, ease: "easeOut" }}
+              initial={reduced ? false : { opacity: 0, y: 6 }}
+              animate={reduced ? undefined : { opacity: 1, y: 0 }}
+              transition={reduced ? undefined : { delay: 0.025 * i, duration: 0.32, ease: "easeOut" }}
             >
               {ch === " " ? "\u00A0" : ch}
             </motion.span>
@@ -59,35 +59,16 @@ function LogoTitle() {
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const reduced = !!useReducedMotion();
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4">
-        {/* Mobile actions row */}
-        <div className="flex items-center justify-end gap-2 py-2 lg:hidden">
-          <a
-            href={telUrl()}
-            className="flex items-center gap-1 text-xs font-medium text-foreground hover:text-primary"
-            aria-label={`Позвонить ${PHONE_DISPLAY}`}
-          >
-            <Phone className="h-3.5 w-3.5" />
-            <span className="hidden xs:inline">{PHONE_DISPLAY}</span>
-          </a>
-          <Button
-            asChild
-            size="sm"
-            className="h-8 bg-whatsapp px-2.5 text-xs text-whatsapp-foreground hover:bg-whatsapp/90"
-          >
-            <a
-              href={whatsappUrl("Здравствуйте! Хочу сделать заказ.")}
-              target="_blank"
-              rel="noopener"
-            >
-              WhatsApp
-            </a>
-          </Button>
+        {/* Mobile: только бургер */}
+        <div className="flex items-center justify-end py-2 lg:hidden">
           <button
-            className="ml-1"
-            aria-label="Меню"
+            className="-mr-1 inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-muted"
+            aria-label={open ? "Закрыть меню" : "Открыть меню"}
+            aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
             {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -99,9 +80,9 @@ export function Header() {
           {/* Track: яйцо/птенец живут поверх букв логотипа */}
           <div
             data-mascot-track
-            className="relative pt-10 sm:pt-12 lg:pt-9"
+            className="relative pt-7 sm:pt-9 lg:pt-9"
           >
-            <LogoTitle />
+            <LogoTitle reduced={reduced} />
             <Mascot />
           </div>
 
@@ -156,8 +137,18 @@ export function Header() {
               <a
                 href={telUrl()}
                 className="flex items-center gap-2 py-3 text-foreground"
+                onClick={() => setOpen(false)}
               >
                 <Phone className="h-4 w-4" /> {PHONE_DISPLAY}
+              </a>
+              <a
+                href={whatsappUrl("Здравствуйте! Хочу сделать заказ.")}
+                target="_blank"
+                rel="noopener"
+                onClick={() => setOpen(false)}
+                className="mt-2 inline-flex items-center justify-center rounded-md bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground hover:bg-whatsapp/90"
+              >
+                Написать в WhatsApp
               </a>
             </nav>
           </div>
