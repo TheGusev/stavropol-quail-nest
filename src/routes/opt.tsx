@@ -6,6 +6,7 @@ import { CtaButtons } from "@/components/CtaButtons";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { Coffee, Utensils, Store, Building2, FileCheck, Truck, BadgePercent, Calendar } from "lucide-react";
+import storePack from "@/assets/store-pack.jpg";
 
 const FAQ: FaqItem[] = [
   { q: "Какой минимальный объём опта?", a: "Стартовые партии — от 1000 шт. яиц или от 30 тушек мяса в неделю. Тестовая партия — индивидуально." },
@@ -46,7 +47,7 @@ export const Route = createFileRoute("/opt")({
 function Page() {
   return (
     <PageShell>
-      <PageHero kicker="B2B" title="Опт для HoReCa и магазинов" lead="Прямые цены от производителя, стабильное качество, документы и график поставок." />
+      <PageHero kicker="B2B" title="Опт для HoReCa и магазинов" lead="Прямые цены от производителя, стабильное качество, документы и график поставок." image={storePack} imageAlt="Упаковка перепелиных яиц для розницы" />
 
       <Section>
         <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 md:p-8">
