@@ -6,6 +6,7 @@ export type Stage = "egg" | "wobble" | "crack-1" | "crack-2" | "peek" | "hatched
 
 type MascotState = {
   stage: Stage;
+  eggProgress: number;
   tip: Tip | null;
   showTip: (tip?: Tip) => void;
   hideTip: () => void;
