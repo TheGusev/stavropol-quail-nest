@@ -16,23 +16,20 @@ export function PageHero({
   return (
     <section className="relative overflow-hidden border-b border-border bg-secondary/40">
       {image && (
-        <div className="absolute inset-0 -z-10">
-          <img
-            src={image}
-            alt={imageAlt ?? ""}
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <>
+          <div className="absolute inset-0 -z-10">
+            <img
+              src={image}
+              alt={imageAlt ?? ""}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background/80 via-background/50 to-transparent" />
+        </>
       )}
       <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
-        <div
-          className={
-            image
-              ? "max-w-2xl rounded-3xl border border-border/50 bg-card/85 px-5 py-5 shadow-xl backdrop-blur-md sm:px-7 sm:py-6"
-              : ""
-          }
-        >
+        <div>
           {kicker && (
             <div
               className="text-xs font-medium uppercase tracking-wider text-primary animate-fade-in"
