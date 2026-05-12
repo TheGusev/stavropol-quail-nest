@@ -91,30 +91,57 @@ function HomePage() {
     <PageShell>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 -z-10">
-          <img src={heroEggs} alt="" width={1536} height={1024} className="h-full w-full object-cover opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
-        </div>
-        <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-            Ферма в Ставропольском крае
-          </span>
-          <h1 className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight md:text-6xl">
-            Свежие перепелиные яйца с фермы в Ставропольском крае
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            Пищевые и инкубационные яйца, охлаждённое мясо перепела и молодняк. Доставка по Ставрополю,
-            Михайловску и краю. Опт для кафе, ресторанов и магазинов.
-          </p>
-          <div className="mt-6">
-            <CtaButtons size="lg" />
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-2 md:items-center md:gap-10 md:py-20">
+          {/* Текстовая часть */}
+          <div className="order-2 md:order-1">
+            <span
+              className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary animate-fade-in"
+              style={{ animationFillMode: "both" }}
+            >
+              Ферма в Ставропольском крае
+            </span>
+            <h1
+              className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight text-foreground animate-fade-in md:text-6xl"
+              style={{ animationDelay: "100ms", animationFillMode: "both" }}
+            >
+              Свежие перепелиные яйца с фермы в Ставропольском крае
+            </h1>
+            <p
+              className="mt-4 max-w-2xl text-lg text-foreground/80 animate-fade-in"
+              style={{ animationDelay: "220ms", animationFillMode: "both" }}
+            >
+              Пищевые и инкубационные яйца, охлаждённое мясо перепела и молодняк. Доставка по Ставрополю,
+              Михайловску и краю. Опт для кафе, ресторанов и магазинов.
+            </p>
+            <div
+              className="mt-6 animate-scale-in"
+              style={{ animationDelay: "320ms", animationFillMode: "both" }}
+            >
+              <CtaButtons size="lg" />
+            </div>
+            <div
+              className="mt-8 flex flex-wrap gap-2 animate-fade-in"
+              style={{ animationDelay: "420ms", animationFillMode: "both" }}
+            >
+              {["Свежесть до 7 дней", "Своя ферма", "Документы Меркурий", "Заказ за 30 сек"].map((b) => (
+                <span key={b} className="rounded-full bg-card px-3 py-1 text-xs font-medium text-foreground shadow-sm">
+                  {b}
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="mt-8 flex flex-wrap gap-2">
-            {["Свежесть до 7 дней", "Своя ферма", "Документы Меркурий", "Заказ за 30 сек"].map((b) => (
-              <span key={b} className="rounded-full bg-card px-3 py-1 text-xs font-medium text-foreground shadow-sm">
-                {b}
-              </span>
-            ))}
+          {/* Фото — без затемнения */}
+          <div
+            className="order-1 overflow-hidden rounded-3xl border border-border shadow-xl animate-scale-in md:order-2"
+            style={{ animationFillMode: "both" }}
+          >
+            <img
+              src={heroEggs}
+              alt="Свежие перепелиные яйца и тушки фермы «Ставропольский Перепел»"
+              width={1536}
+              height={1024}
+              className="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
+            />
           </div>
         </div>
       </section>

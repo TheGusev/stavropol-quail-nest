@@ -1,18 +1,61 @@
 import type { ReactNode } from "react";
 
-export function PageHero({ kicker, title, lead, image, imageAlt }: { kicker?: string; title: string; lead?: string; image?: string; imageAlt?: string }) {
+export function PageHero({
+  kicker,
+  title,
+  lead,
+  image,
+  imageAlt,
+}: {
+  kicker?: string;
+  title: string;
+  lead?: string;
+  image?: string;
+  imageAlt?: string;
+}) {
   return (
     <section className="relative overflow-hidden border-b border-border bg-secondary/40">
       {image && (
         <div className="absolute inset-0 -z-10">
-          <img src={image} alt={imageAlt ?? ""} loading="lazy" className="h-full w-full object-cover opacity-25" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 to-background" />
+          <img
+            src={image}
+            alt={imageAlt ?? ""}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
         </div>
       )}
       <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
-        {kicker && <div className="text-xs font-medium uppercase tracking-wider text-primary">{kicker}</div>}
-        <h1 className="mt-2 font-serif text-3xl font-bold leading-tight md:text-5xl">{title}</h1>
-        {lead && <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{lead}</p>}
+        <div
+          className={
+            image
+              ? "max-w-2xl rounded-3xl border border-border/50 bg-card/85 px-5 py-5 shadow-xl backdrop-blur-md sm:px-7 sm:py-6"
+              : ""
+          }
+        >
+          {kicker && (
+            <div
+              className="text-xs font-medium uppercase tracking-wider text-primary animate-fade-in"
+              style={{ animationFillMode: "both" }}
+            >
+              {kicker}
+            </div>
+          )}
+          <h1
+            className="mt-2 font-serif text-3xl font-bold leading-tight text-foreground animate-fade-in md:text-5xl"
+            style={{ animationDelay: "80ms", animationFillMode: "both" }}
+          >
+            {title}
+          </h1>
+          {lead && (
+            <p
+              className="mt-3 max-w-2xl text-lg text-foreground/80 animate-fade-in"
+              style={{ animationDelay: "180ms", animationFillMode: "both" }}
+            >
+              {lead}
+            </p>
+          )}
+        </div>
       </div>
     </section>
   );
