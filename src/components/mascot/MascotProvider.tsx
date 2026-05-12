@@ -14,14 +14,16 @@ type MascotState = {
 
 const Ctx = createContext<MascotState | null>(null);
 
-const STAGE_THRESHOLDS: Array<[number, Stage]> = [
+// Прогресс скролла (0..1) → стадия. Универсально для десктопа/мобилки.
+const PROGRESS_THRESHOLDS: Array<[number, Stage]> = [
   [0, "egg"],
-  [80, "wobble"],
-  [250, "crack-1"],
-  [500, "crack-2"],
-  [800, "peek"],
-  [1100, "hatched"],
+  [0.05, "wobble"],
+  [0.20, "crack-1"],
+  [0.40, "crack-2"],
+  [0.65, "peek"],
+  [0.90, "hatched"],
 ];
+const STAGE_ORDER: Stage[] = PROGRESS_THRESHOLDS.map(([, s]) => s);
 
 const STORAGE_KEY = "sp_mascot_hatched";
 
@@ -47,34 +49,46 @@ export function MascotProvider({ children }: { children: ReactNode }) {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  // Scroll-driven stage progression
+  // Scroll-driven stage progression (по прогрессу 0..1, не по px)
   useEffect(() => {
     if (stage === "hatched") return;
     let raf = 0;
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const y = window.scrollY;
-        let next: Stage = "egg";
-        for (const [t, s] of STAGE_THRESHOLDS) {
-          if (y >= t) next = s;
-        }
-        setStage((prev) => {
-          // never regress
-          const order = STAGE_THRESHOLDS.map((t) => t[1]);
-          if (order.indexOf(next) > order.indexOf(prev)) return next;
-          return prev;
-        });
+    const compute = () => {
+      raf = 0;
+      const doc = document.documentElement;
+      const body = document.body;
+      const docHeight = Math.max(doc.scrollHeight, body.scrollHeight);
+      const viewport = window.innerHeight;
+      const scrollable = docHeight - viewport;
+      const y = window.scrollY || doc.scrollTop;
+      // Если страница не скроллится — сразу вылупляем
+      const progress = scrollable <= 4 ? 1 : Math.min(1, Math.max(0, y / scrollable));
+      let next: Stage = "egg";
+      for (const [t, s] of PROGRESS_THRESHOLDS) {
+        if (progress >= t) next = s;
+      }
+      // Bottom guard: если фактически у футера — гарантируем hatched
+      if (scrollable > 4 && y >= scrollable - 8) next = "hatched";
+      setStage((prev) => {
+        if (STAGE_ORDER.indexOf(next) > STAGE_ORDER.indexOf(prev)) return next;
+        return prev;
       });
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const schedule = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(compute);
+    };
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.addEventListener("orientationchange", schedule);
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("orientationchange", schedule);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [stage]);
+  }, [stage, location.pathname]);
 
   // Persist hatched
   useEffect(() => {
