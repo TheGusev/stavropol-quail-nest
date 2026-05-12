@@ -166,12 +166,15 @@ function Chick({
       {/* Body */}
       <g transform={`translate(0 ${bob})`}>
         <ellipse cx="30" cy="40" rx="14" ry="12" fill="url(#chickBody)" stroke="oklch(0.6 0.12 70)" strokeWidth="0.6" />
-        {/* Wing */}
-        <path
+        {/* Wing — поднимается, когда птенец «показывает подсказку» */}
+        <motion.path
           d="M22 38 Q18 44 24 48 Q30 46 28 40 Z"
           fill="oklch(0.8 0.13 78)"
           stroke="oklch(0.55 0.1 70)"
           strokeWidth="0.5"
+          style={{ originX: "26px", originY: "44px" }}
+          animate={{ rotate: wingRaised ? -55 : 0, y: wingRaised ? -2 : 0 }}
+          transition={{ type: "spring", damping: 12, stiffness: 180 }}
         />
         {/* Tail tuft */}
         <path d="M42 36 Q47 36 46 40 Q44 39 42 40 Z" fill="oklch(0.78 0.13 75)" />
