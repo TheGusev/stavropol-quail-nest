@@ -374,24 +374,58 @@ function SpeechBubble({
 // ---------- Main Mascot ----------
 export function Mascot() {
   const { stage, tip, showTip, hideTip, reducedMotion } = useMascot();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const slotRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLButtonElement | null>(null);
 
   // Wobble timer (drives egg shake)
   const [wobble, setWobble] = useState(0);
 
-  // Walking state
-  const [pos, setPos] = useState(0); // x offset from container center, px
+  // Track (header-wide walking area)
+  const [trackEl, setTrackEl] = useState<HTMLElement | null>(null);
+  const [trackWidth, setTrackWidth] = useState(0);
+
+  // Walking state — pos is absolute px from track-left
+  const CHICK_W = 42;
+  const RIGHT_PAD = 56; // не подходить вплотную к бургеру/кнопкам
+  const [pos, setPos] = useState(8);
   const [facing, setFacing] = useState<1 | -1>(1);
   const [walkPhase, setWalkPhase] = useState(0);
   const [moving, setMoving] = useState(false);
-  const [target, setTarget] = useState(0);
+  const [target, setTarget] = useState(8);
   const [blink, setBlink] = useState(false);
   const [headRot, setHeadRot] = useState(0);
   const [beakOpen, setBeakOpen] = useState(false);
+  const [wingRaised, setWingRaised] = useState(false);
+  const wasMovingRef = useRef(false);
+  const wingTimerRef = useRef<number | null>(null);
 
   // Cursor target tracking for head rotation
   const cursorRef = useRef<{ x: number; y: number } | null>(null);
+
+  // Locate track once
+  useEffect(() => {
+    const find = () => document.querySelector<HTMLElement>("[data-mascot-track]");
+    let el = find();
+    if (!el) {
+      const id = window.setTimeout(() => setTrackEl(find()), 50);
+      return () => clearTimeout(id);
+    }
+    setTrackEl(el);
+  }, []);
+
+  // Measure track width
+  useEffect(() => {
+    if (!trackEl) return;
+    const measure = () => setTrackWidth(trackEl.clientWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(trackEl);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [trackEl]);
 
   // Egg wobble animation
   useEffect(() => {
@@ -406,7 +440,15 @@ export function Mascot() {
     return () => cancelAnimationFrame(raf);
   }, [stage]);
 
-  // Walk cycle + idle behaviors after hatched
+  // При вылуплении — стартовая позиция у логотипа
+  useEffect(() => {
+    if (stage === "hatched") {
+      // Если ещё не двигались — встаём слева, рядом со слотом
+      setPos((p) => (p === 8 ? 8 : p));
+    }
+  }, [stage]);
+
+  // Walk cycle
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion) return;
     let raf = 0;
@@ -425,7 +467,7 @@ export function Mascot() {
         if (!moving) setMoving(true);
         const dir = Math.sign(diff);
         setFacing(dir >= 0 ? 1 : -1);
-        const speed = 38; // px/sec
+        const speed = 42; // px/sec
         const step = dir * Math.min(dist, speed * dt);
         return p + step;
       });
@@ -438,17 +480,44 @@ export function Mascot() {
     return () => cancelAnimationFrame(raf);
   }, [stage, target, moving, reducedMotion]);
 
-  // Pick a new wander target periodically
+  // Detect "stop" → with chance show tip + raise wing
+  useEffect(() => {
+    if (stage !== "hatched" || reducedMotion) return;
+    if (wasMovingRef.current && !moving) {
+      // только что остановился
+      if (Math.random() < 0.65) {
+        setWingRaised(true);
+        showTip();
+        if (wingTimerRef.current) clearTimeout(wingTimerRef.current);
+        wingTimerRef.current = window.setTimeout(() => setWingRaised(false), 6500);
+      }
+    }
+    wasMovingRef.current = moving;
+  }, [moving, stage, reducedMotion, showTip]);
+
+  // Когда подсказка скрыта — опускаем крыло
+  useEffect(() => {
+    if (!tip && wingRaised) {
+      setWingRaised(false);
+      if (wingTimerRef.current) {
+        clearTimeout(wingTimerRef.current);
+        wingTimerRef.current = null;
+      }
+    }
+  }, [tip, wingRaised]);
+
+  // Pick a new wander target periodically — по всей ширине трека
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion) return;
     const pickNext = () => {
-      const range = 70; // px each side
-      setTarget(Math.round((Math.random() * 2 - 1) * range));
+      const minX = 8;
+      const maxX = Math.max(minX + 32, trackWidth - CHICK_W - RIGHT_PAD);
+      setTarget(Math.round(minX + Math.random() * (maxX - minX)));
     };
     pickNext();
-    const id = window.setInterval(pickNext, 4500 + Math.random() * 3500);
+    const id = window.setInterval(pickNext, 5000 + Math.random() * 4000);
     return () => clearInterval(id);
-  }, [stage, reducedMotion]);
+  }, [stage, reducedMotion, trackWidth]);
 
   // Blink loop
   useEffect(() => {
@@ -465,7 +534,7 @@ export function Mascot() {
     return () => clearTimeout(timeout);
   }, [stage]);
 
-  // Chirp loop (beak open + small jump feel)
+  // Chirp loop
   useEffect(() => {
     if (stage !== "hatched" || reducedMotion) return;
     let timeout: number;
@@ -498,7 +567,7 @@ export function Mascot() {
 
   // Head rotation toward cursor
   useEffect(() => {
-    if (stage !== "hatched") return;
+    if (stage !== "hatched" || reducedMotion) return;
     let raf = 0;
     const tick = () => {
       const head = headRef.current;
@@ -510,66 +579,86 @@ export function Mascot() {
         const dx = cur.x - cx;
         const dy = cur.y - cy;
         const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
-        // Map to ±18°, only when cursor reasonably close (< 400px)
         const dist = Math.hypot(dx, dy);
         const max = 18;
-        const target = dist < 400 ? Math.max(-max, Math.min(max, ang * 0.15 * facing)) : 0;
-        setHeadRot((h) => h + (target - h) * 0.15);
+        const tgt = dist < 400 ? Math.max(-max, Math.min(max, ang * 0.15 * facing)) : 0;
+        setHeadRot((h) => h + (tgt - h) * 0.15);
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [stage, facing]);
+  }, [stage, facing, reducedMotion]);
 
   const onClick = () => {
     if (stage !== "hatched") return;
     setBeakOpen(true);
     window.setTimeout(() => setBeakOpen(false), 300);
+    setWingRaised(true);
+    if (wingTimerRef.current) clearTimeout(wingTimerRef.current);
+    wingTimerRef.current = window.setTimeout(() => setWingRaised(false), 6500);
     showTip();
   };
 
-  return (
+  // Слот рядом с логотипом: только пока не вылупился
+  const slot = (
     <div
-      ref={containerRef}
+      ref={slotRef}
       className="relative grid h-11 w-11 shrink-0 place-items-center"
       style={{ overflow: "visible" }}
     >
-      {stage !== "hatched" ? (
-        <Egg stage={stage} wobble={wobble} />
-      ) : (
-        <>
-          {/* Скорлупки только в обычном режиме и только один раз */}
-          {!reducedMotion && typeof window !== "undefined" && !sessionStorage.getItem("sp_mascot_shellseen") && (
-            <ShellPiecesOnce />
-          )}
-          <motion.button
-            ref={(el) => {
-              headRef.current = el as HTMLButtonElement | null;
-            }}
-            onClick={onClick}
-            className="relative z-10 cursor-pointer bg-transparent"
-            style={{ x: reducedMotion ? 0 : pos }}
-            initial={false}
-            aria-label="Перепёлкин — нажмите, чтобы услышать совет"
-          >
-            <Chick
-              facing={facing}
-              walkPhase={reducedMotion ? 0 : walkPhase}
-              blink={reducedMotion ? false : blink}
-              headRot={reducedMotion ? 0 : headRot}
-              beakOpen={reducedMotion ? false : beakOpen}
-            />
-          </motion.button>
-        </>
-      )}
+      {stage !== "hatched" && <Egg stage={stage} wobble={wobble} />}
+    </div>
+  );
 
+  // Птенец в портале трека (или на месте при reducedMotion)
+  const chickNode = stage === "hatched" && (
+    <>
+      {!reducedMotion && typeof window !== "undefined" && !sessionStorage.getItem("sp_mascot_shellseen") && (
+        <ShellPiecesOnce />
+      )}
+      <motion.button
+        ref={(el) => {
+          headRef.current = el as HTMLButtonElement | null;
+        }}
+        onClick={onClick}
+        className="absolute bottom-0 cursor-pointer bg-transparent"
+        style={{
+          left: reducedMotion ? 8 : pos,
+          pointerEvents: "auto",
+        }}
+        initial={false}
+        animate={{ x: 0 }}
+        aria-label="Перепёлкин — нажмите, чтобы услышать совет"
+      >
+        <Chick
+          facing={facing}
+          walkPhase={reducedMotion ? 0 : walkPhase}
+          blink={reducedMotion ? false : blink}
+          headRot={reducedMotion ? 0 : headRot}
+          beakOpen={reducedMotion ? false : beakOpen}
+          wingRaised={wingRaised}
+        />
+      </motion.button>
+    </>
+  );
+
+  return (
+    <>
+      {slot}
+      {trackEl && chickNode && createPortal(chickNode, trackEl)}
       <AnimatePresence>
         {tip && stage === "hatched" && (
-          <SpeechBubble text={tip.text} cta={tip.cta} onClose={hideTip} reduced={reducedMotion} />
+          <SpeechBubble
+            text={tip.text}
+            cta={tip.cta}
+            onClose={hideTip}
+            reduced={reducedMotion}
+            anchorRef={headRef}
+          />
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
 
