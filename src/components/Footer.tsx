@@ -28,6 +28,7 @@ const COLS = [
       { to: "/pyatigorsk", label: "Пятигорск" },
       { to: "/essentuki", label: "Ессентуки" },
       { to: "/nevinnomyssk", label: "Невинномысск" },
+      { to: "/budyonnovsk", label: "Будённовск" },
     ],
   },
 ] as const;
