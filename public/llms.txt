@@ -1,6 +1,6 @@
 # Ставропольский Перепел
 
-Семейная перепелиная ферма в Ставропольском крае. Поставки свежих перепелиных яиц, мяса перепела, инкубационного яйца и молодняка по Ставрополю, Михайловску и краю. Розница и опт для HoReCa и магазинов.
+Семейная перепелиная ферма в Ставропольском крае. Поставки свежих перепелиных яиц, мяса перепела, инкубационного яйца, молодняка, клеток и сопутствующих товаров по Ставрополю, Михайловску и краю. Розница и опт для HoReCa и магазинов.
 
 ## Контакты
 - Сайт: https://stavropolskiy-perepel.ru
@@ -9,12 +9,35 @@
 - Email: info@stavropolskiy-perepel.ru
 - Регион: Ставропольский край (Ставрополь, Михайловск, Пятигорск, Ессентуки, Невинномысск)
 
-## Категории продукции
-- Перепелиные яйца (пищевые): https://stavropolskiy-perepel.ru/perepelinye-yaytsa/
+## Структура каталога
+
+### Яйца — https://stavropolskiy-perepel.ru/yaytsa/
+- Пищевые яйца: https://stavropolskiy-perepel.ru/perepelinye-yaytsa/
 - Инкубационное яйцо: https://stavropolskiy-perepel.ru/inkubatsionnoe-yaytso/
-- Мясо перепела: https://stavropolskiy-perepel.ru/myaso-perepela/
-- Молодняк: https://stavropolskiy-perepel.ru/molodnyak/
-- Клетки для перепелов: https://stavropolskiy-perepel.ru/kletki/
+
+### Птица для разведения — https://stavropolskiy-perepel.ru/ptitsa/
+- Суточные перепелята: https://stavropolskiy-perepel.ru/ptitsa/sutochnye/
+- Подрощенные 2–3 нед.: https://stavropolskiy-perepel.ru/ptitsa/podroshchennye/
+- Несушки: https://stavropolskiy-perepel.ru/ptitsa/nesushki/
+- Самцы: https://stavropolskiy-perepel.ru/ptitsa/samtsy/
+- Родительское стадо: https://stavropolskiy-perepel.ru/ptitsa/roditelskoe-stado/
+- Молодняк (обзор): https://stavropolskiy-perepel.ru/molodnyak/
+
+### Мясо и переработка — https://stavropolskiy-perepel.ru/myaso/
+- Охлаждённое мясо: https://stavropolskiy-perepel.ru/myaso-perepela/
+- Замороженное мясо: https://stavropolskiy-perepel.ru/myaso/zamorozhennoe/
+- Тушки для запекания: https://stavropolskiy-perepel.ru/myaso/dlya-zapekaniya/
+- Маринованные / копчёные: https://stavropolskiy-perepel.ru/myaso/marinovannye-kopchenye/
+- Маринованные яйца: https://stavropolskiy-perepel.ru/myaso/marinovannye-yaytsa/
+- Выбракованные перепела: https://stavropolskiy-perepel.ru/myaso/vybrakovannye/
+
+### Сопутствующие товары — https://stavropolskiy-perepel.ru/soputstvuyushchie/
+- Перепелиный помёт: https://stavropolskiy-perepel.ru/soputstvuyushchie/pomet/
+- Молотая скорлупа: https://stavropolskiy-perepel.ru/soputstvuyushchie/skorlupa/
+- Перо и пух: https://stavropolskiy-perepel.ru/soputstvuyushchie/pero-pukh/
+- Потроха: https://stavropolskiy-perepel.ru/soputstvuyushchie/potroha/
+
+### Клетки для перепелов — https://stavropolskiy-perepel.ru/kletki/
 
 ## Разделы
 - Каталог: https://stavropolskiy-perepel.ru/catalog/
