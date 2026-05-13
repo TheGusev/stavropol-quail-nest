@@ -3,33 +3,36 @@ import { ADDRESS, EMAIL, PHONE_DISPLAY, SITE_NAME, telUrl } from "@/lib/contacts
 
 const COLS = [
   {
-    title: "Каталог",
+    title: "Яйца и птица",
     links: [
       { to: "/perepelinye-yaytsa", label: "Пищевые яйца" },
       { to: "/inkubatsionnoe-yaytso", label: "Инкубационное яйцо" },
-      { to: "/myaso-perepela", label: "Мясо перепела" },
-      { to: "/molodnyak", label: "Молодняк" },
+      { to: "/ptitsa/sutochnye", label: "Суточные перепелята" },
+      { to: "/ptitsa/podroshchennye", label: "Подрощенные" },
+      { to: "/ptitsa/nesushki", label: "Несушки" },
+      { to: "/ptitsa/roditelskoe-stado", label: "Родительское стадо" },
+    ],
+  },
+  {
+    title: "Мясо и переработка",
+    links: [
+      { to: "/myaso-perepela", label: "Охлаждённое мясо" },
+      { to: "/myaso/zamorozhennoe", label: "Замороженное" },
+      { to: "/myaso/dlya-zapekaniya", label: "Для запекания" },
+      { to: "/myaso/marinovannye-kopchenye", label: "Маринованные / копчёные" },
+      { to: "/myaso/marinovannye-yaytsa", label: "Маринованные яйца" },
+      { to: "/myaso/vybrakovannye", label: "Выбракованные" },
+    ],
+  },
+  {
+    title: "Ещё",
+    links: [
+      { to: "/soputstvuyushchie/pomet", label: "Помёт" },
+      { to: "/soputstvuyushchie/skorlupa", label: "Скорлупа" },
+      { to: "/soputstvuyushchie/pero-pukh", label: "Перо и пух" },
       { to: "/kletki", label: "Клетки" },
-    ],
-  },
-  {
-    title: "Покупателям",
-    links: [
-      { to: "/dostavka", label: "Доставка" },
       { to: "/opt", label: "Опт / HoReCa" },
-      { to: "/sertifikaty", label: "Документы" },
-      { to: "/faq", label: "FAQ" },
-    ],
-  },
-  {
-    title: "География",
-    links: [
-      { to: "/stavropol", label: "Ставрополь" },
-      { to: "/mihaylovsk", label: "Михайловск" },
-      { to: "/pyatigorsk", label: "Пятигорск" },
-      { to: "/essentuki", label: "Ессентуки" },
-      { to: "/nevinnomyssk", label: "Невинномысск" },
-      { to: "/budyonnovsk", label: "Будённовск" },
+      { to: "/dostavka", label: "Доставка" },
     ],
   },
 ] as const;

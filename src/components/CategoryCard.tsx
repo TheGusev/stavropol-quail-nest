@@ -1,8 +1,33 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
+export type CategoryRoute =
+  | "/yaytsa"
+  | "/perepelinye-yaytsa"
+  | "/inkubatsionnoe-yaytso"
+  | "/ptitsa"
+  | "/ptitsa/sutochnye"
+  | "/ptitsa/podroshchennye"
+  | "/ptitsa/nesushki"
+  | "/ptitsa/samtsy"
+  | "/ptitsa/roditelskoe-stado"
+  | "/molodnyak"
+  | "/myaso"
+  | "/myaso-perepela"
+  | "/myaso/zamorozhennoe"
+  | "/myaso/dlya-zapekaniya"
+  | "/myaso/marinovannye-kopchenye"
+  | "/myaso/marinovannye-yaytsa"
+  | "/myaso/vybrakovannye"
+  | "/soputstvuyushchie"
+  | "/soputstvuyushchie/pomet"
+  | "/soputstvuyushchie/potroha"
+  | "/soputstvuyushchie/skorlupa"
+  | "/soputstvuyushchie/pero-pukh"
+  | "/kletki";
+
 export interface CategoryCardProps {
-  to: "/perepelinye-yaytsa" | "/inkubatsionnoe-yaytso" | "/myaso-perepela" | "/molodnyak" | "/kletki";
+  to: CategoryRoute;
   title: string;
   description: string;
   image: string;
