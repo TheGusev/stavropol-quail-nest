@@ -318,6 +318,17 @@ export function Mascot() {
   const headRef = useRef<HTMLButtonElement | null>(null);
   const [layout, setLayout] = useState<Layout>(EMPTY_LAYOUT);
   const [unsafe, setUnsafe] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(max-width: 767px)").matches;
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
