@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
 export interface CategoryCardProps {
-  to: "/perepelinye-yaytsa" | "/inkubatsionnoe-yaytso" | "/myaso-perepela" | "/molodnyak";
+  to: "/perepelinye-yaytsa" | "/inkubatsionnoe-yaytso" | "/myaso-perepela" | "/molodnyak" | "/kletki";
   title: string;
   description: string;
   image: string;
