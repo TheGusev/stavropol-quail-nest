@@ -330,7 +330,7 @@ export function MobileMascot() {
 
       <AnimatePresence>
         {tip && stage === "hatched" && trackW > 0 && (
-          <MascotTip text={tip.text} reduced={reducedMotion} anchorRef={chickBtnRef} />
+          <MobileTip text={tip.text} reduced={reducedMotion} anchorRef={chickBtnRef} />
         )}
       </AnimatePresence>
     </div>
