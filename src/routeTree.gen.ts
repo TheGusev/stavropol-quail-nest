@@ -23,6 +23,7 @@ import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
 import { Route as MyasoRouteImport } from './routes/myaso'
 import { Route as MolodnyakRouteImport } from './routes/molodnyak'
 import { Route as MihaylovskRouteImport } from './routes/mihaylovsk'
+import { Route as KormRouteImport } from './routes/korm'
 import { Route as KontaktyRouteImport } from './routes/kontakty'
 import { Route as KletkiRouteImport } from './routes/kletki'
 import { Route as InkubatsionnoeYaytsoRouteImport } from './routes/inkubatsionnoe-yaytso'
@@ -46,6 +47,7 @@ import { Route as MyasoVybrakovannyeRouteImport } from './routes/myaso.vybrakova
 import { Route as MyasoMarinovannyeYaytsaRouteImport } from './routes/myaso.marinovannye-yaytsa'
 import { Route as MyasoMarinovannyeKopchenyeRouteImport } from './routes/myaso.marinovannye-kopchenye'
 import { Route as MyasoDlyaZapekaniyaRouteImport } from './routes/myaso.dlya-zapekaniya'
+import { Route as KormStartovyyRouteImport } from './routes/korm.startovyy'
 
 const YaytsaRoute = YaytsaRouteImport.update({
   id: '/yaytsa',
@@ -115,6 +117,11 @@ const MolodnyakRoute = MolodnyakRouteImport.update({
 const MihaylovskRoute = MihaylovskRouteImport.update({
   id: '/mihaylovsk',
   path: '/mihaylovsk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KormRoute = KormRouteImport.update({
+  id: '/korm',
+  path: '/korm',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontaktyRoute = KontaktyRouteImport.update({
@@ -236,6 +243,11 @@ const MyasoDlyaZapekaniyaRoute = MyasoDlyaZapekaniyaRouteImport.update({
   path: '/dlya-zapekaniya',
   getParentRoute: () => MyasoRoute,
 } as any)
+const KormStartovyyRoute = KormStartovyyRouteImport.update({
+  id: '/startovyy',
+  path: '/startovyy',
+  getParentRoute: () => KormRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -247,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
   '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
+  '/korm': typeof KormRouteWithChildren
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso': typeof MyasoRouteWithChildren
@@ -261,6 +274,7 @@ export interface FileRoutesByFullPath {
   '/soputstvuyushchie': typeof SoputstvuyushchieRouteWithChildren
   '/stavropol': typeof StavropolRoute
   '/yaytsa': typeof YaytsaRoute
+  '/korm/startovyy': typeof KormStartovyyRoute
   '/myaso/dlya-zapekaniya': typeof MyasoDlyaZapekaniyaRoute
   '/myaso/marinovannye-kopchenye': typeof MyasoMarinovannyeKopchenyeRoute
   '/myaso/marinovannye-yaytsa': typeof MyasoMarinovannyeYaytsaRoute
@@ -286,6 +300,7 @@ export interface FileRoutesByTo {
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
   '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
+  '/korm': typeof KormRouteWithChildren
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso': typeof MyasoRouteWithChildren
@@ -300,6 +315,7 @@ export interface FileRoutesByTo {
   '/soputstvuyushchie': typeof SoputstvuyushchieRouteWithChildren
   '/stavropol': typeof StavropolRoute
   '/yaytsa': typeof YaytsaRoute
+  '/korm/startovyy': typeof KormStartovyyRoute
   '/myaso/dlya-zapekaniya': typeof MyasoDlyaZapekaniyaRoute
   '/myaso/marinovannye-kopchenye': typeof MyasoMarinovannyeKopchenyeRoute
   '/myaso/marinovannye-yaytsa': typeof MyasoMarinovannyeYaytsaRoute
@@ -326,6 +342,7 @@ export interface FileRoutesById {
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
   '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
+  '/korm': typeof KormRouteWithChildren
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
   '/myaso': typeof MyasoRouteWithChildren
@@ -340,6 +357,7 @@ export interface FileRoutesById {
   '/soputstvuyushchie': typeof SoputstvuyushchieRouteWithChildren
   '/stavropol': typeof StavropolRoute
   '/yaytsa': typeof YaytsaRoute
+  '/korm/startovyy': typeof KormStartovyyRoute
   '/myaso/dlya-zapekaniya': typeof MyasoDlyaZapekaniyaRoute
   '/myaso/marinovannye-kopchenye': typeof MyasoMarinovannyeKopchenyeRoute
   '/myaso/marinovannye-yaytsa': typeof MyasoMarinovannyeYaytsaRoute
@@ -367,6 +385,7 @@ export interface FileRouteTypes {
     | '/inkubatsionnoe-yaytso'
     | '/kletki'
     | '/kontakty'
+    | '/korm'
     | '/mihaylovsk'
     | '/molodnyak'
     | '/myaso'
@@ -381,6 +400,7 @@ export interface FileRouteTypes {
     | '/soputstvuyushchie'
     | '/stavropol'
     | '/yaytsa'
+    | '/korm/startovyy'
     | '/myaso/dlya-zapekaniya'
     | '/myaso/marinovannye-kopchenye'
     | '/myaso/marinovannye-yaytsa'
@@ -406,6 +426,7 @@ export interface FileRouteTypes {
     | '/inkubatsionnoe-yaytso'
     | '/kletki'
     | '/kontakty'
+    | '/korm'
     | '/mihaylovsk'
     | '/molodnyak'
     | '/myaso'
@@ -420,6 +441,7 @@ export interface FileRouteTypes {
     | '/soputstvuyushchie'
     | '/stavropol'
     | '/yaytsa'
+    | '/korm/startovyy'
     | '/myaso/dlya-zapekaniya'
     | '/myaso/marinovannye-kopchenye'
     | '/myaso/marinovannye-yaytsa'
@@ -445,6 +467,7 @@ export interface FileRouteTypes {
     | '/inkubatsionnoe-yaytso'
     | '/kletki'
     | '/kontakty'
+    | '/korm'
     | '/mihaylovsk'
     | '/molodnyak'
     | '/myaso'
@@ -459,6 +482,7 @@ export interface FileRouteTypes {
     | '/soputstvuyushchie'
     | '/stavropol'
     | '/yaytsa'
+    | '/korm/startovyy'
     | '/myaso/dlya-zapekaniya'
     | '/myaso/marinovannye-kopchenye'
     | '/myaso/marinovannye-yaytsa'
@@ -485,6 +509,7 @@ export interface RootRouteChildren {
   InkubatsionnoeYaytsoRoute: typeof InkubatsionnoeYaytsoRoute
   KletkiRoute: typeof KletkiRoute
   KontaktyRoute: typeof KontaktyRoute
+  KormRoute: typeof KormRouteWithChildren
   MihaylovskRoute: typeof MihaylovskRoute
   MolodnyakRoute: typeof MolodnyakRoute
   MyasoRoute: typeof MyasoRouteWithChildren
@@ -599,6 +624,13 @@ declare module '@tanstack/react-router' {
       path: '/mihaylovsk'
       fullPath: '/mihaylovsk'
       preLoaderRoute: typeof MihaylovskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/korm': {
+      id: '/korm'
+      path: '/korm'
+      fullPath: '/korm'
+      preLoaderRoute: typeof KormRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontakty': {
@@ -762,8 +794,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyasoDlyaZapekaniyaRouteImport
       parentRoute: typeof MyasoRoute
     }
+    '/korm/startovyy': {
+      id: '/korm/startovyy'
+      path: '/startovyy'
+      fullPath: '/korm/startovyy'
+      preLoaderRoute: typeof KormStartovyyRouteImport
+      parentRoute: typeof KormRoute
+    }
   }
 }
+
+interface KormRouteChildren {
+  KormStartovyyRoute: typeof KormStartovyyRoute
+}
+
+const KormRouteChildren: KormRouteChildren = {
+  KormStartovyyRoute: KormStartovyyRoute,
+}
+
+const KormRouteWithChildren = KormRoute._addFileChildren(KormRouteChildren)
 
 interface MyasoRouteChildren {
   MyasoDlyaZapekaniyaRoute: typeof MyasoDlyaZapekaniyaRoute
@@ -829,6 +878,7 @@ const rootRouteChildren: RootRouteChildren = {
   InkubatsionnoeYaytsoRoute: InkubatsionnoeYaytsoRoute,
   KletkiRoute: KletkiRoute,
   KontaktyRoute: KontaktyRoute,
+  KormRoute: KormRouteWithChildren,
   MihaylovskRoute: MihaylovskRoute,
   MolodnyakRoute: MolodnyakRoute,
   MyasoRoute: MyasoRouteWithChildren,
