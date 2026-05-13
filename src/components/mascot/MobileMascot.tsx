@@ -1,7 +1,93 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Egg, Chick, MascotTip } from "./Mascot";
+import { Egg, Chick } from "./Mascot";
 import { useMascot } from "./MascotProvider";
+
+// Локальный измеритель ширины текста
+function measureTextWidth(text: string): number {
+  if (typeof document === "undefined") return 0;
+  const el = document.createElement("span");
+  el.style.cssText =
+    "position:absolute;visibility:hidden;white-space:nowrap;font:500 12px/16px system-ui,-apple-system,Segoe UI,sans-serif;left:-9999px;top:-9999px;";
+  el.textContent = text;
+  document.body.appendChild(el);
+  const w = el.offsetWidth;
+  document.body.removeChild(el);
+  return w;
+}
+
+// Подсказка над цыплёнком (для мобильной нижней панели)
+function MobileTip({
+  text,
+  reduced,
+  anchorRef,
+}: {
+  text: string;
+  reduced: boolean;
+  anchorRef: RefObject<HTMLElement | null>;
+}) {
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const textW = useRef(measureTextWidth(text));
+
+  useLayoutEffect(() => {
+    textW.current = measureTextWidth(text);
+  }, [text]);
+
+  useLayoutEffect(() => {
+    let raf = 0;
+    const compute = () => {
+      raf = 0;
+      const a = anchorRef.current;
+      if (!a) return;
+      const ar = a.getBoundingClientRect();
+      const margin = 8;
+      const tw = textW.current;
+      // Не помещается во вьюпорт по ширине — не показываем
+      if (tw + margin * 2 > window.innerWidth) {
+        setPos(null);
+        return;
+      }
+      // Центрируем по цыплёнку, потом прижимаем к границам экрана
+      let left = ar.left + ar.width / 2 - tw / 2;
+      left = Math.max(margin, Math.min(window.innerWidth - tw - margin, left));
+      const top = ar.top - 20;
+      setPos({ top, left });
+    };
+    compute();
+    const tick = () => {
+      compute();
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
+  }, [anchorRef, text]);
+
+  if (typeof document === "undefined") return null;
+  if (!pos) return null;
+
+  return createPortal(
+    <motion.div
+      role="status"
+      aria-live="polite"
+      className="pointer-events-none fixed z-[60] whitespace-nowrap rounded-md bg-background/95 px-2 py-1 text-[12px] font-medium leading-4 text-foreground shadow-md"
+      style={{ top: pos.top, left: pos.left }}
+      initial={reduced ? { opacity: 1 } : { opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: reduced ? 0 : 0.18, ease: "easeOut" }}
+    >
+      {text}
+    </motion.div>,
+    document.body,
+  );
+}
 
 const CHICK_W = 38;
 const EGG_W = 44;
