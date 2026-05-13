@@ -496,7 +496,7 @@ export function Mascot() {
       setTarget(t);
     };
     pick();
-    const id = window.setInterval(pick, 7000 + Math.random() * 5000);
+    const id = window.setInterval(pick, 4500 + Math.random() * 3500);
     return () => clearInterval(id);
   }, [stage, reducedMotion, layout.ready, layout.walkMin, layout.walkMax, layout.menuLeft, layout.menuRight]);
 
@@ -526,13 +526,13 @@ export function Mascot() {
         if (!moving) setMoving(true);
         const dir = Math.sign(diff);
         setFacing(dir >= 0 ? 1 : -1);
-        const speed = 22;
+        const speed = 46;
         const step = dir * Math.min(dist, speed * dt);
         const next = p + step;
         return Math.max(layout.walkMin, Math.min(layout.walkMax, next));
       });
 
-      if (moving) setWalkPhase((w) => w + dt * 5);
+      if (moving) setWalkPhase((w) => w + dt * 9);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
