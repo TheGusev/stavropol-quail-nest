@@ -624,7 +624,7 @@ export function Mascot() {
   // Птенец — в верхней свободной зоне трека
   const chickTop = 0;
 
-  if (unsafe) return null;
+  if (unsafe || isMobile) return null;
 
   return (
     <div ref={rootRef} className="pointer-events-none absolute inset-0 z-10">
