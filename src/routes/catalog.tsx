@@ -8,6 +8,7 @@ import catEggs from "@/assets/cat-eggs.jpg";
 import catIncubation from "@/assets/cat-incubation.jpg";
 import catMeat from "@/assets/cat-meat.jpg";
 import catBirds from "@/assets/cat-birds.jpg";
+import catCages from "@/assets/cat-cages.jpg";
 
 const FAQ: FaqItem[] = [
   { q: "Что есть в каталоге фермы?", a: "Четыре направления: пищевые перепелиные яйца, инкубационное яйцо, охлаждённое мясо перепела и молодняк (суточные перепелята и подрощенная птица)." },
@@ -44,6 +45,7 @@ function CatalogPage() {
           <CategoryCard to="/inkubatsionnoe-yaytso" title="Инкубационное яйцо" description="Племенное яйцо для вывода. Высокий процент оплода." image={catIncubation} imageAlt="Инкубационное яйцо" />
           <CategoryCard to="/myaso-perepela" title="Мясо перепела" description="Охлаждённые тушки 220–280 г. Без заморозки." image={catMeat} imageAlt="Мясо перепела" />
           <CategoryCard to="/molodnyak" title="Молодняк" description="Суточные перепелята и подрощенная птица по запросу." image={catBirds} imageAlt="Молодняк перепелов" />
+          <CategoryCard to="/kletki" title="Клетки для перепелов" description="Клетки и батареи на 20–100 голов, брудеры для молодняка." image={catCages} imageAlt="Клетки для перепелов" />
         </div>
       </Section>
       <Section>

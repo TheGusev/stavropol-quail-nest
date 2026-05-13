@@ -9,6 +9,7 @@ const COLS = [
       { to: "/inkubatsionnoe-yaytso", label: "Инкубационное яйцо" },
       { to: "/myaso-perepela", label: "Мясо перепела" },
       { to: "/molodnyak", label: "Молодняк" },
+      { to: "/kletki", label: "Клетки" },
     ],
   },
   {

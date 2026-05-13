@@ -8,6 +8,7 @@ import { Mascot } from "@/components/mascot/Mascot";
 
 const NAV = [
   { to: "/catalog", label: "Каталог" },
+  { to: "/kletki", label: "Клетки" },
   { to: "/opt", label: "Опт" },
   { to: "/dostavka", label: "Доставка" },
   { to: "/o-ferme", label: "О ферме" },
