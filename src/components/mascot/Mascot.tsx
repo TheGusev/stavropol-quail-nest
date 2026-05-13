@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMascot, type Stage } from "./MascotProvider";
 
 // ---------- Egg SVG ----------
-function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
+export function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
   const showCrack1 = stage === "crack-1" || stage === "crack-2" || stage === "peek";
   const showCrack2 = stage === "crack-2" || stage === "peek";
   const showPeek = stage === "peek";
@@ -94,7 +94,7 @@ function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
 }
 
 // ---------- Chick SVG ----------
-function Chick({
+export function Chick({
   facing,
   walkPhase,
   blink,
@@ -192,7 +192,7 @@ function measureTextWidth(text: string): number {
   return w;
 }
 
-function MascotTip({
+export function MascotTip({
   text,
   reduced,
   anchorRef,
