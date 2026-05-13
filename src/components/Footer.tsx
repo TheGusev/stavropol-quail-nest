@@ -30,6 +30,8 @@ const COLS = [
       { to: "/soputstvuyushchie/pomet", label: "Помёт" },
       { to: "/soputstvuyushchie/skorlupa", label: "Скорлупа" },
       { to: "/soputstvuyushchie/pero-pukh", label: "Перо и пух" },
+      { to: "/korm", label: "Корм для перепелов" },
+      { to: "/korm/startovyy", label: "Стартовый комбикорм" },
       { to: "/kletki", label: "Клетки" },
       { to: "/opt", label: "Опт / HoReCa" },
       { to: "/dostavka", label: "Доставка" },

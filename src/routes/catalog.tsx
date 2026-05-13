@@ -9,6 +9,7 @@ import catPtitsa from "@/assets/cat-ptitsa-group.jpg";
 import catMyasoGroup from "@/assets/cat-myaso-group.jpg";
 import catSoput from "@/assets/cat-soput-group.jpg";
 import catCages from "@/assets/cat-cages.jpg";
+import catKorm from "@/assets/cat-korm-group.jpg";
 
 const FAQ: FaqItem[] = [
   { q: "Что есть в каталоге фермы?", a: "Пять направлений: яйца (пищевые и инкубационные), птица для разведения (от суточных до родительского стада), мясо и продукты переработки, сопутствующие товары (помёт, скорлупа, перо, потроха), а также клетки для перепелов." },
@@ -45,6 +46,7 @@ function CatalogPage() {
           <CategoryCard to="/ptitsa" title="Птица для разведения" description="Суточные, подрощенные, несушки, самцы, родительское стадо." image={catPtitsa} imageAlt="Перепела на ферме" />
           <CategoryCard to="/myaso" title="Мясо и переработка" description="Охлаждённое, замороженное, маринованные, копчёные, для запекания." image={catMyasoGroup} imageAlt="Продукция из перепела" />
           <CategoryCard to="/soputstvuyushchie" title="Сопутствующие товары" description="Помёт, скорлупа, перо и пух, потроха." image={catSoput} imageAlt="Сопутствующие товары" />
+          <CategoryCard to="/korm" title="Корм для перепелов" description="Стартовый комбикорм собственного производства, без накруток." image={catKorm} imageAlt="Корм для перепелов" />
           <CategoryCard to="/kletki" title="Клетки для перепелов" description="Клетки и батареи на 20–100 голов, брудеры для молодняка." image={catCages} imageAlt="Клетки для перепелов" />
         </div>
       </Section>
