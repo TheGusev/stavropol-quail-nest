@@ -9,14 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as YaytsaRouteImport } from './routes/yaytsa'
 import { Route as StavropolRouteImport } from './routes/stavropol'
+import { Route as SoputstvuyushchieRouteImport } from './routes/soputstvuyushchie'
 import { Route as SertifikatyRouteImport } from './routes/sertifikaty'
 import { Route as PyatigorskRouteImport } from './routes/pyatigorsk'
+import { Route as PtitsaRouteImport } from './routes/ptitsa'
 import { Route as PerepelinyeYaytsaRouteImport } from './routes/perepelinye-yaytsa'
 import { Route as OptRouteImport } from './routes/opt'
 import { Route as OFermeRouteImport } from './routes/o-ferme'
 import { Route as NevinnomysskRouteImport } from './routes/nevinnomyssk'
 import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
+import { Route as MyasoRouteImport } from './routes/myaso'
 import { Route as MolodnyakRouteImport } from './routes/molodnyak'
 import { Route as MihaylovskRouteImport } from './routes/mihaylovsk'
 import { Route as KontaktyRouteImport } from './routes/kontakty'
@@ -29,9 +33,19 @@ import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as BudyonnovskRouteImport } from './routes/budyonnovsk'
 import { Route as IndexRouteImport } from './routes/index'
 
+const YaytsaRoute = YaytsaRouteImport.update({
+  id: '/yaytsa',
+  path: '/yaytsa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StavropolRoute = StavropolRouteImport.update({
   id: '/stavropol',
   path: '/stavropol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoputstvuyushchieRoute = SoputstvuyushchieRouteImport.update({
+  id: '/soputstvuyushchie',
+  path: '/soputstvuyushchie',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SertifikatyRoute = SertifikatyRouteImport.update({
@@ -42,6 +56,11 @@ const SertifikatyRoute = SertifikatyRouteImport.update({
 const PyatigorskRoute = PyatigorskRouteImport.update({
   id: '/pyatigorsk',
   path: '/pyatigorsk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PtitsaRoute = PtitsaRouteImport.update({
+  id: '/ptitsa',
+  path: '/ptitsa',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerepelinyeYaytsaRoute = PerepelinyeYaytsaRouteImport.update({
@@ -67,6 +86,11 @@ const NevinnomysskRoute = NevinnomysskRouteImport.update({
 const MyasoPerepelaRoute = MyasoPerepelaRouteImport.update({
   id: '/myaso-perepela',
   path: '/myaso-perepela',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyasoRoute = MyasoRouteImport.update({
+  id: '/myaso',
+  path: '/myaso',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MolodnyakRoute = MolodnyakRouteImport.update({
@@ -137,14 +161,18 @@ export interface FileRoutesByFullPath {
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
+  '/myaso': typeof MyasoRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
   '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/ptitsa': typeof PtitsaRoute
   '/pyatigorsk': typeof PyatigorskRoute
   '/sertifikaty': typeof SertifikatyRoute
+  '/soputstvuyushchie': typeof SoputstvuyushchieRoute
   '/stavropol': typeof StavropolRoute
+  '/yaytsa': typeof YaytsaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -158,14 +186,18 @@ export interface FileRoutesByTo {
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
+  '/myaso': typeof MyasoRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
   '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/ptitsa': typeof PtitsaRoute
   '/pyatigorsk': typeof PyatigorskRoute
   '/sertifikaty': typeof SertifikatyRoute
+  '/soputstvuyushchie': typeof SoputstvuyushchieRoute
   '/stavropol': typeof StavropolRoute
+  '/yaytsa': typeof YaytsaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -180,14 +212,18 @@ export interface FileRoutesById {
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
+  '/myaso': typeof MyasoRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
   '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/ptitsa': typeof PtitsaRoute
   '/pyatigorsk': typeof PyatigorskRoute
   '/sertifikaty': typeof SertifikatyRoute
+  '/soputstvuyushchie': typeof SoputstvuyushchieRoute
   '/stavropol': typeof StavropolRoute
+  '/yaytsa': typeof YaytsaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -203,14 +239,18 @@ export interface FileRouteTypes {
     | '/kontakty'
     | '/mihaylovsk'
     | '/molodnyak'
+    | '/myaso'
     | '/myaso-perepela'
     | '/nevinnomyssk'
     | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/ptitsa'
     | '/pyatigorsk'
     | '/sertifikaty'
+    | '/soputstvuyushchie'
     | '/stavropol'
+    | '/yaytsa'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -224,14 +264,18 @@ export interface FileRouteTypes {
     | '/kontakty'
     | '/mihaylovsk'
     | '/molodnyak'
+    | '/myaso'
     | '/myaso-perepela'
     | '/nevinnomyssk'
     | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/ptitsa'
     | '/pyatigorsk'
     | '/sertifikaty'
+    | '/soputstvuyushchie'
     | '/stavropol'
+    | '/yaytsa'
   id:
     | '__root__'
     | '/'
@@ -245,14 +289,18 @@ export interface FileRouteTypes {
     | '/kontakty'
     | '/mihaylovsk'
     | '/molodnyak'
+    | '/myaso'
     | '/myaso-perepela'
     | '/nevinnomyssk'
     | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/ptitsa'
     | '/pyatigorsk'
     | '/sertifikaty'
+    | '/soputstvuyushchie'
     | '/stavropol'
+    | '/yaytsa'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -267,23 +315,41 @@ export interface RootRouteChildren {
   KontaktyRoute: typeof KontaktyRoute
   MihaylovskRoute: typeof MihaylovskRoute
   MolodnyakRoute: typeof MolodnyakRoute
+  MyasoRoute: typeof MyasoRoute
   MyasoPerepelaRoute: typeof MyasoPerepelaRoute
   NevinnomysskRoute: typeof NevinnomysskRoute
   OFermeRoute: typeof OFermeRoute
   OptRoute: typeof OptRoute
   PerepelinyeYaytsaRoute: typeof PerepelinyeYaytsaRoute
+  PtitsaRoute: typeof PtitsaRoute
   PyatigorskRoute: typeof PyatigorskRoute
   SertifikatyRoute: typeof SertifikatyRoute
+  SoputstvuyushchieRoute: typeof SoputstvuyushchieRoute
   StavropolRoute: typeof StavropolRoute
+  YaytsaRoute: typeof YaytsaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/yaytsa': {
+      id: '/yaytsa'
+      path: '/yaytsa'
+      fullPath: '/yaytsa'
+      preLoaderRoute: typeof YaytsaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/stavropol': {
       id: '/stavropol'
       path: '/stavropol'
       fullPath: '/stavropol'
       preLoaderRoute: typeof StavropolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/soputstvuyushchie': {
+      id: '/soputstvuyushchie'
+      path: '/soputstvuyushchie'
+      fullPath: '/soputstvuyushchie'
+      preLoaderRoute: typeof SoputstvuyushchieRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sertifikaty': {
@@ -298,6 +364,13 @@ declare module '@tanstack/react-router' {
       path: '/pyatigorsk'
       fullPath: '/pyatigorsk'
       preLoaderRoute: typeof PyatigorskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ptitsa': {
+      id: '/ptitsa'
+      path: '/ptitsa'
+      fullPath: '/ptitsa'
+      preLoaderRoute: typeof PtitsaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perepelinye-yaytsa': {
@@ -333,6 +406,13 @@ declare module '@tanstack/react-router' {
       path: '/myaso-perepela'
       fullPath: '/myaso-perepela'
       preLoaderRoute: typeof MyasoPerepelaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/myaso': {
+      id: '/myaso'
+      path: '/myaso'
+      fullPath: '/myaso'
+      preLoaderRoute: typeof MyasoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/molodnyak': {
@@ -427,15 +507,29 @@ const rootRouteChildren: RootRouteChildren = {
   KontaktyRoute: KontaktyRoute,
   MihaylovskRoute: MihaylovskRoute,
   MolodnyakRoute: MolodnyakRoute,
+  MyasoRoute: MyasoRoute,
   MyasoPerepelaRoute: MyasoPerepelaRoute,
   NevinnomysskRoute: NevinnomysskRoute,
   OFermeRoute: OFermeRoute,
   OptRoute: OptRoute,
   PerepelinyeYaytsaRoute: PerepelinyeYaytsaRoute,
+  PtitsaRoute: PtitsaRoute,
   PyatigorskRoute: PyatigorskRoute,
   SertifikatyRoute: SertifikatyRoute,
+  SoputstvuyushchieRoute: SoputstvuyushchieRoute,
   StavropolRoute: StavropolRoute,
+  YaytsaRoute: YaytsaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
