@@ -20,6 +20,7 @@ import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
 import { Route as MolodnyakRouteImport } from './routes/molodnyak'
 import { Route as MihaylovskRouteImport } from './routes/mihaylovsk'
 import { Route as KontaktyRouteImport } from './routes/kontakty'
+import { Route as KletkiRouteImport } from './routes/kletki'
 import { Route as InkubatsionnoeYaytsoRouteImport } from './routes/inkubatsionnoe-yaytso'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EssentukiRouteImport } from './routes/essentuki'
@@ -83,6 +84,11 @@ const KontaktyRoute = KontaktyRouteImport.update({
   path: '/kontakty',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KletkiRoute = KletkiRouteImport.update({
+  id: '/kletki',
+  path: '/kletki',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InkubatsionnoeYaytsoRoute = InkubatsionnoeYaytsoRouteImport.update({
   id: '/inkubatsionnoe-yaytso',
   path: '/inkubatsionnoe-yaytso',
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/essentuki': typeof EssentukiRoute
   '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/essentuki': typeof EssentukiRoute
   '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/essentuki': typeof EssentukiRoute
   '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
+  '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
   '/molodnyak': typeof MolodnyakRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/essentuki'
     | '/faq'
     | '/inkubatsionnoe-yaytso'
+    | '/kletki'
     | '/kontakty'
     | '/mihaylovsk'
     | '/molodnyak'
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/essentuki'
     | '/faq'
     | '/inkubatsionnoe-yaytso'
+    | '/kletki'
     | '/kontakty'
     | '/mihaylovsk'
     | '/molodnyak'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/essentuki'
     | '/faq'
     | '/inkubatsionnoe-yaytso'
+    | '/kletki'
     | '/kontakty'
     | '/mihaylovsk'
     | '/molodnyak'
@@ -251,6 +263,7 @@ export interface RootRouteChildren {
   EssentukiRoute: typeof EssentukiRoute
   FaqRoute: typeof FaqRoute
   InkubatsionnoeYaytsoRoute: typeof InkubatsionnoeYaytsoRoute
+  KletkiRoute: typeof KletkiRoute
   KontaktyRoute: typeof KontaktyRoute
   MihaylovskRoute: typeof MihaylovskRoute
   MolodnyakRoute: typeof MolodnyakRoute
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KontaktyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kletki': {
+      id: '/kletki'
+      path: '/kletki'
+      fullPath: '/kletki'
+      preLoaderRoute: typeof KletkiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inkubatsionnoe-yaytso': {
       id: '/inkubatsionnoe-yaytso'
       path: '/inkubatsionnoe-yaytso'
@@ -403,6 +423,7 @@ const rootRouteChildren: RootRouteChildren = {
   EssentukiRoute: EssentukiRoute,
   FaqRoute: FaqRoute,
   InkubatsionnoeYaytsoRoute: InkubatsionnoeYaytsoRoute,
+  KletkiRoute: KletkiRoute,
   KontaktyRoute: KontaktyRoute,
   MihaylovskRoute: MihaylovskRoute,
   MolodnyakRoute: MolodnyakRoute,
@@ -418,13 +439,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

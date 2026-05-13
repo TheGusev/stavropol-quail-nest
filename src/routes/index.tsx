@@ -13,6 +13,7 @@ import catEggs from "@/assets/cat-eggs.jpg";
 import catIncubation from "@/assets/cat-incubation.jpg";
 import catMeat from "@/assets/cat-meat.jpg";
 import catBirds from "@/assets/cat-birds.jpg";
+import catCages from "@/assets/cat-cages.jpg";
 import farmImg from "@/assets/farm.jpg";
 
 const FAQ: FaqItem[] = [
@@ -157,7 +158,7 @@ function HomePage() {
             Весь каталог →
           </Link>
         </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <CategoryCard
             to="/perepelinye-yaytsa"
             title="Перепелиные яйца"

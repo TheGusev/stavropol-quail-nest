@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMascot, type Stage } from "./MascotProvider";
 
 // ---------- Egg SVG ----------
-function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
+export function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
   const showCrack1 = stage === "crack-1" || stage === "crack-2" || stage === "peek";
   const showCrack2 = stage === "crack-2" || stage === "peek";
   const showPeek = stage === "peek";
@@ -94,7 +94,7 @@ function Egg({ stage, rolling }: { stage: Stage; rolling: number }) {
 }
 
 // ---------- Chick SVG ----------
-function Chick({
+export function Chick({
   facing,
   walkPhase,
   blink,
@@ -192,7 +192,7 @@ function measureTextWidth(text: string): number {
   return w;
 }
 
-function MascotTip({
+export function MascotTip({
   text,
   reduced,
   anchorRef,
@@ -318,6 +318,17 @@ export function Mascot() {
   const headRef = useRef<HTMLButtonElement | null>(null);
   const [layout, setLayout] = useState<Layout>(EMPTY_LAYOUT);
   const [unsafe, setUnsafe] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(max-width: 767px)").matches;
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -496,7 +507,7 @@ export function Mascot() {
       setTarget(t);
     };
     pick();
-    const id = window.setInterval(pick, 7000 + Math.random() * 5000);
+    const id = window.setInterval(pick, 4500 + Math.random() * 3500);
     return () => clearInterval(id);
   }, [stage, reducedMotion, layout.ready, layout.walkMin, layout.walkMax, layout.menuLeft, layout.menuRight]);
 
@@ -526,13 +537,13 @@ export function Mascot() {
         if (!moving) setMoving(true);
         const dir = Math.sign(diff);
         setFacing(dir >= 0 ? 1 : -1);
-        const speed = 22;
+        const speed = 46;
         const step = dir * Math.min(dist, speed * dt);
         const next = p + step;
         return Math.max(layout.walkMin, Math.min(layout.walkMax, next));
       });
 
-      if (moving) setWalkPhase((w) => w + dt * 5);
+      if (moving) setWalkPhase((w) => w + dt * 9);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -613,7 +624,7 @@ export function Mascot() {
   // Птенец — в верхней свободной зоне трека
   const chickTop = 0;
 
-  if (unsafe) return null;
+  if (unsafe || isMobile) return null;
 
   return (
     <div ref={rootRef} className="pointer-events-none absolute inset-0 z-10">
