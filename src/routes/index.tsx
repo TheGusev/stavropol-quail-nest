@@ -14,6 +14,7 @@ import catPtitsa from "@/assets/cat-ptitsa-group.jpg";
 import catMyasoGroup from "@/assets/cat-myaso-group.jpg";
 import catSoput from "@/assets/cat-soput-group.jpg";
 import catCages from "@/assets/cat-cages.jpg";
+import catKorm from "@/assets/cat-korm-group.jpg";
 import farmImg from "@/assets/farm.jpg";
 
 const FAQ: FaqItem[] = [
@@ -163,6 +164,7 @@ function HomePage() {
           <CategoryCard to="/ptitsa" title="Птица для разведения" description="Суточные, подрощенные, несушки, самцы, родительское стадо." image={catPtitsa} imageAlt="Перепела для разведения" />
           <CategoryCard to="/myaso" title="Мясо и переработка" description="Охлаждённое, замороженное, маринованные, копчёные, для запекания." image={catMyasoGroup} imageAlt="Продукция из перепела" />
           <CategoryCard to="/soputstvuyushchie" title="Сопутствующие товары" description="Помёт, скорлупа, перо и пух, потроха." image={catSoput} imageAlt="Сопутствующие товары фермы" />
+          <CategoryCard to="/korm" title="Корм для перепелов" description="Стартовый комбикорм собственного производства, без накруток." image={catKorm} imageAlt="Корм для перепелов" />
           <CategoryCard to="/kletki" title="Клетки" description="Клетки и батареи на 20–100 голов, брудеры для молодняка." image={catCages} imageAlt="Клетки для перепелов" />
         </div>
       </section>

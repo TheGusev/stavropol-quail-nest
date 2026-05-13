@@ -11,6 +11,7 @@ const NAV = [
   { to: "/yaytsa", label: "Яйца" },
   { to: "/ptitsa", label: "Птица" },
   { to: "/myaso", label: "Мясо" },
+  { to: "/korm", label: "Корм" },
   { to: "/kletki", label: "Клетки" },
   { to: "/opt", label: "Опт" },
   { to: "/dostavka", label: "Доставка" },

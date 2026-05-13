@@ -24,6 +24,8 @@ export type CategoryRoute =
   | "/soputstvuyushchie/potroha"
   | "/soputstvuyushchie/skorlupa"
   | "/soputstvuyushchie/pero-pukh"
+  | "/korm"
+  | "/korm/startovyy"
   | "/kletki";
 
 export interface CategoryCardProps {
