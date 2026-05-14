@@ -76,7 +76,7 @@ function MenuButton({
       aria-expanded={open}
       onClick={onToggle}
       data-mascot-menu-button
-      className="relative z-20 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur hover:bg-muted lg:hidden"
+      className="relative z-20 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur hover:bg-muted lg:hidden"
       initial={reduced ? false : { opacity: 0, scale: 0.8 }}
       animate={reduced ? undefined : { opacity: 1, scale: 1 }}
       transition={reduced ? undefined : { type: "spring", stiffness: 320, damping: 22, delay: 0.15 }}
