@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Phone, Menu, X } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { PHONE_DISPLAY, telUrl, whatsappUrl } from "@/lib/contacts";
 import { Button } from "@/components/ui/button";
 import { Mascot } from "@/components/mascot/Mascot";
@@ -60,93 +60,42 @@ function LogoTitle({ reduced }: { reduced: boolean }) {
   );
 }
 
-// Бургер, прижатый к букве «л» в слове «Перепел»
 function MenuButton({
   open,
   onToggle,
+  reduced,
 }: {
   open: boolean;
   onToggle: () => void;
+  reduced: boolean;
 }) {
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
-  const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return window.matchMedia("(max-width: 1023px)").matches;
-  });
-  const SIZE = 28;
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 1023px)");
-    const onChange = () => setIsMobile(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!isMobile) return;
-    let raf = 0;
-    const measure = () => {
-      raf = 0;
-      const btn = btnRef.current;
-      if (!btn) return;
-      const track = btn.parentElement;
-      if (!track) return;
-      const anchor = track.querySelector<HTMLElement>("[data-mascot-menu-anchor]");
-      if (!anchor) return;
-      const tr = track.getBoundingClientRect();
-      const ar = anchor.getBoundingClientRect();
-      const cx = ar.left + ar.width / 2 - tr.left;
-      let left = cx - SIZE / 2;
-      left = Math.max(0, Math.min(tr.width - SIZE, left));
-      setPos({ left, top: 2 });
-      btn.setAttribute("data-mascot-menu-button", "");
-    };
-    const schedule = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(measure);
-    };
-    schedule();
-    let ro: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== "undefined") {
-      const track = btnRef.current?.parentElement;
-      if (track) {
-        ro = new ResizeObserver(schedule);
-        ro.observe(track);
-      }
-    }
-    window.addEventListener("resize", schedule);
-    window.addEventListener("orientationchange", schedule);
-    const fonts = (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts;
-    if (fonts?.ready) fonts.ready.then(schedule).catch(() => {});
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      if (ro) ro.disconnect();
-      window.removeEventListener("resize", schedule);
-      window.removeEventListener("orientationchange", schedule);
-    };
-  }, [isMobile]);
-
-  if (!isMobile) return null;
-
   return (
-    <button
-      ref={btnRef}
+    <motion.button
       type="button"
       aria-label={open ? "Закрыть меню" : "Открыть меню"}
       aria-expanded={open}
       onClick={onToggle}
-      className="absolute z-20 inline-flex items-center justify-center rounded-md text-foreground hover:bg-muted/60 lg:hidden"
-      style={{
-        left: pos?.left ?? -9999,
-        top: pos?.top ?? 0,
-        width: 28,
-        height: 28,
-        pointerEvents: "auto",
-      }}
+      data-mascot-menu-button
+      className="absolute right-3 top-2 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur hover:bg-muted lg:hidden"
+      initial={reduced ? false : { opacity: 0, scale: 0.8 }}
+      animate={reduced ? undefined : { opacity: 1, scale: 1 }}
+      transition={reduced ? undefined : { type: "spring", stiffness: 320, damping: 22, delay: 0.15 }}
+      whileHover={reduced ? undefined : { scale: 1.06 }}
+      whileTap={reduced ? undefined : { scale: 0.92 }}
     >
-      {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-    </button>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={open ? "x" : "menu"}
+          initial={reduced ? false : { opacity: 0, rotate: -90, scale: 0.7 }}
+          animate={reduced ? undefined : { opacity: 1, rotate: 0, scale: 1 }}
+          exit={reduced ? undefined : { opacity: 0, rotate: 90, scale: 0.7 }}
+          transition={reduced ? undefined : { duration: 0.18, ease: "easeOut" }}
+          className="inline-flex"
+        >
+          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </motion.span>
+      </AnimatePresence>
+    </motion.button>
   );
 }
 
@@ -164,16 +113,15 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="relative mx-auto max-w-6xl px-4">
         <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-3">
-          {/* Track: верхняя зона — поле для птенца и бургера; снизу — фундамент-название */}
+          {/* Track: верхняя зона — поле для птенца; снизу — фундамент-название */}
           <div
             data-mascot-track
-            className="relative pt-10 sm:pt-11 lg:pt-9"
+            className="relative pr-12 pt-10 sm:pt-11 lg:pr-0 lg:pt-9"
           >
             <LogoTitle reduced={reduced} />
             <Mascot />
-            <MenuButton open={open} onToggle={() => setOpen((v) => !v)} />
           </div>
 
           <nav className="hidden items-center gap-6 lg:flex">
@@ -210,6 +158,8 @@ export function Header() {
             </Button>
           </div>
         </div>
+
+        <MenuButton open={open} onToggle={() => setOpen((v) => !v)} reduced={reduced} />
 
         {open && (
           <div className="border-t border-border bg-background lg:hidden">
