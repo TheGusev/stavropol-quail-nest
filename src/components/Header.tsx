@@ -118,9 +118,12 @@ export function Header() {
           {/* Track: верхняя зона — поле для птенца; снизу — фундамент-название */}
           <div
             data-mascot-track
-            className="relative pr-12 pt-10 sm:pt-11 lg:pr-0 lg:pt-9"
+            className="relative pt-10 sm:pt-11 lg:pt-9"
           >
-            <LogoTitle reduced={reduced} />
+            <div className="flex items-center justify-between gap-3 lg:block">
+              <LogoTitle reduced={reduced} />
+              <MenuButton open={open} onToggle={() => setOpen((v) => !v)} reduced={reduced} />
+            </div>
             <Mascot />
           </div>
 
@@ -158,8 +161,6 @@ export function Header() {
             </Button>
           </div>
         </div>
-
-        <MenuButton open={open} onToggle={() => setOpen((v) => !v)} reduced={reduced} />
 
         {open && (
           <div className="border-t border-border bg-background lg:hidden">
