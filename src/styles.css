@@ -83,21 +83,21 @@
 }
 
 @keyframes shell-shimmer {
-  0%   { background-position: -150% 0; }
-  100% { background-position: 250% 0; }
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 .title-shimmer {
   background-image: linear-gradient(
     100deg,
     var(--foreground) 0%,
-    var(--foreground) 38%,
+    var(--foreground) 40%,
     oklch(0.92 0.05 80) 50%,
-    var(--foreground) 62%,
+    var(--foreground) 60%,
     var(--foreground) 100%
   );
-  background-size: 250% 100%;
-  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  background-repeat: repeat;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
