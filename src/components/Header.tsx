@@ -36,7 +36,7 @@ function LogoTitle({ reduced }: { reduced: boolean }) {
       aria-label="Ставропольский Перепел — на главную"
       className="inline-block text-foreground focus-visible:outline-none"
     >
-      <span className="title-shimmer block whitespace-nowrap font-serif text-[26px] font-bold leading-none sm:text-3xl lg:text-2xl">
+      <span className="title-shimmer block whitespace-nowrap font-serif text-[19px] font-bold leading-none sm:text-2xl lg:text-2xl">
         {Array.from(TITLE).map((ch, i) => {
           const attrs = SPECIAL_ATTRS[i];
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
