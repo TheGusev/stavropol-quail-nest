@@ -34,9 +34,9 @@ function LogoTitle({ reduced }: { reduced: boolean }) {
     <Link
       to="/"
       aria-label="Ставропольский Перепел — на главную"
-      className="inline-block focus-visible:outline-none"
+      className="inline-block text-foreground focus-visible:outline-none"
     >
-      <span className="block whitespace-nowrap font-serif text-[26px] font-bold leading-none text-foreground sm:text-3xl lg:text-2xl">
+      <span className="title-shimmer block whitespace-nowrap font-serif text-[26px] font-bold leading-none sm:text-3xl lg:text-2xl">
         {Array.from(TITLE).map((ch, i) => {
           const attrs = SPECIAL_ATTRS[i];
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -76,7 +76,7 @@ function MenuButton({
       aria-expanded={open}
       onClick={onToggle}
       data-mascot-menu-button
-      className="absolute right-3 top-2 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur hover:bg-muted lg:hidden"
+      className="relative z-20 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur hover:bg-muted lg:hidden"
       initial={reduced ? false : { opacity: 0, scale: 0.8 }}
       animate={reduced ? undefined : { opacity: 1, scale: 1 }}
       transition={reduced ? undefined : { type: "spring", stiffness: 320, damping: 22, delay: 0.15 }}
@@ -118,9 +118,12 @@ export function Header() {
           {/* Track: верхняя зона — поле для птенца; снизу — фундамент-название */}
           <div
             data-mascot-track
-            className="relative pr-12 pt-10 sm:pt-11 lg:pr-0 lg:pt-9"
+            className="relative pt-10 sm:pt-11 lg:pt-9"
           >
-            <LogoTitle reduced={reduced} />
+            <div className="flex items-center justify-between gap-3 lg:block">
+              <LogoTitle reduced={reduced} />
+              <MenuButton open={open} onToggle={() => setOpen((v) => !v)} reduced={reduced} />
+            </div>
             <Mascot />
           </div>
 
@@ -158,8 +161,6 @@ export function Header() {
             </Button>
           </div>
         </div>
-
-        <MenuButton open={open} onToggle={() => setOpen((v) => !v)} reduced={reduced} />
 
         {open && (
           <div className="border-t border-border bg-background lg:hidden">
