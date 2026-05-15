@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Phone, Menu, X } from "lucide-react";
+import { Phone } from "lucide-react";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { PHONE_DISPLAY, telUrl, whatsappUrl } from "@/lib/contacts";
 import { Button } from "@/components/ui/button";
 import { Mascot } from "@/components/mascot/Mascot";
@@ -19,7 +19,6 @@ const NAV = [
 ] as const;
 
 const TITLE = "Ставропольский Перепел";
-// Индексы букв в TITLE: 0:С 1:т 2:а 3:в 4:р 5:о 6:п 7:о 8:л 9:ь 10:с 11:к 12:и 13:й 14:(space) 15:П 16:е 17:р 18:е 19:п 20:е 21:л
 const SPECIAL_ATTRS: Record<number, string[]> = {
   0: ["data-mascot-walk-start"],
   1: ["data-mascot-egg-start"],
@@ -60,72 +59,69 @@ function LogoTitle({ reduced }: { reduced: boolean }) {
   );
 }
 
-function MenuButton({
-  open,
-  onToggle,
-  reduced,
-}: {
-  open: boolean;
-  onToggle: () => void;
-  reduced: boolean;
-}) {
+function MobileNavStrip({ reduced }: { reduced: boolean }) {
   return (
-    <motion.button
-      type="button"
-      aria-label={open ? "Закрыть меню" : "Открыть меню"}
-      aria-expanded={open}
-      onClick={onToggle}
-      data-mascot-menu-button
-      className="relative z-20 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur hover:bg-muted lg:hidden"
-      initial={reduced ? false : { opacity: 0, scale: 0.8 }}
-      animate={reduced ? undefined : { opacity: 1, scale: 1 }}
-      transition={reduced ? undefined : { type: "spring", stiffness: 320, damping: 22, delay: 0.15 }}
-      whileHover={reduced ? undefined : { scale: 1.06 }}
-      whileTap={reduced ? undefined : { scale: 0.92 }}
+    <motion.nav
+      aria-label="Разделы сайта"
+      className="lg:hidden -mx-4 overflow-x-auto px-4 pb-2 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      initial={reduced ? false : { opacity: 0, y: -4 }}
+      animate={reduced ? undefined : { opacity: 1, y: 0 }}
+      transition={reduced ? undefined : { duration: 0.3, ease: "easeOut", delay: 0.2 }}
     >
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={open ? "x" : "menu"}
-          initial={reduced ? false : { opacity: 0, rotate: -90, scale: 0.7 }}
-          animate={reduced ? undefined : { opacity: 1, rotate: 0, scale: 1 }}
-          exit={reduced ? undefined : { opacity: 0, rotate: 90, scale: 0.7 }}
-          transition={reduced ? undefined : { duration: 0.18, ease: "easeOut" }}
-          className="inline-flex"
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </motion.span>
-      </AnimatePresence>
-    </motion.button>
+      <ul className="flex gap-1.5">
+        {NAV.map((n) => (
+          <li key={n.to} className="shrink-0">
+            <Link
+              to={n.to}
+              className="inline-flex items-center rounded-full border border-border/60 bg-background/70 px-3 py-1 text-xs font-medium text-foreground/80 transition-colors hover:bg-muted hover:text-primary"
+              activeProps={{
+                className:
+                  "inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary",
+              }}
+            >
+              {n.label}
+            </Link>
+          </li>
+        ))}
+        <li className="shrink-0">
+          <a
+            href={whatsappUrl("Здравствуйте! Хочу сделать заказ.")}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center rounded-full border border-whatsapp/40 bg-whatsapp/10 px-3 py-1 text-xs font-semibold text-whatsapp transition-colors hover:bg-whatsapp/20"
+          >
+            WhatsApp
+          </a>
+        </li>
+        <li className="shrink-0">
+          <a
+            href={telUrl()}
+            className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-background/70 px-3 py-1 text-xs font-medium text-foreground/80 transition-colors hover:bg-muted hover:text-primary"
+          >
+            <Phone className="h-3 w-3" /> Позвонить
+          </a>
+        </li>
+      </ul>
+    </motion.nav>
   );
 }
 
 export function Header() {
-  const [open, setOpen] = useState(false);
   const reduced = !!useReducedMotion();
-
-  // Закрывать drawer при ESC
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="relative mx-auto max-w-6xl px-4">
-        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-3">
+        <div className="flex flex-col gap-0 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-3">
           {/* Track: верхняя зона — поле для птенца; снизу — фундамент-название */}
-          <div
-            data-mascot-track
-            className="relative pt-10 sm:pt-11 lg:pt-9"
-          >
-            <div className="flex items-center justify-between gap-3 lg:block">
-              <LogoTitle reduced={reduced} />
-              <MenuButton open={open} onToggle={() => setOpen((v) => !v)} reduced={reduced} />
-            </div>
-            <Mascot />
+          <div data-mascot-track className="relative pt-10 sm:pt-11 lg:pt-9">
+            <LogoTitle reduced={reduced} />
+            {mounted && <Mascot />}
           </div>
+
+          <MobileNavStrip reduced={reduced} />
 
           <nav className="hidden items-center gap-6 lg:flex">
             {NAV.map((n) => (
@@ -161,39 +157,6 @@ export function Header() {
             </Button>
           </div>
         </div>
-
-        {open && (
-          <div className="border-t border-border bg-background lg:hidden">
-            <nav className="flex flex-col py-2">
-              {NAV.map((n) => (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  onClick={() => setOpen(false)}
-                  className="border-b border-border/60 py-3 text-foreground"
-                >
-                  {n.label}
-                </Link>
-              ))}
-              <a
-                href={telUrl()}
-                className="flex items-center gap-2 py-3 text-foreground"
-                onClick={() => setOpen(false)}
-              >
-                <Phone className="h-4 w-4" /> {PHONE_DISPLAY}
-              </a>
-              <a
-                href={whatsappUrl("Здравствуйте! Хочу сделать заказ.")}
-                target="_blank"
-                rel="noopener"
-                onClick={() => setOpen(false)}
-                className="mt-2 inline-flex items-center justify-center rounded-md bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground hover:bg-whatsapp/90"
-              >
-                Написать в WhatsApp
-              </a>
-            </nav>
-          </div>
-        )}
       </div>
     </header>
   );
