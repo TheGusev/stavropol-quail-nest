@@ -35,7 +35,7 @@ function LogoTitle({ reduced }: { reduced: boolean }) {
       aria-label="Ставропольский Перепел — на главную"
       className="inline-block text-foreground focus-visible:outline-none"
     >
-      <span className="title-shimmer block whitespace-nowrap font-serif text-[19px] font-bold leading-none sm:text-2xl lg:text-2xl">
+      <span className="title-shimmer block whitespace-nowrap font-serif text-[18px] [@media(min-width:360px)]:text-[19px] font-bold leading-none sm:text-2xl lg:text-2xl">
         {Array.from(TITLE).map((ch, i) => {
           const attrs = SPECIAL_ATTRS[i];
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,7 +63,7 @@ function MobileNavStrip({ reduced }: { reduced: boolean }) {
   return (
     <motion.nav
       aria-label="Разделы сайта"
-      className="lg:hidden -mx-4 overflow-x-auto px-4 pb-2 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="lg:hidden -mx-3 sm:-mx-4 overflow-x-auto px-3 sm:px-4 pb-2 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       initial={reduced ? false : { opacity: 0, y: -4 }}
       animate={reduced ? undefined : { opacity: 1, y: 0 }}
       transition={reduced ? undefined : { duration: 0.3, ease: "easeOut", delay: 0.2 }}
@@ -113,7 +113,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="relative mx-auto max-w-6xl px-4">
+      <div className="relative mx-auto max-w-6xl px-3 sm:px-4">
         <div className="flex flex-col gap-0 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-3">
           {/* Track: верхняя зона — поле для птенца; снизу — фундамент-название */}
           <div data-mascot-track className="relative pt-10 sm:pt-11 lg:pt-9">
