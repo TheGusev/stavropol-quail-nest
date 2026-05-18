@@ -5,10 +5,8 @@ import {
   createRootRouteWithContext,
   useRouter,
   HeadContent,
-  Scripts,
 } from "@tanstack/react-router";
 
-import appCss from "../styles.css?url";
 import { SITE_NAME, SITE_URL } from "@/lib/contacts";
 import { MascotProvider } from "@/components/mascot/MascotProvider";
 
@@ -68,56 +66,25 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "author", content: SITE_NAME },
       { name: "theme-color", content: "#5a8a3a" },
-      { title: "Lovable App" },
-      { property: "og:title", content: "Lovable App" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "description", content: "Stavropol Quail Hub is an e-commerce website for a quail farm, offering local SEO and B2C/B2B sales." },
-      { property: "og:description", content: "Stavropol Quail Hub is an e-commerce website for a quail farm, offering local SEO and B2C/B2B sales." },
-      { name: "twitter:description", content: "Stavropol Quail Hub is an e-commerce website for a quail farm, offering local SEO and B2C/B2B sales." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/806edae2-285b-45e2-a9a7-3bcb8b5659d5/id-preview-34ec0524--84679cd4-4dc0-4a1d-b078-e4b2acf61eb5.lovable.app-1778548448065.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/806edae2-285b-45e2-a9a7-3bcb8b5659d5/id-preview-34ec0524--84679cd4-4dc0-4a1d-b078-e4b2acf61eb5.lovable.app-1778548448065.png" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:locale", content: "ru_RU" },
       { property: "og:type", content: "website" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap",
-      },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="ru">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
       <MascotProvider>
+        <HeadContent />
         <Outlet />
       </MascotProvider>
     </QueryClientProvider>
