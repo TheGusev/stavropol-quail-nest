@@ -13,52 +13,18 @@ import { existsSync } from "node:fs";
 import { extname, join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer-core";
+import { ROUTES as ROUTE_ENTRIES } from "./routes.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = resolve(__dirname, "..", "dist");
 const PORT = 5174;
 
-const ROUTES = [
-  "/",
-  "/budyonnovsk",
-  "/catalog",
-  "/dostavka",
-  "/essentuki",
-  "/faq",
-  "/inkubatsionnoe-yaytso",
-  "/kletki",
-  "/kontakty",
-  "/korm",
-  "/korm/startovyy",
-  "/mihaylovsk",
-  "/molodnyak",
-  "/myaso-perepela",
-  "/myaso",
-  "/myaso/dlya-zapekaniya",
-  "/myaso/marinovannye-kopchenye",
-  "/myaso/marinovannye-yaytsa",
-  "/myaso/vybrakovannye",
-  "/myaso/zamorozhennoe",
-  "/nevinnomyssk",
-  "/o-ferme",
-  "/opt",
-  "/perepelinye-yaytsa",
-  "/ptitsa",
-  "/ptitsa/nesushki",
-  "/ptitsa/podroshchennye",
-  "/ptitsa/roditelskoe-stado",
-  "/ptitsa/samtsy",
-  "/ptitsa/sutochnye",
-  "/pyatigorsk",
-  "/sertifikaty",
-  "/soputstvuyushchie",
-  "/soputstvuyushchie/pero-pukh",
-  "/soputstvuyushchie/pomet",
-  "/soputstvuyushchie/potroha",
-  "/soputstvuyushchie/skorlupa",
-  "/stavropol",
-  "/yaytsa",
-];
+// Use canonical paths from the shared routes module. Strip trailing slash for
+// the in-browser visit (the dev server / TanStack Router resolves both forms);
+// the output is still written to dist/<route>/index.html which serves both.
+const ROUTES = ROUTE_ENTRIES.map((r) =>
+  r.path === "/" ? "/" : r.path.replace(/\/$/, ""),
+);
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
