@@ -1,55 +1,137 @@
 ## Цель
-Привести SEO‑мета и краулинговые файлы в порядок: единый fallback OG‑картинки, чистый self‑canonical, и автогенерация `sitemap.xml` / `robots.txt` из единого списка роутов.
+Любой коммит в `main` (включая правки, которые я пушу через Lovable→GitHub sync) автоматически собирается и выкатывается на ваш Apache-сервер по SSH.
 
-## 1. Единый fallback OG / Twitter image
-- Создать `public/og-default.jpg` (1200×630, копия `hero-eggs.jpg` с лёгким брендингом — название фермы). Файл будет доступен по `https://stavropolskiy-perepel.ru/og-default.jpg`.
-- В `src/lib/seo.ts` в `buildHead`:
-  - всегда добавлять `og:image`, `og:image:width=1200`, `og:image:height=630`, `og:image:alt` и `twitter:image`;
-  - если у роута есть свой `ogImage` — использовать его, иначе абсолютный URL `${SITE_URL}/og-default.jpg`;
-  - если переданный `ogImage` относительный (`/...` или `src/assets/...`), приводить к абсолютному.
+## Архитектура
 
-## 2. Self‑canonical без UTM
-- `buildHead` уже строит `canonical` из `SITE_URL + path` — параметров там нет, это уже self‑canonical без UTM. План:
-  - проверить, что во всех роутах `path` передаётся в каноничной форме (с завершающим `/`, нижний регистр) — собрать список из `grep "path:"` и сверить с файлами;
-  - убрать дублирование: `<link rel="canonical">` объявлять ТОЛЬКО на листовых роутах (как и сейчас). В `__root.tsx` canonical не добавлять (TanStack Router конкатенирует `links` без дедупа);
-  - добавить в `buildHead` дедуп `og:url` (он уже один) и единый формат `og:url === canonical`;
-  - чтобы исключить шаблонные значения, добавить в `buildHead` валидацию dev‑time: если `title`/`description` совпадают с дефолтом из `__root.tsx`, выводить `console.warn` (не ломает прод).
+```
+Lovable ──push──> GitHub (main)
+                     │
+                     ▼
+              GitHub Actions
+                     │ SSH
+                     ▼
+              ваш сервер (Apache)
+              ├── git pull
+              ├── npm ci && npm run build   (vite + sitemap + prerender)
+              └── атомарный swap dist → DocumentRoot
+```
 
-## 3. Единый источник роутов + автогенерация sitemap / robots
-- Создать `scripts/routes.mjs` — единственный источник правды:
-  ```js
-  export const ROUTES = [
-    { path: "/", priority: "1.0", changefreq: "weekly" },
-    { path: "/catalog/", priority: "0.9", changefreq: "weekly" },
-    // ... все 39 страниц с приоритетами
-  ];
-  ```
-- Переписать `scripts/prerender.mjs`: импортировать `ROUTES` оттуда (вместо хардкода).
-- Создать `scripts/generate-seo.mjs`:
-  - генерирует `dist/sitemap.xml` из `ROUTES` (`<loc>`, `<lastmod>` = текущая дата сборки, `<changefreq>`, `<priority>`);
-  - генерирует `dist/robots.txt` (сохраняя текущие директивы: разрешения для GPTBot/ClaudeBot/PerplexityBot/Google‑Extended, `Disallow: /api/`, `Disallow: /*?utm_`, `Sitemap:` строка);
-  - удалить статические `public/sitemap.xml` и `public/robots.txt`, чтобы не было двух источников.
-- В `package.json` обновить `build`:
-  ```
-  "build": "vite build && node scripts/generate-seo.mjs && node scripts/prerender.mjs"
-  ```
+## Предусловия (один раз вручную)
 
-## 4. Проверка трейлинг‑слешей
-- Все URL в `ROUTES` (и, соответственно, в sitemap) — с `/` на конце (кроме корня), что совпадает с `path` в `buildHead` → canonical и `<loc>` в sitemap идентичны.
-- Пререндер сохраняет каждую страницу в `dist/<route>/index.html` — это автоматически обслуживается и по `/foo`, и по `/foo/` любым статическим сервером (nginx, GitHub Pages).
-- В `scripts/generate-seo.mjs` после генерации запускать самопроверку: для каждого URL из sitemap проверять, что соответствующий `dist/<path>/index.html` существует. Если нет — упасть с ошибкой сборки.
+### На сервере
+1. Установить **Node.js 20 LTS** и **Chromium** (нужен для `scripts/prerender.mjs`):
+   ```bash
+   # Debian/Ubuntu
+   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+   sudo apt-get install -y nodejs chromium
+   ```
+2. Создать пользователя `deploy` с доступом к директории сайта.
+3. Сделать `git clone` репозитория один раз в `/var/www/stavropolskiy-perepel/repo`.
+4. DocumentRoot Apache указывает на `/var/www/stavropolskiy-perepel/current` (симлинк на актуальный релиз).
+5. В Apache vhost — SPA fallback (для путей без trailing slash):
+   ```apache
+   <Directory /var/www/stavropolskiy-perepel/current>
+     Options -Indexes +FollowSymLinks
+     AllowOverride All
+     Require all granted
+     FallbackResource /index.html
+   </Directory>
+   ```
+6. Положить публичный ключ deploy-пользователя GitHub Actions в `~deploy/.ssh/authorized_keys`.
 
-## Затронутые файлы
-- new `public/og-default.jpg`
-- new `scripts/routes.mjs`
-- new `scripts/generate-seo.mjs`
-- edit `scripts/prerender.mjs` (использовать общий ROUTES)
-- edit `src/lib/seo.ts` (fallback og:image, абсолютизация)
-- edit `package.json` (build chain)
-- delete `public/sitemap.xml`, `public/robots.txt`
+### В GitHub репозитории (Settings → Secrets and variables → Actions)
+Добавить **Repository secrets**:
+- `SSH_HOST` — IP или домен сервера
+- `SSH_USER` — `deploy`
+- `SSH_PORT` — обычно `22`
+- `SSH_KEY` — приватный SSH-ключ (PEM, целиком)
+- `DEPLOY_PATH` — `/var/www/stavropolskiy-perepel`
 
-## Технические детали
-- Абсолютизация ogImage: `ogImage.startsWith("http") ? ogImage : SITE_URL + (ogImage.startsWith("/") ? ogImage : "/" + ogImage)`.
-- `lastmod` в sitemap — `new Date().toISOString().slice(0,10)` на момент сборки.
-- Самопроверка sitemap — простая `fs.existsSync(path.join(DIST, route, "index.html"))`.
-- Никаких изменений в роуты не требуется — `buildHead` уже принимает `path` с трейлинг‑слешем.
+## Файлы, которые я создам
+
+### `.github/workflows/deploy.yml`
+Срабатывает на `push` в `main`. Делает один SSH-вызов, который на сервере выполняет деплой-скрипт:
+
+```yaml
+name: Deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+      - run: ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Trigger remote deploy
+        run: |
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "cd ${{ secrets.DEPLOY_PATH }}/repo && bash scripts/server-deploy.sh"
+```
+
+### `scripts/server-deploy.sh` (запускается НА сервере)
+Идемпотентный, atomic release-swap, откатывается при ошибке:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="/var/www/stavropolskiy-perepel"
+REPO="$ROOT/repo"
+RELEASES="$ROOT/releases"
+CURRENT="$ROOT/current"
+STAMP=$(date +%Y%m%d-%H%M%S)
+NEW="$RELEASES/$STAMP"
+
+cd "$REPO"
+git fetch --depth 1 origin main
+git reset --hard origin/main
+
+# Сборка во временный каталог, чтобы текущий релиз не ломался при ошибке
+npm ci
+PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium npm run build
+
+mkdir -p "$NEW"
+cp -a dist/. "$NEW/"
+
+# Atomic swap
+ln -sfn "$NEW" "$CURRENT.tmp"
+mv -Tf "$CURRENT.tmp" "$CURRENT"
+
+# Чистим старые релизы (оставляем 5)
+ls -1dt "$RELEASES"/*/ | tail -n +6 | xargs -r rm -rf
+
+echo "Deployed $STAMP"
+```
+
+### `.htaccess` в `public/` (поедет в dist/)
+SPA-fallback на случай, если на сервере не настроен `FallbackResource`:
+
+```apache
+RewriteEngine On
+# Не трогаем реальные файлы и директории
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+# Всё остальное → SPA
+RewriteRule . /index.html [L]
+```
+
+### Документация — добавлю в `README.md`
+Шаги «как настроить сервер с нуля» и «как откатиться» (поменять симлинк `current` на любой релиз из `releases/`).
+
+## Что НЕ меняется
+- Lovable→GitHub sync уже двусторонний; никакой допнастройки не требуется.
+- `scripts/routes.mjs`, `scripts/generate-seo.mjs`, `scripts/prerender.mjs` уже готовы — деплой просто запускает `npm run build`.
+- Lovable-публикация (`.lovable.app`) остаётся доступной как preview, но реальный прод — ваш сервер.
+
+## Что нужно от вас перед реализацией
+1. **SSH-доступ к серверу** (host / user / port / путь к DocumentRoot) — пришлите в чате, я подставлю в README. Приватный ключ — НЕ в чат, его кладёте сами в GitHub Secrets.
+2. **Подтверждение**: проект уже подключён к GitHub? Если нет — нужно сначала подключить через `+` → GitHub в Lovable.
+
+После того как пришлёте SSH-данные и подключите GitHub, я создам workflow, deploy-скрипт и `.htaccess`.
