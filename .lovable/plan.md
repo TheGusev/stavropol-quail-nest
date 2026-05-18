@@ -1,97 +1,55 @@
 ## Цель
+Привести SEO‑мета и краулинговые файлы в порядок: единый fallback OG‑картинки, чистый self‑canonical, и автогенерация `sitemap.xml` / `robots.txt` из единого списка роутов.
 
-После `npm run build` получить папку `dist/` с `index.html`, `assets/` и пререндеренными HTML для каждого маршрута, готовую к деплою на любой статический хостинг (nginx / S3 / GitHub Pages).
+## 1. Единый fallback OG / Twitter image
+- Создать `public/og-default.jpg` (1200×630, копия `hero-eggs.jpg` с лёгким брендингом — название фермы). Файл будет доступен по `https://stavropolskiy-perepel.ru/og-default.jpg`.
+- В `src/lib/seo.ts` в `buildHead`:
+  - всегда добавлять `og:image`, `og:image:width=1200`, `og:image:height=630`, `og:image:alt` и `twitter:image`;
+  - если у роута есть свой `ogImage` — использовать его, иначе абсолютный URL `${SITE_URL}/og-default.jpg`;
+  - если переданный `ogImage` относительный (`/...` или `src/assets/...`), приводить к абсолютному.
 
-## Важное предупреждение
+## 2. Self‑canonical без UTM
+- `buildHead` уже строит `canonical` из `SITE_URL + path` — параметров там нет, это уже self‑canonical без UTM. План:
+  - проверить, что во всех роутах `path` передаётся в каноничной форме (с завершающим `/`, нижний регистр) — собрать список из `grep "path:"` и сверить с файлами;
+  - убрать дублирование: `<link rel="canonical">` объявлять ТОЛЬКО на листовых роутах (как и сейчас). В `__root.tsx` canonical не добавлять (TanStack Router конкатенирует `links` без дедупа);
+  - добавить в `buildHead` дедуп `og:url` (он уже один) и единый формат `og:url === canonical`;
+  - чтобы исключить шаблонные значения, добавить в `buildHead` валидацию dev‑time: если `title`/`description` совпадают с дефолтом из `__root.tsx`, выводить `console.warn` (не ломает прод).
 
-Это уводит проект **с рельсов Lovable**: автодеплой через кнопку «Publish», превью‑URL и Cloud‑функции больше не будут работать корректно, потому что платформа ожидает TanStack Start с Cloudflare Workers. После миграции деплой полностью на вашей стороне. Откатить можно, но это потребует ручной работы. Подтвердите перед стартом.
+## 3. Единый источник роутов + автогенерация sitemap / robots
+- Создать `scripts/routes.mjs` — единственный источник правды:
+  ```js
+  export const ROUTES = [
+    { path: "/", priority: "1.0", changefreq: "weekly" },
+    { path: "/catalog/", priority: "0.9", changefreq: "weekly" },
+    // ... все 39 страниц с приоритетами
+  ];
+  ```
+- Переписать `scripts/prerender.mjs`: импортировать `ROUTES` оттуда (вместо хардкода).
+- Создать `scripts/generate-seo.mjs`:
+  - генерирует `dist/sitemap.xml` из `ROUTES` (`<loc>`, `<lastmod>` = текущая дата сборки, `<changefreq>`, `<priority>`);
+  - генерирует `dist/robots.txt` (сохраняя текущие директивы: разрешения для GPTBot/ClaudeBot/PerplexityBot/Google‑Extended, `Disallow: /api/`, `Disallow: /*?utm_`, `Sitemap:` строка);
+  - удалить статические `public/sitemap.xml` и `public/robots.txt`, чтобы не было двух источников.
+- В `package.json` обновить `build`:
+  ```
+  "build": "vite build && node scripts/generate-seo.mjs && node scripts/prerender.mjs"
+  ```
 
-## Что меняется
+## 4. Проверка трейлинг‑слешей
+- Все URL в `ROUTES` (и, соответственно, в sitemap) — с `/` на конце (кроме корня), что совпадает с `path` в `buildHead` → canonical и `<loc>` в sitemap идентичны.
+- Пререндер сохраняет каждую страницу в `dist/<route>/index.html` — это автоматически обслуживается и по `/foo`, и по `/foo/` любым статическим сервером (nginx, GitHub Pages).
+- В `scripts/generate-seo.mjs` после генерации запускать самопроверку: для каждого URL из sitemap проверять, что соответствующий `dist/<path>/index.html` существует. Если нет — упасть с ошибкой сборки.
 
-### Удаляется
-- `src/server.ts`, `src/start.ts`, `src/lib/error-capture.ts`, `src/lib/error-page.ts`
-- `wrangler.jsonc`
-- Зависимости: `@tanstack/react-start`, `@cloudflare/vite-plugin`, `@lovable.dev/vite-tanstack-config`
-
-### Добавляется / переписывается
-- `index.html` в корне (точка входа Vite SPA)
-- `src/main.tsx` — bootstrap React + `RouterProvider`
-- `vite.config.ts` — обычный Vite с `@vitejs/plugin-react`, `@tanstack/router-plugin/vite` (file-based routing), `@tailwindcss/vite`, `vite-tsconfig-paths`, плюс `vite-plugin-prerender` (или `vite-plugin-ssg`) для пререндера
-
-### Адаптируется
-- `src/routes/__root.tsx` — убрать `RootShell` с `<html>/<body>` и `Scripts`; head управляется через head‑механизм роутера, который при пререндере зафиксирует мета‑теги в HTML
-- Все `src/routes/*.tsx` — оставить как есть (file-based роутинг сохраняется), `head()` и `buildHead` продолжают работать
-- `src/router.tsx` — без изменений по сути, только без SSR‑контекста
-
-## SEO через пререндер
-
-На этапе `vite build` плагин обойдёт список маршрутов и сохранит для каждого готовый `dist/<route>/index.html` с уникальными `<title>`, `<meta>`, canonical, og:tags и JSON‑LD — ровно то, что сейчас даёт SSR. Список маршрутов соберём из `src/routes/` (плюс динамические — нужно перечислить вручную, см. ниже).
-
-### Динамические маршруты для пререндера
-
-Перечислю все статические URL, которые надо отрисовать. У вас в проекте маршруты только статические (нет `$param`), но проверю по `routeTree.gen.ts` и составлю полный список (~40 страниц): `/`, `/o-ferme`, `/catalog`, `/dostavka`, `/faq`, `/kontakty`, `/opt`, `/sertifikaty`, все `/ptitsa/*`, `/myaso/*`, `/korm/*`, `/soputstvuyushchie/*`, гео‑страницы (`/stavropol`, `/budyonnovsk`, …), и т.д.
-
-## Конфигурация SPA‑фолбэка
-
-Для хостинга добавлю `public/_redirects` и пример `nginx.conf` в README, чтобы при заходе по deep‑link на не пререндеренный путь сервер отдавал `index.html` (SPA‑фолбэк).
+## Затронутые файлы
+- new `public/og-default.jpg`
+- new `scripts/routes.mjs`
+- new `scripts/generate-seo.mjs`
+- edit `scripts/prerender.mjs` (использовать общий ROUTES)
+- edit `src/lib/seo.ts` (fallback og:image, абсолютизация)
+- edit `package.json` (build chain)
+- delete `public/sitemap.xml`, `public/robots.txt`
 
 ## Технические детали
-
-```ts
-// vite.config.ts (упрощённо)
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
-import tailwindcss from "@tailwindcss/vite";
-import tsconfigPaths from "vite-tsconfig-paths";
-import prerender from "vite-plugin-prerender";
-
-export default defineConfig({
-  plugins: [
-    TanStackRouterVite({ target: "react", autoCodeSplitting: true }),
-    react(),
-    tailwindcss(),
-    tsconfigPaths(),
-    prerender({
-      staticDir: "dist",
-      routes: [/* список из routeTree */],
-    }),
-  ],
-});
-```
-
-```html
-<!-- index.html -->
-<!doctype html>
-<html lang="ru">
-  <head><meta charset="utf-8" /><div id="head-outlet"></div></head>
-  <body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body>
-</html>
-```
-
-```ts
-// src/main.tsx
-import { createRoot } from "react-dom/client";
-import { RouterProvider } from "@tanstack/react-router";
-import { getRouter } from "./router";
-import "./styles.css";
-createRoot(document.getElementById("root")!).render(<RouterProvider router={getRouter()} />);
-```
-
-## Риски
-
-1. **`HeadContent`/`Scripts` из `@tanstack/react-router`** работают и в SPA — head‑теги обновляются на клиенте. Для SEO их фиксирует пререндер на этапе сборки.
-2. **`@tanstack/react-start` import’ы** в `routeTree.gen.ts` исчезнут после первой перегенерации router‑плагином.
-3. **Превью в Lovable** перестанет работать корректно — это ожидаемо.
-
-## Шаги выполнения
-
-1. Удалить `src/server.ts`, `src/start.ts`, `src/lib/error-capture.ts`, `src/lib/error-page.ts`, `wrangler.jsonc`
-2. Обновить `package.json` (убрать ненужное, добавить `vite-plugin-prerender`)
-3. Переписать `vite.config.ts`
-4. Создать `index.html` и `src/main.tsx`
-5. Упростить `src/routes/__root.tsx` (убрать `RootShell`, `Scripts`, `shellComponent`)
-6. Прогнать `npm install` и `npm run build`, убедиться что `dist/` собирается с пререндером
-7. Добавить `public/_redirects` и краткий README по деплою
-
-Подтвердите план — после одобрения начну реализацию.
+- Абсолютизация ogImage: `ogImage.startsWith("http") ? ogImage : SITE_URL + (ogImage.startsWith("/") ? ogImage : "/" + ogImage)`.
+- `lastmod` в sitemap — `new Date().toISOString().slice(0,10)` на момент сборки.
+- Самопроверка sitemap — простая `fs.existsSync(path.join(DIST, route, "index.html"))`.
+- Никаких изменений в роуты не требуется — `buildHead` уже принимает `path` с трейлинг‑слешем.
