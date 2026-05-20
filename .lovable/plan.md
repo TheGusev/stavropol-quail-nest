@@ -1,137 +1,62 @@
-## Цель
-Любой коммит в `main` (включая правки, которые я пушу через Lovable→GitHub sync) автоматически собирается и выкатывается на ваш Apache-сервер по SSH.
+## Что меняем
 
-## Архитектура
+Переходим с модели «SSH → сборка на сервере Apache» на модель «GitHub Actions собирает → заливает `dist/` по FTPS на Beget». Плюс закаляем prerender по рекомендациям из скриншотов.
 
-```
-Lovable ──push──> GitHub (main)
-                     │
-                     ▼
-              GitHub Actions
-                     │ SSH
-                     ▼
-              ваш сервер (Apache)
-              ├── git pull
-              ├── npm ci && npm run build   (vite + sitemap + prerender)
-              └── атомарный swap dist → DocumentRoot
-```
+## 1. GitHub Actions workflow
 
-## Предусловия (один раз вручную)
+Заменить `.github/workflows/deploy.yml` на ваш вариант (Build & Deploy to Beget, FTPS через `SamKirkland/FTP-Deploy-Action@v4.3.5`).
 
-### На сервере
-1. Установить **Node.js 20 LTS** и **Chromium** (нужен для `scripts/prerender.mjs`):
-   ```bash
-   # Debian/Ubuntu
-   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-   sudo apt-get install -y nodejs chromium
-   ```
-2. Создать пользователя `deploy` с доступом к директории сайта.
-3. Сделать `git clone` репозитория один раз в `/var/www/stavropolskiy-perepel/repo`.
-4. DocumentRoot Apache указывает на `/var/www/stavropolskiy-perepel/current` (симлинк на актуальный релиз).
-5. В Apache vhost — SPA fallback (для путей без trailing slash):
-   ```apache
-   <Directory /var/www/stavropolskiy-perepel/current>
-     Options -Indexes +FollowSymLinks
-     AllowOverride All
-     Require all granted
-     FallbackResource /index.html
-   </Directory>
-   ```
-6. Положить публичный ключ deploy-пользователя GitHub Actions в `~deploy/.ssh/authorized_keys`.
+Мелкие правки относительно присланного:
+- Условие `if: hashFiles('scripts/prerender.ts')` поправить на `scripts/prerender.mjs` (у нас `.mjs`, не `.ts`) — иначе Chromium не поставится и prerender молча отвалится.
+- Добавить шаг `Upload dist artifact` (`actions/upload-artifact@v4`) — на случай разбора, если FTP-деплой упадёт.
+- Concurrency оставляем как у вас.
 
-### В GitHub репозитории (Settings → Secrets and variables → Actions)
-Добавить **Repository secrets**:
-- `SSH_HOST` — IP или домен сервера
-- `SSH_USER` — `deploy`
-- `SSH_PORT` — обычно `22`
-- `SSH_KEY` — приватный SSH-ключ (PEM, целиком)
-- `DEPLOY_PATH` — `/var/www/stavropolskiy-perepel`
+Секреты в GitHub: `FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`, `FTP_PATH` (например `/site-root/` или `/public_html/`).
 
-## Файлы, которые я создам
+## 2. Скрипт `package.json`
 
-### `.github/workflows/deploy.yml`
-Срабатывает на `push` в `main`. Делает один SSH-вызов, который на сервере выполняет деплой-скрипт:
+Добавить алиас `"build:prod": "npm run build"` (или вынести в него очистку + build + verify), чтобы workflow с `npm run build:prod` работал без правок.
 
-```yaml
-name: Deploy
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-concurrency:
-  group: deploy-prod
-  cancel-in-progress: false
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-      - run: ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      - name: Trigger remote deploy
-        run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "cd ${{ secrets.DEPLOY_PATH }}/repo && bash scripts/server-deploy.sh"
-```
+## 3. Усиление `scripts/prerender.mjs`
 
-### `scripts/server-deploy.sh` (запускается НА сервере)
-Идемпотентный, atomic release-swap, откатывается при ошибке:
+По вашим скриншотам (2.1–2.6):
 
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-ROOT="/var/www/stavropolskiy-perepel"
-REPO="$ROOT/repo"
-RELEASES="$ROOT/releases"
-CURRENT="$ROOT/current"
-STAMP=$(date +%Y%m%d-%H%M%S)
-NEW="$RELEASES/$STAMP"
+- **2.1 Очистка stale HTML** перед прогоном: `rm` всем `dist/**/index.html`, **кроме** корневого `dist/index.html` (его пишет Vite, остальные — артефакты прошлого прогона). Защищает от React #299 при повторных сборках.
+- **2.3 Флаги Chromium для CI**: добавить `--disable-gpu`, `--no-first-run`, `--no-zygote`, `timeout: 60000`. Один `browser.launch`, переиспользовать через `browser.newPage()` (уже так).
+- **2.4 Сбор ошибок страницы**: повесить `page.on('pageerror')` и `page.on('console', m => m.type()==='error')` с логом — чтобы при падении в CI видеть стек, а не TimeoutError.
+- **2.5 Устойчивое ожидание**: `Promise.race([waitForSelector('#main'), waitForSelector('[data-error-boundary]')])` с timeout 30s, плюс `networkidle0`.
+- **2.6 Метка ErrorBoundary**: в `src/routes/__root.tsx` у корневого `<div>` в `ErrorComponent` добавить `data-error-boundary`. Заодно убедиться, что `<main id="main">` живёт **только** в `PageShell` (он у нас один) и не дублируется в страницах. Беглый чек по `src/components/PageShell.tsx`: у нас `<main>` без `id="main"` — добавим `id="main"`, чтобы селектор из 2.5 работал.
 
-cd "$REPO"
-git fetch --depth 1 origin main
-git reset --hard origin/main
+## 4. Apache → Beget shared hosting
 
-# Сборка во временный каталог, чтобы текущий релиз не ломался при ошибке
-npm ci
-PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium npm run build
+Beget — обычный shared FTP, `.htaccess` уже создан. Оставляем как есть, он будет работать и на Beget (`mod_rewrite` + `mod_headers` там включены по умолчанию).
 
-mkdir -p "$NEW"
-cp -a dist/. "$NEW/"
+Из README выкидываем разделы:
+- настройка сервера (Node, Chromium, `deploy` user, vhost) — не нужны;
+- секреты `SSH_HOST`/`SSH_USER`/`SSH_PORT`/`SSH_KEY`/`DEPLOY_PATH`;
+- раздел «Откат через симлинки».
 
-# Atomic swap
-ln -sfn "$NEW" "$CURRENT.tmp"
-mv -Tf "$CURRENT.tmp" "$CURRENT"
+Добавляем:
+- список секретов FTP;
+- куда залить корень сайта в панели Beget (`~/site-root/` или public-папка домена);
+- как откатиться (перезалить предыдущий артефакт сборки из вкладки Actions → Artifacts).
 
-# Чистим старые релизы (оставляем 5)
-ls -1dt "$RELEASES"/*/ | tail -n +6 | xargs -r rm -rf
+## 5. Удалить
 
-echo "Deployed $STAMP"
-```
+- `scripts/server-deploy.sh` — больше не нужен (сборка на CI).
 
-### `.htaccess` в `public/` (поедет в dist/)
-SPA-fallback на случай, если на сервере не настроен `FallbackResource`:
+## Файлы, которые буду менять
 
-```apache
-RewriteEngine On
-# Не трогаем реальные файлы и директории
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
-# Всё остальное → SPA
-RewriteRule . /index.html [L]
-```
+- `.github/workflows/deploy.yml` — переписать на FTPS-вариант
+- `scripts/prerender.mjs` — clean stale + флаги Chromium + page-error logging + Promise.race ожидание
+- `src/routes/__root.tsx` — `data-error-boundary` на корневой div ErrorComponent
+- `src/components/PageShell.tsx` — `id="main"` на `<main>`
+- `package.json` — скрипт `build:prod`
+- `README.md` — переписать раздел деплоя под Beget + FTP
+- `scripts/server-deploy.sh` — удалить
 
-### Документация — добавлю в `README.md`
-Шаги «как настроить сервер с нуля» и «как откатиться» (поменять симлинк `current` на любой релиз из `releases/`).
+## Что нужно от вас (после внедрения)
 
-## Что НЕ меняется
-- Lovable→GitHub sync уже двусторонний; никакой допнастройки не требуется.
-- `scripts/routes.mjs`, `scripts/generate-seo.mjs`, `scripts/prerender.mjs` уже готовы — деплой просто запускает `npm run build`.
-- Lovable-публикация (`.lovable.app`) остаётся доступной как preview, но реальный прод — ваш сервер.
-
-## Что нужно от вас перед реализацией
-1. **SSH-доступ к серверу** (host / user / port / путь к DocumentRoot) — пришлите в чате, я подставлю в README. Приватный ключ — НЕ в чат, его кладёте сами в GitHub Secrets.
-2. **Подтверждение**: проект уже подключён к GitHub? Если нет — нужно сначала подключить через `+` → GitHub в Lovable.
-
-После того как пришлёте SSH-данные и подключите GitHub, я создам workflow, deploy-скрипт и `.htaccess`.
+1. В GitHub → Settings → Secrets and variables → Actions добавить 4 секрета: `FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`, `FTP_PATH`.
+2. Убедиться, что в Beget включён FTPS на 21 порту (по умолчанию да).
+3. Подключить проект к GitHub (Lovable → `+` → GitHub → Connect project), иначе workflow негде запускать.
