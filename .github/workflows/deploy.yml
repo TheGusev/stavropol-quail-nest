@@ -1,7 +1,8 @@
-name: Deploy
+name: Build & Deploy to Beget
+
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   workflow_dispatch:
 
 concurrency:
@@ -12,18 +13,46 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Load SSH key
-        uses: webfactory/ssh-agent@v0.9.0
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          node-version: "20"
+          cache: "npm"
 
-      - name: Trust server host key
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Trigger remote deploy
+      - name: Install Chrome for prerender
+        if: ${{ hashFiles('scripts/prerender.mjs') != '' }}
         run: |
-          ssh -p "${{ secrets.SSH_PORT }}" \
-              "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-              "cd ${{ secrets.DEPLOY_PATH }}/repo && bash scripts/server-deploy.sh"
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
+      - name: Build (with prerender + sitemap)
+        run: npm run build:prod
+        env:
+          PRERENDER: 1
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist/
+          retention-days: 14
+
+      - name: Deploy via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ${{ secrets.FTP_PATH }}/
+          protocol: ftps
+          port: 21
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**

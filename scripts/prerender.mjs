@@ -8,7 +8,7 @@
  * Skipped automatically if PRERENDER=0 or no Chromium found.
  */
 import { createServer } from "node:http";
-import { readFile, writeFile, mkdir, stat } from "node:fs/promises";
+import { readFile, writeFile, mkdir, stat, rm, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { extname, join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -45,10 +45,38 @@ const MIME = {
 };
 
 function findChromium() {
-  for (const p of ["/bin/chromium", "/bin/chromium-browser", "/usr/bin/chromium", "/usr/bin/google-chrome"]) {
+  for (const p of [
+    "/bin/chromium",
+    "/bin/chromium-browser",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
+    "/usr/bin/google-chrome",
+  ]) {
     if (existsSync(p)) return p;
   }
   return null;
+}
+
+async function cleanStaleHtml() {
+  // Remove any stale dist/<route>/index.html from previous prerender runs.
+  // Vite only writes dist/index.html; everything else is our artifact and
+  // must be regenerated — stale files without <div id="root"> trigger React #299.
+  let removed = 0;
+  async function walk(dir) {
+    let ents;
+    try { ents = await readdir(dir, { withFileTypes: true }); } catch { return; }
+    for (const ent of ents) {
+      const full = join(dir, ent.name);
+      if (ent.isDirectory()) {
+        await walk(full);
+      } else if (ent.name === "index.html" && dir !== DIST) {
+        await rm(full, { force: true });
+        removed++;
+      }
+    }
+  }
+  await walk(DIST);
+  if (removed) console.log(`[prerender] cleaned ${removed} stale index.html`);
 }
 
 async function serveStatic() {
@@ -61,12 +89,20 @@ async function serveStatic() {
       let st;
       try { st = await stat(filePath); } catch { st = null; }
       if (st && st.isDirectory()) filePath = join(filePath, "index.html");
+      // SPA fallback: only static assets (with a file extension) are served
+      // from disk; every routed path falls back to the root index.html so
+      // Puppeteer always boots the React app.
+      const ext = extname(filePath);
+      if (!ext || ext === ".html") {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(indexHtml);
+        return;
+      }
       try {
         const data = await readFile(filePath);
-        res.writeHead(200, { "Content-Type": MIME[extname(filePath)] || "application/octet-stream" });
+        res.writeHead(200, { "Content-Type": MIME[ext] || "application/octet-stream" });
         res.end(data);
       } catch {
-        // SPA fallback
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
         res.end(indexHtml);
       }
@@ -89,21 +125,49 @@ async function main() {
     return;
   }
 
+  await cleanStaleHtml();
+
   const server = await serveStatic();
   console.log(`[prerender] serving dist/ on http://127.0.0.1:${PORT}`);
 
   const browser = await puppeteer.launch({
     executablePath: chromiumPath,
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    headless: "new",
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+      "--no-first-run",
+      "--no-zygote",
+    ],
+    timeout: 60000,
   });
 
+  let failures = 0;
   try {
     for (const route of ROUTES) {
       const page = await browser.newPage();
+      const pageErrors = [];
+      page.on("pageerror", (e) => {
+        pageErrors.push(e.message);
+        console.error(`[prerender] [${route}] pageerror: ${e.message}`);
+      });
+      page.on("console", (m) => {
+        if (m.type() === "error") {
+          console.error(`[prerender] [${route}] console.error: ${m.text()}`);
+        }
+      });
       try {
         const url = `http://127.0.0.1:${PORT}${route}`;
         await page.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
+        // Wait for either the app shell (<main id="main">) or the error
+        // boundary — whichever appears first. Prevents 30s hangs when the
+        // route throws but lets us still capture the error HTML.
+        await Promise.race([
+          page.waitForSelector("#main", { timeout: 30000 }),
+          page.waitForSelector("[data-error-boundary]", { timeout: 30000 }),
+        ]);
         // give the router a tick to settle head tags
         await new Promise((r) => setTimeout(r, 100));
         const html = await page.content();
@@ -112,6 +176,7 @@ async function main() {
         await writeFile(join(outDir, "index.html"), html);
         console.log(`[prerender] ✓ ${route}`);
       } catch (e) {
+        failures++;
         console.error(`[prerender] ✗ ${route}: ${e.message}`);
       } finally {
         await page.close();
@@ -120,6 +185,10 @@ async function main() {
   } finally {
     await browser.close();
     server.close();
+  }
+  if (failures > 0) {
+    console.error(`[prerender] failed: ${failures} route(s)`);
+    process.exit(1);
   }
   console.log("[prerender] done");
 }
