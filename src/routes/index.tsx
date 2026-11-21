@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { FarmTeam } from "@/components/FarmTeam";
 import { ExtraContacts } from "@/components/ExtraContacts";
 import { PageShell } from "@/components/PageShell";
 import { CtaButtons } from "@/components/CtaButtons";
@@ -253,6 +254,8 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-12"><FarmTeam /></section>
 
       {/* Final CTA */}
       <section className="mx-auto max-w-3xl px-4 py-16 text-center">

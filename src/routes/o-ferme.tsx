@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { FarmTeam, FARM_INCUBATOR } from "@/components/FarmTeam";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
 import { CtaButtons } from "@/components/CtaButtons";
@@ -19,7 +20,8 @@ export const Route = createFileRoute("/o-ferme")({
 function Page() {
   return (
     <PageShell>
-      <PageHero kicker="О нас" title="О ферме" lead="Семейное хозяйство в Ставропольском крае. Делаем продукт, который покупаем сами." image={farmImg} imageAlt="Перепелиная ферма" />
+      <PageHero kicker="О нас" title="О ферме" lead="Семейное хозяйство в Ставропольском крае. Делаем продукт, который покупаем сами." image={FARM_INCUBATOR} imageAlt="Хозяин фермы у инкубатора" />
+      <Section><FarmTeam /></Section>
       <Section>
         <Prose>
           <p>

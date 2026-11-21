@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { FarmPhoto, FARM_INCUBATOR } from "@/components/FarmTeam";
 import { OurBirds } from "@/components/BreedGallery";
 import { BreedPriceGrid, EGG_BREEDS } from "@/components/BreedPrices";
 import { PageShell } from "@/components/PageShell";
@@ -83,6 +84,7 @@ function Page() {
               Мы работаем с проверенными линиями, контролируем кормление и здоровье родительского стада, отбираем
               яйцо по форме, размеру и чистоте скорлупы.
             </p>
+            <FarmPhoto src={FARM_INCUBATOR} alt="Инкубатор с лотками перепелиных яиц" caption="Наш инкубатор — стабильный вывод около 90%" />
             <h2>Что входит в поставку</h2>
             <ul>
               <li>Отобранное яйцо в спецлотках</li>
