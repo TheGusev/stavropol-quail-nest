@@ -7,7 +7,7 @@ import { buildHead, jsonLdScript } from "@/lib/seo";
 import { ADDRESS, EMAIL, PHONE_DISPLAY, PHONE_TEL, SITE_NAME, SITE_URL, telUrl } from "@/lib/contacts";
 import { ArrowRight } from "lucide-react";
 import eggsPack from "@/assets/eggs-pack.jpg";
-import ownerQuail from "@/assets/farm/owner-quail-1.jpg";
+import heroQuail from "@/assets/tehas-home.jpg";
 import { DAY_CHICKS } from "@/lib/chick-photos";
 import { INCUBATOR_PHOTOS } from "@/lib/pack-photos";
 import { MEAT_PHOTOS } from "@/lib/breed-photos";
@@ -84,7 +84,7 @@ function HomePage() {
   return (
     <PageShell>
       <section className="border-b border-border bg-secondary/40">
-        <div className="mx-auto grid max-w-5xl items-center gap-6 px-4 py-8 md:grid-cols-2 md:py-14">
+        <div className="mx-auto grid max-w-5xl items-center gap-6 px-4 py-8 text-center md:grid-cols-2 md:py-14">
           <div>
             <h1 className="font-serif text-3xl font-bold leading-tight animate-fade-in md:text-5xl" style={{ animationFillMode: "both" }}>
               Перепела с нашей фермы
@@ -93,14 +93,14 @@ function HomePage() {
               Инкубационное и пищевое яйцо, перепелята и тушки. Выращиваем сами в Ставропольском крае.
             </p>
             <a href={telUrl()} className="mt-5 block text-2xl font-bold text-primary">{PHONE_DISPLAY}</a>
-            <div className="mt-4"><CtaButtons size="lg" /></div>
+            <div className="mt-4 flex justify-center"><CtaButtons size="lg" /></div>
           </div>
-          <img src={ownerQuail} alt="Хозяин фермы с перепелом" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-md" />
+          <img src={heroQuail} alt="Белый перепел породы Техас в руках" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-md" />
         </div>
       </section>
 
       <section className="mx-auto max-w-5xl px-4 py-10">
-        <h2 className="font-serif text-2xl font-semibold md:text-3xl">Что мы продаём</h2>
+        <h2 className="text-center font-serif text-2xl font-semibold md:text-3xl">Что мы продаём</h2>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           {PRODUCTS.map((p) => (
             <Link key={p.to} to={p.to} className="group overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-md">
@@ -123,7 +123,7 @@ function HomePage() {
 
       <section className="border-t border-border">
         <div className="mx-auto max-w-5xl px-4 py-10">
-          <h2 className="font-serif text-2xl font-semibold md:text-3xl">Частые вопросы</h2>
+          <h2 className="text-center font-serif text-2xl font-semibold md:text-3xl">Частые вопросы</h2>
           <div className="mt-4"><FaqAccordion items={FAQ} /></div>
         </div>
       </section>
