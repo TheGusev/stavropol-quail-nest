@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MeatGallery } from "@/components/MeatGallery";
+import { MEAT_PHOTOS } from "@/lib/breed-photos";
 import { MeatPrices } from "@/components/BreedPrices";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
@@ -29,11 +31,12 @@ export const Route = createFileRoute("/myaso-perepela")({
 function Page() {
   return (
     <PageShell>
-      <PageHero kicker="Категория" title="Мясо перепела" lead="Охлаждённые тушки 220–280 г. Без заморозки, нежное и диетическое." image={catMeat} imageAlt="Тушки перепела" />
+      <PageHero kicker="Категория" title="Мясо перепела" lead="Охлаждённые тушки 220–280 г. Без заморозки, нежное и диетическое." image={MEAT_PHOTOS[1]!} imageAlt="Тушки перепела в вакуумной упаковке" />
       <Section>
         <div className="grid gap-8 md:grid-cols-[1fr,320px]">
           <Prose>
             <MeatPrices />
+            <MeatGallery />
             <p>
               Перепелиное мясо — деликатес и ценный диетический продукт. Низкое содержание жира, мягкий вкус,
               быстрое приготовление. Поставляем в охлаждённом виде, без заморозки и без хлорной обработки.

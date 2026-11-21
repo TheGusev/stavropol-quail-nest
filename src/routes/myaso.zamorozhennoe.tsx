@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MeatGallery } from "@/components/MeatGallery";
+import { MEAT_PHOTOS } from "@/lib/breed-photos";
 import { MeatPrices } from "@/components/BreedPrices";
 import { SubcategoryPage } from "@/components/SubcategoryPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
@@ -25,9 +27,10 @@ export const Route = createFileRoute("/myaso/zamorozhennoe")({
       group={{ label: "Мясо и переработка", to: "/myaso" }}
       title="Замороженное мясо перепела"
       lead="Длительное хранение, удобство опта и стабильное качество — без потери диетических свойств."
-      image={catZamorozh}
+      image={MEAT_PHOTOS[0]!}
       imageAlt="Замороженное мясо перепела"
       intro={<>
+        <MeatGallery />
         <MeatPrices />
         <p>Замороженное мясо перепела — диетический продукт длительного хранения. Низкое содержание холестерина, высокая питательность и богатый витаминный состав (B, A, C, E, PP).</p>
         <h2>Для кого подойдёт</h2>

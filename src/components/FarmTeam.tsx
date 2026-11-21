@@ -6,12 +6,13 @@ import q1 from "@/assets/farm/owner-quail-1.jpg";
 import q2 from "@/assets/farm/owner-quail-2.jpg";
 import thumb from "@/assets/farm/owner-thumb.jpg";
 import incubator from "@/assets/farm/owner-incubator.jpg";
+import trays from "@/assets/farm/incubator-trays.jpg";
 import brooder from "@/assets/farm/brooder.jpg";
 
 export const FARM_INCUBATOR = incubator;
 export const FARM_BROODER = brooder;
-const PHOTOS = [q1, incubator, thumb, brooder, q2];
-const ALTS = ["Хозяин фермы с перепелом", "У инкубатора с лотками яиц", "Среди клеток с птицей", "Брудер с перепелятами", "Перепел в руках на ферме"];
+const PHOTOS = [q1, incubator, thumb, brooder, q2, trays];
+const ALTS = ["Хозяин фермы с перепелом", "У инкубатора с лотками яиц", "Среди клеток с птицей", "Брудер с перепелятами", "Перепел в руках на ферме", "Лотки инкубатора с яйцами"];
 
 export function FarmTeam() {
   const [open, setOpen] = useState<number | null>(null);

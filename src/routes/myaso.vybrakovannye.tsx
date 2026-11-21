@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MeatGallery } from "@/components/MeatGallery";
+import { MEAT_PHOTOS } from "@/lib/breed-photos";
 import { SubcategoryPage } from "@/components/SubcategoryPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
@@ -24,9 +26,10 @@ export const Route = createFileRoute("/myaso/vybrakovannye")({
       group={{ label: "Мясо и переработка", to: "/myaso" }}
       title="Выбракованные перепела"
       lead="По сниженной цене: живой вес, охлаждённые и замороженные тушки. Для бульонов, тушения и корма животных."
-      image={catMyasoGroup}
+      image={MEAT_PHOTOS[0]!}
       imageAlt="Выбракованные перепела"
       intro={<>
+        <MeatGallery />
         <p>Выбракованные перепела — птица, которая закончила свой продуктивный цикл. По диетической ценности и вкусу мяса они полноценны, а цена значительно ниже товарной. Отличный выбор для бульонов, тушения и заготовок.</p>
         <h2>Чем хороши</h2>
         <ul>
