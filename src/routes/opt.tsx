@@ -6,7 +6,7 @@ import { CtaButtons } from "@/components/CtaButtons";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { Coffee, Utensils, Store, Building2, FileCheck, Truck, BadgePercent, Calendar } from "lucide-react";
-import storePack from "@/assets/store-pack.jpg";
+import storePack from "@/assets/eggs-pack.jpg";
 
 const FAQ: FaqItem[] = [
   { q: "Какой минимальный объём опта?", a: "Стартовые партии — от 1000 шт. яиц или от 30 тушек мяса в неделю. Тестовая партия — индивидуально." },

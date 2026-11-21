@@ -2,7 +2,7 @@ import { useState } from "react";
 import { whatsappUrl, telUrl } from "@/lib/contacts";
 import { BREED_PHOTOS } from "@/lib/breed-photos";
 import { Lightbox } from "@/components/BreedGallery";
-import fallbackImg from "@/assets/cat-incubation.jpg";
+import fallbackImg from "@/assets/pack/incubator-b.jpg";
 
 export interface Breed { name: string; type: "яичная" | "мясная"; price?: string }
 

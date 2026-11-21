@@ -1,28 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { FarmTeam } from "@/components/FarmTeam";
-import { ExtraContacts } from "@/components/ExtraContacts";
 import { PageShell } from "@/components/PageShell";
 import { CtaButtons } from "@/components/CtaButtons";
-import { CategoryCard } from "@/components/CategoryCard";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
-import { ADDRESS, EMAIL, PHONE_DISPLAY, PHONE_TEL, SITE_NAME, SITE_URL, telUrl, whatsappUrl } from "@/lib/contacts";
-import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
-import { ShieldCheck, Truck, Sprout, Clock, BadgeCheck, Building2, MessageCircle, Phone } from "lucide-react";
-import heroEggs from "@/assets/hero-eggs.jpg";
-import catEggs from "@/assets/cat-eggs.jpg";
+import { ADDRESS, EMAIL, PHONE_DISPLAY, PHONE_TEL, SITE_NAME, SITE_URL, telUrl } from "@/lib/contacts";
+import { ArrowRight } from "lucide-react";
+import eggsPack from "@/assets/eggs-pack.jpg";
+import ownerQuail from "@/assets/farm/owner-quail-1.jpg";
 import { DAY_CHICKS } from "@/lib/chick-photos";
-import catMyasoGroup from "@/assets/cat-myaso-group.jpg";
-import catSoput from "@/assets/cat-soput-group.jpg";
-import catCages from "@/assets/cat-cages.jpg";
-import catKorm from "@/assets/cat-korm-group.jpg";
-import farmImg from "@/assets/farm.jpg";
+import { INCUBATOR_PHOTOS } from "@/lib/pack-photos";
+import { MEAT_PHOTOS } from "@/lib/breed-photos";
 
 const FAQ: FaqItem[] = [
   { q: "Как сделать заказ?", a: "Напишите в WhatsApp или позвоните по телефону — мы примем заказ за 1–2 минуты, согласуем дату и способ доставки." },
-  { q: "Какая минимальная партия?", a: "Для частных клиентов — от одного лотка (20 шт.). Для опта — от 1000 яиц с прямой ценой производителя." },
-  { q: "Как долго хранятся перепелиные яйца?", a: "До 60 дней при температуре +2…+5 °C. Мы передаём яйца возрастом не старше 7 дней с даты сбора." },
+    { q: "Как долго хранятся перепелиные яйца?", a: "До 60 дней при температуре +2…+5 °C. Мы передаём яйца возрастом не старше 7 дней с даты сбора." },
   { q: "Доставляете ли вы по Ставропольскому краю?", a: "Да, по Ставрополю и Михайловску — собственным транспортом, в другие города — транспортной компанией или с попутным рейсом." },
   { q: "Есть ли документы на продукцию?", a: "Да, ферма оформлена официально, продукция сопровождается ветеринарными документами через систему «Меркурий»." },
   { q: "Можно ли приехать на ферму?", a: "Да, по предварительной договорённости. Мы открыты, показываем процесс и условия содержания птицы." },
@@ -33,7 +25,7 @@ export const Route = createFileRoute("/")({
     const seo = buildHead({
       title: `${SITE_NAME} — перепелиные яйца и мясо в Ставропольском крае`,
       description:
-        "Свежие перепелиные яйца, инкубационное яйцо и мясо перепела с фермы под Ставрополем. Доставка по краю, опт для кафе и магазинов.",
+        "Инкубационное и пищевое перепелиное яйцо, перепелята и тушки перепела с нашей фермы. Доставка по краю, опт.",
       path: "/",
     });
     const graph = {
@@ -75,201 +67,65 @@ export const Route = createFileRoute("/")({
     };
     return {
       ...seo,
-      scripts: [jsonLdScript(graph), jsonLdScript(faqJsonLd(FAQ.slice(0, 6)))],
+      scripts: [jsonLdScript(graph), jsonLdScript(faqJsonLd(FAQ))],
     };
   },
   component: HomePage,
 });
 
-const ADVANTAGES = [
-  { icon: Sprout, title: "Свежесть", text: "Яйца возрастом до 7 дней, мясо охлаждённое — не замороженное." },
-  { icon: ShieldCheck, title: "Своя ферма", text: "Контролируем корма, условия содержания и качество на каждом этапе." },
-  { icon: Truck, title: "Доставка по краю", text: "Ставрополь и Михайловск — своим транспортом, по краю — ТК." },
-  { icon: BadgeCheck, title: "Документы", text: "Ветсопровождение через «Меркурий», оформление по требованию B2B." },
-  { icon: Building2, title: "Опт для бизнеса", text: "Спецусловия для кафе, ресторанов, магазинов и фермерских лавок." },
-  { icon: Clock, title: "Заказ за 30 секунд", text: "WhatsApp, звонок или короткая форма — без сложной регистрации." },
-];
+const PRODUCTS = [
+  { to: "/inkubatsionnoe-yaytso", title: "Инкубационное яйцо", text: "Феникс, Фараон, Техас и другие породы. От 11 ₽ за штуку.", img: INCUBATOR_PHOTOS[0]! },
+  { to: "/perepelinye-yaytsa", title: "Пищевое яйцо", text: "Свежие яйца с фермы в удобных лотках.", img: eggsPack },
+  { to: "/perepelyata", title: "Перепелята", text: "Суточные и подрощенные, разные породы.", img: DAY_CHICKS[0]! },
+  { to: "/myaso-perepela", title: "Тушки перепела", text: "850 ₽/кг, опт — 550 ₽/кг.", img: MEAT_PHOTOS[1]! },
+] as const;
 
 function HomePage() {
   return (
     <PageShell>
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-2 md:items-center md:gap-10 md:py-20">
-          {/* Текстовая часть */}
-          <div className="order-2 md:order-1">
-            <span
-              className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary animate-fade-in"
-              style={{ animationFillMode: "both" }}
-            >
-              Ферма в Ставропольском крае
-            </span>
-            <h1
-              className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight text-foreground animate-fade-in md:text-6xl"
-              style={{ animationDelay: "100ms", animationFillMode: "both" }}
-            >
-              Свежие перепелиные яйца с фермы в Ставропольском крае
+      <section className="border-b border-border bg-secondary/40">
+        <div className="mx-auto grid max-w-5xl items-center gap-6 px-4 py-8 md:grid-cols-2 md:py-14">
+          <div>
+            <h1 className="font-serif text-3xl font-bold leading-tight animate-fade-in md:text-5xl" style={{ animationFillMode: "both" }}>
+              Перепела с нашей фермы
             </h1>
-            <p
-              className="mt-4 max-w-2xl text-lg text-foreground/80 animate-fade-in"
-              style={{ animationDelay: "220ms", animationFillMode: "both" }}
-            >
-              Пищевые и инкубационные яйца, охлаждённое мясо перепела и молодняк. Доставка по Ставрополю,
-              Михайловску и краю. Опт для кафе, ресторанов и магазинов.
+            <p className="mt-3 text-lg text-foreground/85 animate-fade-in" style={{ animationDelay: "120ms", animationFillMode: "both" }}>
+              Инкубационное и пищевое яйцо, перепелята и тушки. Выращиваем сами в Ставропольском крае.
             </p>
-            <div
-              className="mt-6 animate-scale-in"
-              style={{ animationDelay: "320ms", animationFillMode: "both" }}
-            >
-              <CtaButtons size="lg" />
-            </div>
-            <div
-              className="mt-8 flex flex-wrap gap-2 animate-fade-in"
-              style={{ animationDelay: "420ms", animationFillMode: "both" }}
-            >
-              {["Свежесть до 7 дней", "Своя ферма", "Документы Меркурий", "Заказ за 30 сек"].map((b) => (
-                <span key={b} className="rounded-full bg-card px-3 py-1 text-xs font-medium text-foreground shadow-sm">
-                  {b}
-                </span>
-              ))}
-            </div>
+            <a href={telUrl()} className="mt-5 block text-2xl font-bold text-primary">{PHONE_DISPLAY}</a>
+            <div className="mt-4"><CtaButtons size="lg" /></div>
           </div>
-          {/* Фото — без затемнения */}
-          <div
-            className="order-1 overflow-hidden rounded-3xl border border-border shadow-xl animate-scale-in md:order-2"
-            style={{ animationFillMode: "both" }}
-          >
-            <img
-              src={heroEggs}
-              alt="Свежие перепелиные яйца и тушки фермы «Ставропольский Перепел»"
-              width={1536}
-              height={1024}
-              className="aspect-[4/3] h-full w-full object-cover md:aspect-auto"
-            />
-          </div>
+          <img src={ownerQuail} alt="Хозяин фермы с перепелом" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-md" />
         </div>
       </section>
 
-      {/* Catalog */}
-      <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h2 className="font-serif text-3xl font-semibold md:text-4xl">Наша продукция</h2>
-            <p className="mt-2 text-muted-foreground">Четыре направления — выбирайте подходящее.</p>
-          </div>
-          <Link to="/catalog" className="hidden text-sm font-medium text-primary hover:underline md:inline">
-            Весь каталог →
-          </Link>
-        </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          <CategoryCard to="/yaytsa" title="Яйца" description="Пищевые и инкубационные перепелиные яйца." image={catEggs} imageAlt="Перепелиные яйца в лотке" />
-          <CategoryCard to="/ptitsa" title="Птица для разведения" description="Суточные, подрощенные, несушки, самцы, родительское стадо." image={DAY_CHICKS[0]!} imageAlt="Перепелята в ладонях" />
-          <CategoryCard to="/myaso" title="Мясо и переработка" description="Охлаждённое, замороженное, маринованные, копчёные, для запекания." image={catMyasoGroup} imageAlt="Продукция из перепела" />
-          <CategoryCard to="/soputstvuyushchie" title="Сопутствующие товары" description="Помёт, скорлупа, перо и пух, потроха." image={catSoput} imageAlt="Сопутствующие товары фермы" />
-          <CategoryCard to="/korm" title="Корм для перепелов" description="Стартовый комбикорм собственного производства, без накруток." image={catKorm} imageAlt="Корм для перепелов" />
-          <CategoryCard to="/kletki" title="Клетки" description="Клетки и батареи на 20–100 голов, брудеры для молодняка." image={catCages} imageAlt="Клетки для перепелов" />
-        </div>
-      </section>
-
-      {/* Advantages */}
-      <section className="border-y border-border bg-secondary/40">
-        <div className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="font-serif text-3xl font-semibold md:text-4xl">Почему нас выбирают</h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {ADVANTAGES.map((a) => (
-              <div key={a.title} className="rounded-2xl border border-border bg-card p-6">
-                <a.icon className="h-7 w-7 text-primary" />
-                <h3 className="mt-3 font-serif text-lg font-semibold">{a.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{a.text}</p>
+      <section className="mx-auto max-w-5xl px-4 py-10">
+        <h2 className="font-serif text-2xl font-semibold md:text-3xl">Что мы продаём</h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {PRODUCTS.map((p) => (
+            <Link key={p.to} to={p.to} className="group overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-md">
+              <img src={p.img} alt={p.title} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+              <div className="flex items-center justify-between gap-3 p-4">
+                <div>
+                  <div className="font-serif text-xl font-semibold">{p.title}</div>
+                  <div className="mt-1 text-muted-foreground">{p.text}</div>
+                </div>
+                <ArrowRight className="h-6 w-6 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* B2B */}
-      <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="grid gap-8 rounded-3xl bg-primary p-8 text-primary-foreground md:grid-cols-2 md:p-12">
-          <div>
-            <h2 className="font-serif text-3xl font-semibold md:text-4xl">Опт для HoReCa и магазинов</h2>
-            <p className="mt-3 text-primary-foreground/80">
-              Регулярные поставки яйца и мяса перепела для кафе, ресторанов, фермерских лавок и сетей.
-              Стабильное качество, прямые цены от производителя, ветеринарное сопровождение.
-            </p>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>• Цены от производителя без посредников</li>
-              <li>• Гарантированный объём и график поставок</li>
-              <li>• Документы и ветсопровождение «Меркурий»</li>
-            </ul>
-          </div>
-          <div className="flex flex-col justify-center gap-3">
-            <Button asChild size="lg" variant="secondary">
-              <Link to="/opt">Получить прайс</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-              <a href={whatsappUrl("Здравствуйте! Интересует опт перепелиных яиц.")} target="_blank" rel="noopener">
-                <MessageCircle className="mr-2 h-5 w-5" /> Написать в WhatsApp
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Delivery + About */}
-      <section className="mx-auto max-w-6xl px-4 pb-16">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card p-8">
-            <Truck className="h-8 w-8 text-primary" />
-            <h3 className="mt-3 font-serif text-2xl font-semibold">Доставка и самовывоз</h3>
-            <p className="mt-2 text-muted-foreground">
-              Своим транспортом — по Ставрополю и Михайловску. По краю — транспортными компаниями или попутным рейсом.
-              Самовывоз с фермы по предварительной договорённости.
-            </p>
-            <Link to="/dostavka" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
-              Условия доставки →
             </Link>
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
-            <img src={farmImg} alt="Перепелиная ферма" loading="lazy" width={1536} height={1024} className="h-56 w-full object-cover" />
-            <div className="p-8">
-              <h3 className="font-serif text-2xl font-semibold">О ферме</h3>
-              <p className="mt-2 text-muted-foreground">
-                Семейная ферма в Ставропольском крае. Сами выращиваем птицу, контролируем корма и каждый этап.
-                Открыты к визитам — приезжайте, всё покажем.
-              </p>
-              <Link to="/o-ferme" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
-                Подробнее о ферме →
-              </Link>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="border-t border-border bg-secondary/40">
-        <div className="mx-auto max-w-3xl px-4 py-16">
-          <h2 className="font-serif text-3xl font-semibold md:text-4xl">Частые вопросы</h2>
-          <div className="mt-6">
-            <FaqAccordion items={FAQ} />
-          </div>
-        </div>
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-5xl px-4 py-10"><FarmTeam /></div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-12"><FarmTeam /></section>
-
-      {/* Final CTA */}
-      <section className="mx-auto max-w-3xl px-4 py-16 text-center">
-        <h2 className="font-serif text-3xl font-semibold md:text-4xl">Готовы оформить заказ?</h2>
-        <p className="mt-3 text-muted-foreground">
-          Напишите нам в WhatsApp или позвоните — ответим за пару минут и согласуем удобную доставку.
-        </p>
-        <div className="mt-6 flex justify-center">
-          <CtaButtons size="lg" />
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <h2 className="font-serif text-2xl font-semibold md:text-3xl">Частые вопросы</h2>
+          <div className="mt-4"><FaqAccordion items={FAQ} /></div>
         </div>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Или позвоните: <a href={telUrl()} className="font-medium text-foreground hover:text-primary"><Phone className="mr-1 inline h-4 w-4" />{PHONE_DISPLAY}</a>
-        </p>
-        <ExtraContacts className="mt-4 justify-center" />
       </section>
     </PageShell>
   );

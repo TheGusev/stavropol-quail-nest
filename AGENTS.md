@@ -1,1 +1,2 @@
 - Product/breed photos live as compressed JPGs in src/assets (not CDN pointers): the site is self-hosted on Apache, where /__l5e asset URLs don't resolve.
+- Site menu (header + footer) comes only from src/lib/nav.ts; city pages stay out of the menu and are linked only in the footer — keeps navigation short for older visitors.

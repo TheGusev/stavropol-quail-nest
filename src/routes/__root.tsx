@@ -8,7 +8,6 @@ import {
 } from "@tanstack/react-router";
 
 import { SITE_NAME, SITE_URL } from "@/lib/contacts";
-import { MascotProvider } from "@/components/mascot/MascotProvider";
 
 function NotFoundComponent() {
   return (
@@ -83,10 +82,8 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <MascotProvider>
-        <HeadContent />
-        <Outlet />
-      </MascotProvider>
+      <HeadContent />
+      <Outlet />
     </QueryClientProvider>
   );
 }

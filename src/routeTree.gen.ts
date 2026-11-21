@@ -10,58 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StavropolRouteImport } from './routes/stavropol'
-import { Route as SertifikatyRouteImport } from './routes/sertifikaty'
 import { Route as PyatigorskRouteImport } from './routes/pyatigorsk'
+import { Route as PerepelyataRouteImport } from './routes/perepelyata'
 import { Route as PerepelinyeYaytsaRouteImport } from './routes/perepelinye-yaytsa'
 import { Route as OptRouteImport } from './routes/opt'
-import { Route as OFermeRouteImport } from './routes/o-ferme'
 import { Route as NevinnomysskRouteImport } from './routes/nevinnomyssk'
 import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
-import { Route as MolodnyakRouteImport } from './routes/molodnyak'
 import { Route as MihaylovskRouteImport } from './routes/mihaylovsk'
 import { Route as KontaktyRouteImport } from './routes/kontakty'
-import { Route as KletkiRouteImport } from './routes/kletki'
 import { Route as InkubatsionnoeYaytsoRouteImport } from './routes/inkubatsionnoe-yaytso'
-import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EssentukiRouteImport } from './routes/essentuki'
 import { Route as DostavkaRouteImport } from './routes/dostavka'
-import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as BudyonnovskRouteImport } from './routes/budyonnovsk'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as YaytsaIndexRouteImport } from './routes/yaytsa.index'
-import { Route as SoputstvuyushchieIndexRouteImport } from './routes/soputstvuyushchie.index'
-import { Route as PtitsaIndexRouteImport } from './routes/ptitsa.index'
-import { Route as MyasoIndexRouteImport } from './routes/myaso.index'
-import { Route as KormIndexRouteImport } from './routes/korm.index'
-import { Route as SoputstvuyushchieSkorlupaRouteImport } from './routes/soputstvuyushchie.skorlupa'
-import { Route as SoputstvuyushchiePotrohaRouteImport } from './routes/soputstvuyushchie.potroha'
-import { Route as SoputstvuyushchiePometRouteImport } from './routes/soputstvuyushchie.pomet'
-import { Route as SoputstvuyushchiePeroPukhRouteImport } from './routes/soputstvuyushchie.pero-pukh'
-import { Route as PtitsaSutochnyeRouteImport } from './routes/ptitsa.sutochnye'
-import { Route as PtitsaSamtsyRouteImport } from './routes/ptitsa.samtsy'
-import { Route as PtitsaRoditelskoeStadoRouteImport } from './routes/ptitsa.roditelskoe-stado'
-import { Route as PtitsaPodroshchennyeRouteImport } from './routes/ptitsa.podroshchennye'
-import { Route as PtitsaNesushkiRouteImport } from './routes/ptitsa.nesushki'
-import { Route as MyasoZamorozhennoeRouteImport } from './routes/myaso.zamorozhennoe'
-import { Route as MyasoVybrakovannyeRouteImport } from './routes/myaso.vybrakovannye'
-import { Route as MyasoMarinovannyeYaytsaRouteImport } from './routes/myaso.marinovannye-yaytsa'
-import { Route as MyasoMarinovannyeKopchenyeRouteImport } from './routes/myaso.marinovannye-kopchenye'
-import { Route as MyasoDlyaZapekaniyaRouteImport } from './routes/myaso.dlya-zapekaniya'
-import { Route as KormStartovyyRouteImport } from './routes/korm.startovyy'
 
 const StavropolRoute = StavropolRouteImport.update({
   id: '/stavropol',
   path: '/stavropol',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SertifikatyRoute = SertifikatyRouteImport.update({
-  id: '/sertifikaty',
-  path: '/sertifikaty',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PyatigorskRoute = PyatigorskRouteImport.update({
   id: '/pyatigorsk',
   path: '/pyatigorsk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerepelyataRoute = PerepelyataRouteImport.update({
+  id: '/perepelyata',
+  path: '/perepelyata',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerepelinyeYaytsaRoute = PerepelinyeYaytsaRouteImport.update({
@@ -74,11 +49,6 @@ const OptRoute = OptRouteImport.update({
   path: '/opt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OFermeRoute = OFermeRouteImport.update({
-  id: '/o-ferme',
-  path: '/o-ferme',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NevinnomysskRoute = NevinnomysskRouteImport.update({
   id: '/nevinnomyssk',
   path: '/nevinnomyssk',
@@ -87,11 +57,6 @@ const NevinnomysskRoute = NevinnomysskRouteImport.update({
 const MyasoPerepelaRoute = MyasoPerepelaRouteImport.update({
   id: '/myaso-perepela',
   path: '/myaso-perepela',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MolodnyakRoute = MolodnyakRouteImport.update({
-  id: '/molodnyak',
-  path: '/molodnyak',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MihaylovskRoute = MihaylovskRouteImport.update({
@@ -104,19 +69,9 @@ const KontaktyRoute = KontaktyRouteImport.update({
   path: '/kontakty',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KletkiRoute = KletkiRouteImport.update({
-  id: '/kletki',
-  path: '/kletki',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const InkubatsionnoeYaytsoRoute = InkubatsionnoeYaytsoRouteImport.update({
   id: '/inkubatsionnoe-yaytso',
   path: '/inkubatsionnoe-yaytso',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EssentukiRoute = EssentukiRouteImport.update({
@@ -129,11 +84,6 @@ const DostavkaRoute = DostavkaRouteImport.update({
   path: '/dostavka',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CatalogRoute = CatalogRouteImport.update({
-  id: '/catalog',
-  path: '/catalog',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BudyonnovskRoute = BudyonnovskRouteImport.update({
   id: '/budyonnovsk',
   path: '/budyonnovsk',
@@ -144,401 +94,122 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const YaytsaIndexRoute = YaytsaIndexRouteImport.update({
-  id: '/yaytsa/',
-  path: '/yaytsa/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SoputstvuyushchieIndexRoute = SoputstvuyushchieIndexRouteImport.update({
-  id: '/soputstvuyushchie/',
-  path: '/soputstvuyushchie/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PtitsaIndexRoute = PtitsaIndexRouteImport.update({
-  id: '/ptitsa/',
-  path: '/ptitsa/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyasoIndexRoute = MyasoIndexRouteImport.update({
-  id: '/myaso/',
-  path: '/myaso/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KormIndexRoute = KormIndexRouteImport.update({
-  id: '/korm/',
-  path: '/korm/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SoputstvuyushchieSkorlupaRoute =
-  SoputstvuyushchieSkorlupaRouteImport.update({
-    id: '/soputstvuyushchie/skorlupa',
-    path: '/soputstvuyushchie/skorlupa',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const SoputstvuyushchiePotrohaRoute =
-  SoputstvuyushchiePotrohaRouteImport.update({
-    id: '/soputstvuyushchie/potroha',
-    path: '/soputstvuyushchie/potroha',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const SoputstvuyushchiePometRoute = SoputstvuyushchiePometRouteImport.update({
-  id: '/soputstvuyushchie/pomet',
-  path: '/soputstvuyushchie/pomet',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SoputstvuyushchiePeroPukhRoute =
-  SoputstvuyushchiePeroPukhRouteImport.update({
-    id: '/soputstvuyushchie/pero-pukh',
-    path: '/soputstvuyushchie/pero-pukh',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PtitsaSutochnyeRoute = PtitsaSutochnyeRouteImport.update({
-  id: '/ptitsa/sutochnye',
-  path: '/ptitsa/sutochnye',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PtitsaSamtsyRoute = PtitsaSamtsyRouteImport.update({
-  id: '/ptitsa/samtsy',
-  path: '/ptitsa/samtsy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PtitsaRoditelskoeStadoRoute = PtitsaRoditelskoeStadoRouteImport.update({
-  id: '/ptitsa/roditelskoe-stado',
-  path: '/ptitsa/roditelskoe-stado',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PtitsaPodroshchennyeRoute = PtitsaPodroshchennyeRouteImport.update({
-  id: '/ptitsa/podroshchennye',
-  path: '/ptitsa/podroshchennye',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PtitsaNesushkiRoute = PtitsaNesushkiRouteImport.update({
-  id: '/ptitsa/nesushki',
-  path: '/ptitsa/nesushki',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyasoZamorozhennoeRoute = MyasoZamorozhennoeRouteImport.update({
-  id: '/myaso/zamorozhennoe',
-  path: '/myaso/zamorozhennoe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyasoVybrakovannyeRoute = MyasoVybrakovannyeRouteImport.update({
-  id: '/myaso/vybrakovannye',
-  path: '/myaso/vybrakovannye',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyasoMarinovannyeYaytsaRoute = MyasoMarinovannyeYaytsaRouteImport.update({
-  id: '/myaso/marinovannye-yaytsa',
-  path: '/myaso/marinovannye-yaytsa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyasoMarinovannyeKopchenyeRoute =
-  MyasoMarinovannyeKopchenyeRouteImport.update({
-    id: '/myaso/marinovannye-kopchenye',
-    path: '/myaso/marinovannye-kopchenye',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const MyasoDlyaZapekaniyaRoute = MyasoDlyaZapekaniyaRouteImport.update({
-  id: '/myaso/dlya-zapekaniya',
-  path: '/myaso/dlya-zapekaniya',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KormStartovyyRoute = KormStartovyyRouteImport.update({
-  id: '/korm/startovyy',
-  path: '/korm/startovyy',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/budyonnovsk': typeof BudyonnovskRoute
-  '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
   '/essentuki': typeof EssentukiRoute
-  '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
-  '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
-  '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
-  '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/perepelyata': typeof PerepelyataRoute
   '/pyatigorsk': typeof PyatigorskRoute
-  '/sertifikaty': typeof SertifikatyRoute
   '/stavropol': typeof StavropolRoute
-  '/korm/startovyy': typeof KormStartovyyRoute
-  '/myaso/dlya-zapekaniya': typeof MyasoDlyaZapekaniyaRoute
-  '/myaso/marinovannye-kopchenye': typeof MyasoMarinovannyeKopchenyeRoute
-  '/myaso/marinovannye-yaytsa': typeof MyasoMarinovannyeYaytsaRoute
-  '/myaso/vybrakovannye': typeof MyasoVybrakovannyeRoute
-  '/myaso/zamorozhennoe': typeof MyasoZamorozhennoeRoute
-  '/ptitsa/nesushki': typeof PtitsaNesushkiRoute
-  '/ptitsa/podroshchennye': typeof PtitsaPodroshchennyeRoute
-  '/ptitsa/roditelskoe-stado': typeof PtitsaRoditelskoeStadoRoute
-  '/ptitsa/samtsy': typeof PtitsaSamtsyRoute
-  '/ptitsa/sutochnye': typeof PtitsaSutochnyeRoute
-  '/soputstvuyushchie/pero-pukh': typeof SoputstvuyushchiePeroPukhRoute
-  '/soputstvuyushchie/pomet': typeof SoputstvuyushchiePometRoute
-  '/soputstvuyushchie/potroha': typeof SoputstvuyushchiePotrohaRoute
-  '/soputstvuyushchie/skorlupa': typeof SoputstvuyushchieSkorlupaRoute
-  '/korm/': typeof KormIndexRoute
-  '/myaso/': typeof MyasoIndexRoute
-  '/ptitsa/': typeof PtitsaIndexRoute
-  '/soputstvuyushchie/': typeof SoputstvuyushchieIndexRoute
-  '/yaytsa/': typeof YaytsaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/budyonnovsk': typeof BudyonnovskRoute
-  '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
   '/essentuki': typeof EssentukiRoute
-  '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
-  '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
-  '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
-  '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/perepelyata': typeof PerepelyataRoute
   '/pyatigorsk': typeof PyatigorskRoute
-  '/sertifikaty': typeof SertifikatyRoute
   '/stavropol': typeof StavropolRoute
-  '/korm/startovyy': typeof KormStartovyyRoute
-  '/myaso/dlya-zapekaniya': typeof MyasoDlyaZapekaniyaRoute
-  '/myaso/marinovannye-kopchenye': typeof MyasoMarinovannyeKopchenyeRoute
-  '/myaso/marinovannye-yaytsa': typeof MyasoMarinovannyeYaytsaRoute
-  '/myaso/vybrakovannye': typeof MyasoVybrakovannyeRoute
-  '/myaso/zamorozhennoe': typeof MyasoZamorozhennoeRoute
-  '/ptitsa/nesushki': typeof PtitsaNesushkiRoute
-  '/ptitsa/podroshchennye': typeof PtitsaPodroshchennyeRoute
-  '/ptitsa/roditelskoe-stado': typeof PtitsaRoditelskoeStadoRoute
-  '/ptitsa/samtsy': typeof PtitsaSamtsyRoute
-  '/ptitsa/sutochnye': typeof PtitsaSutochnyeRoute
-  '/soputstvuyushchie/pero-pukh': typeof SoputstvuyushchiePeroPukhRoute
-  '/soputstvuyushchie/pomet': typeof SoputstvuyushchiePometRoute
-  '/soputstvuyushchie/potroha': typeof SoputstvuyushchiePotrohaRoute
-  '/soputstvuyushchie/skorlupa': typeof SoputstvuyushchieSkorlupaRoute
-  '/korm': typeof KormIndexRoute
-  '/myaso': typeof MyasoIndexRoute
-  '/ptitsa': typeof PtitsaIndexRoute
-  '/soputstvuyushchie': typeof SoputstvuyushchieIndexRoute
-  '/yaytsa': typeof YaytsaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/budyonnovsk': typeof BudyonnovskRoute
-  '/catalog': typeof CatalogRoute
   '/dostavka': typeof DostavkaRoute
   '/essentuki': typeof EssentukiRoute
-  '/faq': typeof FaqRoute
   '/inkubatsionnoe-yaytso': typeof InkubatsionnoeYaytsoRoute
-  '/kletki': typeof KletkiRoute
   '/kontakty': typeof KontaktyRoute
   '/mihaylovsk': typeof MihaylovskRoute
-  '/molodnyak': typeof MolodnyakRoute
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
-  '/o-ferme': typeof OFermeRoute
   '/opt': typeof OptRoute
   '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
+  '/perepelyata': typeof PerepelyataRoute
   '/pyatigorsk': typeof PyatigorskRoute
-  '/sertifikaty': typeof SertifikatyRoute
   '/stavropol': typeof StavropolRoute
-  '/korm/startovyy': typeof KormStartovyyRoute
-  '/myaso/dlya-zapekaniya': typeof MyasoDlyaZapekaniyaRoute
-  '/myaso/marinovannye-kopchenye': typeof MyasoMarinovannyeKopchenyeRoute
-  '/myaso/marinovannye-yaytsa': typeof MyasoMarinovannyeYaytsaRoute
-  '/myaso/vybrakovannye': typeof MyasoVybrakovannyeRoute
-  '/myaso/zamorozhennoe': typeof MyasoZamorozhennoeRoute
-  '/ptitsa/nesushki': typeof PtitsaNesushkiRoute
-  '/ptitsa/podroshchennye': typeof PtitsaPodroshchennyeRoute
-  '/ptitsa/roditelskoe-stado': typeof PtitsaRoditelskoeStadoRoute
-  '/ptitsa/samtsy': typeof PtitsaSamtsyRoute
-  '/ptitsa/sutochnye': typeof PtitsaSutochnyeRoute
-  '/soputstvuyushchie/pero-pukh': typeof SoputstvuyushchiePeroPukhRoute
-  '/soputstvuyushchie/pomet': typeof SoputstvuyushchiePometRoute
-  '/soputstvuyushchie/potroha': typeof SoputstvuyushchiePotrohaRoute
-  '/soputstvuyushchie/skorlupa': typeof SoputstvuyushchieSkorlupaRoute
-  '/korm/': typeof KormIndexRoute
-  '/myaso/': typeof MyasoIndexRoute
-  '/ptitsa/': typeof PtitsaIndexRoute
-  '/soputstvuyushchie/': typeof SoputstvuyushchieIndexRoute
-  '/yaytsa/': typeof YaytsaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/budyonnovsk'
-    | '/catalog'
     | '/dostavka'
     | '/essentuki'
-    | '/faq'
     | '/inkubatsionnoe-yaytso'
-    | '/kletki'
     | '/kontakty'
     | '/mihaylovsk'
-    | '/molodnyak'
     | '/myaso-perepela'
     | '/nevinnomyssk'
-    | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/perepelyata'
     | '/pyatigorsk'
-    | '/sertifikaty'
     | '/stavropol'
-    | '/korm/startovyy'
-    | '/myaso/dlya-zapekaniya'
-    | '/myaso/marinovannye-kopchenye'
-    | '/myaso/marinovannye-yaytsa'
-    | '/myaso/vybrakovannye'
-    | '/myaso/zamorozhennoe'
-    | '/ptitsa/nesushki'
-    | '/ptitsa/podroshchennye'
-    | '/ptitsa/roditelskoe-stado'
-    | '/ptitsa/samtsy'
-    | '/ptitsa/sutochnye'
-    | '/soputstvuyushchie/pero-pukh'
-    | '/soputstvuyushchie/pomet'
-    | '/soputstvuyushchie/potroha'
-    | '/soputstvuyushchie/skorlupa'
-    | '/korm/'
-    | '/myaso/'
-    | '/ptitsa/'
-    | '/soputstvuyushchie/'
-    | '/yaytsa/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/budyonnovsk'
-    | '/catalog'
     | '/dostavka'
     | '/essentuki'
-    | '/faq'
     | '/inkubatsionnoe-yaytso'
-    | '/kletki'
     | '/kontakty'
     | '/mihaylovsk'
-    | '/molodnyak'
     | '/myaso-perepela'
     | '/nevinnomyssk'
-    | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/perepelyata'
     | '/pyatigorsk'
-    | '/sertifikaty'
     | '/stavropol'
-    | '/korm/startovyy'
-    | '/myaso/dlya-zapekaniya'
-    | '/myaso/marinovannye-kopchenye'
-    | '/myaso/marinovannye-yaytsa'
-    | '/myaso/vybrakovannye'
-    | '/myaso/zamorozhennoe'
-    | '/ptitsa/nesushki'
-    | '/ptitsa/podroshchennye'
-    | '/ptitsa/roditelskoe-stado'
-    | '/ptitsa/samtsy'
-    | '/ptitsa/sutochnye'
-    | '/soputstvuyushchie/pero-pukh'
-    | '/soputstvuyushchie/pomet'
-    | '/soputstvuyushchie/potroha'
-    | '/soputstvuyushchie/skorlupa'
-    | '/korm'
-    | '/myaso'
-    | '/ptitsa'
-    | '/soputstvuyushchie'
-    | '/yaytsa'
   id:
     | '__root__'
     | '/'
     | '/budyonnovsk'
-    | '/catalog'
     | '/dostavka'
     | '/essentuki'
-    | '/faq'
     | '/inkubatsionnoe-yaytso'
-    | '/kletki'
     | '/kontakty'
     | '/mihaylovsk'
-    | '/molodnyak'
     | '/myaso-perepela'
     | '/nevinnomyssk'
-    | '/o-ferme'
     | '/opt'
     | '/perepelinye-yaytsa'
+    | '/perepelyata'
     | '/pyatigorsk'
-    | '/sertifikaty'
     | '/stavropol'
-    | '/korm/startovyy'
-    | '/myaso/dlya-zapekaniya'
-    | '/myaso/marinovannye-kopchenye'
-    | '/myaso/marinovannye-yaytsa'
-    | '/myaso/vybrakovannye'
-    | '/myaso/zamorozhennoe'
-    | '/ptitsa/nesushki'
-    | '/ptitsa/podroshchennye'
-    | '/ptitsa/roditelskoe-stado'
-    | '/ptitsa/samtsy'
-    | '/ptitsa/sutochnye'
-    | '/soputstvuyushchie/pero-pukh'
-    | '/soputstvuyushchie/pomet'
-    | '/soputstvuyushchie/potroha'
-    | '/soputstvuyushchie/skorlupa'
-    | '/korm/'
-    | '/myaso/'
-    | '/ptitsa/'
-    | '/soputstvuyushchie/'
-    | '/yaytsa/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BudyonnovskRoute: typeof BudyonnovskRoute
-  CatalogRoute: typeof CatalogRoute
   DostavkaRoute: typeof DostavkaRoute
   EssentukiRoute: typeof EssentukiRoute
-  FaqRoute: typeof FaqRoute
   InkubatsionnoeYaytsoRoute: typeof InkubatsionnoeYaytsoRoute
-  KletkiRoute: typeof KletkiRoute
   KontaktyRoute: typeof KontaktyRoute
   MihaylovskRoute: typeof MihaylovskRoute
-  MolodnyakRoute: typeof MolodnyakRoute
   MyasoPerepelaRoute: typeof MyasoPerepelaRoute
   NevinnomysskRoute: typeof NevinnomysskRoute
-  OFermeRoute: typeof OFermeRoute
   OptRoute: typeof OptRoute
   PerepelinyeYaytsaRoute: typeof PerepelinyeYaytsaRoute
+  PerepelyataRoute: typeof PerepelyataRoute
   PyatigorskRoute: typeof PyatigorskRoute
-  SertifikatyRoute: typeof SertifikatyRoute
   StavropolRoute: typeof StavropolRoute
-  KormStartovyyRoute: typeof KormStartovyyRoute
-  MyasoDlyaZapekaniyaRoute: typeof MyasoDlyaZapekaniyaRoute
-  MyasoMarinovannyeKopchenyeRoute: typeof MyasoMarinovannyeKopchenyeRoute
-  MyasoMarinovannyeYaytsaRoute: typeof MyasoMarinovannyeYaytsaRoute
-  MyasoVybrakovannyeRoute: typeof MyasoVybrakovannyeRoute
-  MyasoZamorozhennoeRoute: typeof MyasoZamorozhennoeRoute
-  PtitsaNesushkiRoute: typeof PtitsaNesushkiRoute
-  PtitsaPodroshchennyeRoute: typeof PtitsaPodroshchennyeRoute
-  PtitsaRoditelskoeStadoRoute: typeof PtitsaRoditelskoeStadoRoute
-  PtitsaSamtsyRoute: typeof PtitsaSamtsyRoute
-  PtitsaSutochnyeRoute: typeof PtitsaSutochnyeRoute
-  SoputstvuyushchiePeroPukhRoute: typeof SoputstvuyushchiePeroPukhRoute
-  SoputstvuyushchiePometRoute: typeof SoputstvuyushchiePometRoute
-  SoputstvuyushchiePotrohaRoute: typeof SoputstvuyushchiePotrohaRoute
-  SoputstvuyushchieSkorlupaRoute: typeof SoputstvuyushchieSkorlupaRoute
-  KormIndexRoute: typeof KormIndexRoute
-  MyasoIndexRoute: typeof MyasoIndexRoute
-  PtitsaIndexRoute: typeof PtitsaIndexRoute
-  SoputstvuyushchieIndexRoute: typeof SoputstvuyushchieIndexRoute
-  YaytsaIndexRoute: typeof YaytsaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -550,18 +221,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StavropolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sertifikaty': {
-      id: '/sertifikaty'
-      path: '/sertifikaty'
-      fullPath: '/sertifikaty'
-      preLoaderRoute: typeof SertifikatyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/pyatigorsk': {
       id: '/pyatigorsk'
       path: '/pyatigorsk'
       fullPath: '/pyatigorsk'
       preLoaderRoute: typeof PyatigorskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perepelyata': {
+      id: '/perepelyata'
+      path: '/perepelyata'
+      fullPath: '/perepelyata'
+      preLoaderRoute: typeof PerepelyataRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perepelinye-yaytsa': {
@@ -578,13 +249,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OptRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/o-ferme': {
-      id: '/o-ferme'
-      path: '/o-ferme'
-      fullPath: '/o-ferme'
-      preLoaderRoute: typeof OFermeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/nevinnomyssk': {
       id: '/nevinnomyssk'
       path: '/nevinnomyssk'
@@ -597,13 +261,6 @@ declare module '@tanstack/react-router' {
       path: '/myaso-perepela'
       fullPath: '/myaso-perepela'
       preLoaderRoute: typeof MyasoPerepelaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/molodnyak': {
-      id: '/molodnyak'
-      path: '/molodnyak'
-      fullPath: '/molodnyak'
-      preLoaderRoute: typeof MolodnyakRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mihaylovsk': {
@@ -620,25 +277,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KontaktyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/kletki': {
-      id: '/kletki'
-      path: '/kletki'
-      fullPath: '/kletki'
-      preLoaderRoute: typeof KletkiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/inkubatsionnoe-yaytso': {
       id: '/inkubatsionnoe-yaytso'
       path: '/inkubatsionnoe-yaytso'
       fullPath: '/inkubatsionnoe-yaytso'
       preLoaderRoute: typeof InkubatsionnoeYaytsoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/essentuki': {
@@ -655,13 +298,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DostavkaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/catalog': {
-      id: '/catalog'
-      path: '/catalog'
-      fullPath: '/catalog'
-      preLoaderRoute: typeof CatalogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/budyonnovsk': {
       id: '/budyonnovsk'
       path: '/budyonnovsk'
@@ -676,189 +312,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/yaytsa/': {
-      id: '/yaytsa/'
-      path: '/yaytsa'
-      fullPath: '/yaytsa/'
-      preLoaderRoute: typeof YaytsaIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/soputstvuyushchie/': {
-      id: '/soputstvuyushchie/'
-      path: '/soputstvuyushchie'
-      fullPath: '/soputstvuyushchie/'
-      preLoaderRoute: typeof SoputstvuyushchieIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ptitsa/': {
-      id: '/ptitsa/'
-      path: '/ptitsa'
-      fullPath: '/ptitsa/'
-      preLoaderRoute: typeof PtitsaIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/myaso/': {
-      id: '/myaso/'
-      path: '/myaso'
-      fullPath: '/myaso/'
-      preLoaderRoute: typeof MyasoIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/korm/': {
-      id: '/korm/'
-      path: '/korm'
-      fullPath: '/korm/'
-      preLoaderRoute: typeof KormIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/soputstvuyushchie/skorlupa': {
-      id: '/soputstvuyushchie/skorlupa'
-      path: '/soputstvuyushchie/skorlupa'
-      fullPath: '/soputstvuyushchie/skorlupa'
-      preLoaderRoute: typeof SoputstvuyushchieSkorlupaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/soputstvuyushchie/potroha': {
-      id: '/soputstvuyushchie/potroha'
-      path: '/soputstvuyushchie/potroha'
-      fullPath: '/soputstvuyushchie/potroha'
-      preLoaderRoute: typeof SoputstvuyushchiePotrohaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/soputstvuyushchie/pomet': {
-      id: '/soputstvuyushchie/pomet'
-      path: '/soputstvuyushchie/pomet'
-      fullPath: '/soputstvuyushchie/pomet'
-      preLoaderRoute: typeof SoputstvuyushchiePometRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/soputstvuyushchie/pero-pukh': {
-      id: '/soputstvuyushchie/pero-pukh'
-      path: '/soputstvuyushchie/pero-pukh'
-      fullPath: '/soputstvuyushchie/pero-pukh'
-      preLoaderRoute: typeof SoputstvuyushchiePeroPukhRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ptitsa/sutochnye': {
-      id: '/ptitsa/sutochnye'
-      path: '/ptitsa/sutochnye'
-      fullPath: '/ptitsa/sutochnye'
-      preLoaderRoute: typeof PtitsaSutochnyeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ptitsa/samtsy': {
-      id: '/ptitsa/samtsy'
-      path: '/ptitsa/samtsy'
-      fullPath: '/ptitsa/samtsy'
-      preLoaderRoute: typeof PtitsaSamtsyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ptitsa/roditelskoe-stado': {
-      id: '/ptitsa/roditelskoe-stado'
-      path: '/ptitsa/roditelskoe-stado'
-      fullPath: '/ptitsa/roditelskoe-stado'
-      preLoaderRoute: typeof PtitsaRoditelskoeStadoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ptitsa/podroshchennye': {
-      id: '/ptitsa/podroshchennye'
-      path: '/ptitsa/podroshchennye'
-      fullPath: '/ptitsa/podroshchennye'
-      preLoaderRoute: typeof PtitsaPodroshchennyeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ptitsa/nesushki': {
-      id: '/ptitsa/nesushki'
-      path: '/ptitsa/nesushki'
-      fullPath: '/ptitsa/nesushki'
-      preLoaderRoute: typeof PtitsaNesushkiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/myaso/zamorozhennoe': {
-      id: '/myaso/zamorozhennoe'
-      path: '/myaso/zamorozhennoe'
-      fullPath: '/myaso/zamorozhennoe'
-      preLoaderRoute: typeof MyasoZamorozhennoeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/myaso/vybrakovannye': {
-      id: '/myaso/vybrakovannye'
-      path: '/myaso/vybrakovannye'
-      fullPath: '/myaso/vybrakovannye'
-      preLoaderRoute: typeof MyasoVybrakovannyeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/myaso/marinovannye-yaytsa': {
-      id: '/myaso/marinovannye-yaytsa'
-      path: '/myaso/marinovannye-yaytsa'
-      fullPath: '/myaso/marinovannye-yaytsa'
-      preLoaderRoute: typeof MyasoMarinovannyeYaytsaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/myaso/marinovannye-kopchenye': {
-      id: '/myaso/marinovannye-kopchenye'
-      path: '/myaso/marinovannye-kopchenye'
-      fullPath: '/myaso/marinovannye-kopchenye'
-      preLoaderRoute: typeof MyasoMarinovannyeKopchenyeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/myaso/dlya-zapekaniya': {
-      id: '/myaso/dlya-zapekaniya'
-      path: '/myaso/dlya-zapekaniya'
-      fullPath: '/myaso/dlya-zapekaniya'
-      preLoaderRoute: typeof MyasoDlyaZapekaniyaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/korm/startovyy': {
-      id: '/korm/startovyy'
-      path: '/korm/startovyy'
-      fullPath: '/korm/startovyy'
-      preLoaderRoute: typeof KormStartovyyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BudyonnovskRoute: BudyonnovskRoute,
-  CatalogRoute: CatalogRoute,
   DostavkaRoute: DostavkaRoute,
   EssentukiRoute: EssentukiRoute,
-  FaqRoute: FaqRoute,
   InkubatsionnoeYaytsoRoute: InkubatsionnoeYaytsoRoute,
-  KletkiRoute: KletkiRoute,
   KontaktyRoute: KontaktyRoute,
   MihaylovskRoute: MihaylovskRoute,
-  MolodnyakRoute: MolodnyakRoute,
   MyasoPerepelaRoute: MyasoPerepelaRoute,
   NevinnomysskRoute: NevinnomysskRoute,
-  OFermeRoute: OFermeRoute,
   OptRoute: OptRoute,
   PerepelinyeYaytsaRoute: PerepelinyeYaytsaRoute,
+  PerepelyataRoute: PerepelyataRoute,
   PyatigorskRoute: PyatigorskRoute,
-  SertifikatyRoute: SertifikatyRoute,
   StavropolRoute: StavropolRoute,
-  KormStartovyyRoute: KormStartovyyRoute,
-  MyasoDlyaZapekaniyaRoute: MyasoDlyaZapekaniyaRoute,
-  MyasoMarinovannyeKopchenyeRoute: MyasoMarinovannyeKopchenyeRoute,
-  MyasoMarinovannyeYaytsaRoute: MyasoMarinovannyeYaytsaRoute,
-  MyasoVybrakovannyeRoute: MyasoVybrakovannyeRoute,
-  MyasoZamorozhennoeRoute: MyasoZamorozhennoeRoute,
-  PtitsaNesushkiRoute: PtitsaNesushkiRoute,
-  PtitsaPodroshchennyeRoute: PtitsaPodroshchennyeRoute,
-  PtitsaRoditelskoeStadoRoute: PtitsaRoditelskoeStadoRoute,
-  PtitsaSamtsyRoute: PtitsaSamtsyRoute,
-  PtitsaSutochnyeRoute: PtitsaSutochnyeRoute,
-  SoputstvuyushchiePeroPukhRoute: SoputstvuyushchiePeroPukhRoute,
-  SoputstvuyushchiePometRoute: SoputstvuyushchiePometRoute,
-  SoputstvuyushchiePotrohaRoute: SoputstvuyushchiePotrohaRoute,
-  SoputstvuyushchieSkorlupaRoute: SoputstvuyushchieSkorlupaRoute,
-  KormIndexRoute: KormIndexRoute,
-  MyasoIndexRoute: MyasoIndexRoute,
-  PtitsaIndexRoute: PtitsaIndexRoute,
-  SoputstvuyushchieIndexRoute: SoputstvuyushchieIndexRoute,
-  YaytsaIndexRoute: YaytsaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

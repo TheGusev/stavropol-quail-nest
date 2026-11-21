@@ -7,13 +7,11 @@ import { OurBirds } from "@/components/BreedGallery";
 import { BreedPriceGrid, EGG_BREEDS } from "@/components/BreedPrices";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
-import { PackagingCard } from "@/components/PackagingCard";
-import { HowToOrder } from "@/components/HowToOrder";
 import { FinalCta } from "@/components/FinalCta";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/contacts";
-import catIncubation from "@/assets/cat-incubation.jpg";
+const catIncubation = INCUBATOR_PHOTOS[0]!;
 import { Egg, Thermometer, ShieldCheck, Truck } from "lucide-react";
 
 const FAQ: FaqItem[] = [
@@ -24,25 +22,19 @@ const FAQ: FaqItem[] = [
   { q: "Даёте ли рекомендации по инкубации?", a: "Да, к каждой партии прикладываем памятку: режимы температуры, влажности, переворота и периоды." },
 ];
 
-const PACKAGES = [
-  { title: "Партия 50 шт.", description: "Для домашнего инкубатора и пробной закладки.", price: "от 600 ₽", note: "за партию", waText: "Здравствуйте! Хочу заказать инкубационное яйцо перепела, 50 шт." },
-  { title: "Партия 100 шт.", description: "Стандартная партия для опытных птицеводов.", price: "от 1100 ₽", note: "за партию", badge: "популярное", waText: "Здравствуйте! Хочу заказать инкубационное яйцо перепела, 100 шт." },
-  { title: "Партия 200 шт.", description: "Для расширения поголовья и небольших ферм.", price: "от 2100 ₽", note: "за партию", waText: "Здравствуйте! Хочу заказать инкубационное яйцо перепела, 200 шт." },
-];
 
 export const Route = createFileRoute("/inkubatsionnoe-yaytso")({
   head: () => {
-    const products = PACKAGES.map((p) => ({
+    const products = EGG_BREEDS.map((p) => ({
       "@context": "https://schema.org",
       "@type": "Product",
-      name: `Инкубационное яйцо перепела — ${p.title}`,
-      description: p.description,
+      name: `Инкубационное яйцо перепела — ${p.name}`,
+      description: `Инкубационное яйцо породы ${p.name}`,
       brand: { "@type": "Brand", name: SITE_NAME },
-      image: `${SITE_URL}/og-inkubatsionnoe-yaytso.jpg`,
       offers: {
         "@type": "Offer",
         priceCurrency: "RUB",
-        price: p.price.replace(/[^0-9]/g, ""),
+        price: (p.price ?? "").match(/\d+/)?.[0] ?? "0",
         availability: "https://schema.org/InStock",
         url: `${SITE_URL}/inkubatsionnoe-yaytso/`,
       },
@@ -113,18 +105,7 @@ function Page() {
         <div className="mt-10"><PackingBlock /></div>
       </Section>
 
-      <Section className="border-t border-border">
-        <h2 className="font-serif text-2xl font-semibold md:text-3xl">Партии и цены</h2>
-        <p className="mt-2 text-muted-foreground">Цены ориентировочные, зависят от породы и сезона.</p>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {PACKAGES.map((p) => <PackagingCard key={p.title} {...p} />)}
-        </div>
-      </Section>
 
-      <Section className="border-t border-border">
-        <h2 className="font-serif text-2xl font-semibold md:text-3xl">Как заказать</h2>
-        <div className="mt-6"><HowToOrder /></div>
-      </Section>
 
       <Section className="border-t border-border">
         <h2 className="font-serif text-2xl font-semibold md:text-3xl">Вопросы и ответы</h2>

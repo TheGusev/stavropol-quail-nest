@@ -6,7 +6,8 @@ import { CtaButtons } from "@/components/CtaButtons";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { PackingBlock } from "@/components/PackingBlock";
-import heroEggs from "@/assets/hero-eggs.jpg";
+import { PACK_PHOTOS as __P } from "@/lib/pack-photos";
+const heroEggs = __P[0]!;
 
 const FAQ: FaqItem[] = [
   { q: "Куда вы доставляете?", a: "По Ставрополю и Михайловску — собственным курьером. По краю (Пятигорск, Ессентуки, Невинномысск, Будённовск и другие города) — транспортной компанией или попутным рейсом." },

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FarmStrip } from "@/components/FarmTeam";
+import { FarmTeam, FARM_INCUBATOR } from "@/components/FarmTeam";
 import { ExtraContacts } from "@/components/ExtraContacts";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section } from "@/components/PageHero";
@@ -7,12 +7,11 @@ import { LeadForm } from "@/components/LeadForm";
 import { buildHead } from "@/lib/seo";
 import { ADDRESS, EMAIL, PHONE_DISPLAY, telUrl, whatsappUrl } from "@/lib/contacts";
 import { Phone, MessageCircle, Mail, MapPin } from "lucide-react";
-import storePack from "@/assets/store-pack.jpg";
 
 export const Route = createFileRoute("/kontakty")({
   head: () =>
     buildHead({
-      title: "Контакты фермы «Ставропольский Перепел»",
+      title: "О ферме и контакты — «Ставропольский Перепел»",
       description:
         "Телефон, WhatsApp, email и адрес фермы. Напишите нам — ответим в течение рабочего дня и согласуем заказ.",
       path: "/kontakty/",
@@ -23,7 +22,7 @@ export const Route = createFileRoute("/kontakty")({
 function Page() {
   return (
     <PageShell>
-      <PageHero kicker="Связаться" title="Контакты" lead="Самый быстрый способ — WhatsApp. Или позвоните по телефону." image={storePack} imageAlt="Упаковка перепелиных яиц с контактами фермы" />
+      <PageHero kicker="Связаться" title="О ферме и контакты" lead="Позвоните или напишите в WhatsApp — ответим и всё подскажем." image={FARM_INCUBATOR} imageAlt="Хозяин фермы у инкубатора" />
       <Section>
         <div className="grid gap-10 md:grid-cols-[1fr,1fr]">
           <div className="space-y-4">
@@ -42,7 +41,6 @@ function Page() {
               </div>
             </a>
             <ExtraContacts />
-            <FarmStrip />
             <a href={`mailto:${EMAIL}`} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 hover:border-primary">
               <Mail className="mt-0.5 h-5 w-5 text-primary" />
               <div>
@@ -55,7 +53,6 @@ function Page() {
               <div>
                 <div className="text-sm text-muted-foreground">Адрес</div>
                 <div className="font-medium">{ADDRESS.region}, {ADDRESS.locality}</div>
-                <div className="text-sm text-muted-foreground">{ADDRESS.street}</div>
               </div>
             </div>
           </div>
@@ -66,6 +63,7 @@ function Page() {
           </div>
         </div>
       </Section>
+      <Section className="border-t border-border"><FarmTeam /></Section>
     </PageShell>
   );
 }

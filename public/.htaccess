@@ -1,6 +1,21 @@
 # SPA fallback for Apache. Real files and directories are served as-is;
 # everything else is rewritten to index.html so client-side routing works.
+# 301 со старых (удалённых) разделов на актуальные страницы
 RewriteEngine On
+RewriteRule ^catalog(/.*)?$ / [R=301,L]
+RewriteRule ^yaytsa(/.*)?$ /inkubatsionnoe-yaytso/ [R=301,L]
+RewriteRule ^ptitsa/sutochnye/?$ /perepelyata/ [R=301,L]
+RewriteRule ^ptitsa/podroshchennye/?$ /perepelyata/ [R=301,L]
+RewriteRule ^molodnyak(/.*)?$ /perepelyata/ [R=301,L]
+RewriteRule ^ptitsa(/.*)?$ /perepelyata/ [R=301,L]
+RewriteRule ^myaso(/.*)?$ /myaso-perepela/ [R=301,L]
+RewriteRule ^soputstvuyushchie(/.*)?$ / [R=301,L]
+RewriteRule ^korm(/.*)?$ / [R=301,L]
+RewriteRule ^kletki(/.*)?$ / [R=301,L]
+RewriteRule ^sertifikaty(/.*)?$ / [R=301,L]
+RewriteRule ^faq(/.*)?$ / [R=301,L]
+RewriteRule ^o-ferme(/.*)?$ /kontakty/ [R=301,L]
+
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]

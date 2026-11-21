@@ -7,7 +7,6 @@ import { PageHero, Section, Prose } from "@/components/PageHero";
 import { CtaButtons } from "@/components/CtaButtons";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
-import catMeat from "@/assets/cat-meat.jpg";
 
 const FAQ: FaqItem[] = [
   { q: "Свежее или замороженное мясо?", a: "По умолчанию — охлаждённое, без заморозки. По запросу можем заморозить." },
@@ -56,8 +55,8 @@ function Page() {
           <aside className="space-y-4 rounded-2xl border border-border bg-card p-6">
             <div>
               <div className="text-sm text-muted-foreground">Цена</div>
-              <div className="font-serif text-2xl font-semibold">от 220 ₽ / тушка</div>
-              <div className="mt-1 text-xs text-muted-foreground">Точная цена — по объёму партии.</div>
+              <div className="font-serif text-2xl font-semibold">850 ₽/кг</div>
+              <div className="mt-1 text-xs text-muted-foreground">Опт — 550 ₽/кг. Тушка 220–280 г.</div>
             </div>
             <CtaButtons text="Здравствуйте! Хочу заказать мясо перепела." />
           </aside>

@@ -7,7 +7,7 @@ import { FinalCta } from "@/components/FinalCta";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/contacts";
-import catEggs from "@/assets/cat-eggs.jpg";
+import catEggs from "@/assets/eggs-pack.jpg";
 import { Sprout, ShieldCheck, Snowflake, Package } from "lucide-react";
 
 const FAQ: FaqItem[] = [
