@@ -4,6 +4,7 @@ import { PageHero, Section, Prose } from "@/components/PageHero";
 import { CtaButtons } from "@/components/CtaButtons";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
+import { PackingBlock } from "@/components/PackingBlock";
 import heroEggs from "@/assets/hero-eggs.jpg";
 
 const FAQ: FaqItem[] = [
@@ -57,6 +58,7 @@ function Page() {
         </Prose>
         <div className="mt-8"><CtaButtons text="Здравствуйте! Хочу уточнить доставку." /></div>
       </Section>
+      <Section><PackingBlock /></Section>
       <Section>
         <h2 className="text-2xl font-bold mb-4">Частые вопросы о доставке</h2>
         <FaqAccordion items={FAQ} />
