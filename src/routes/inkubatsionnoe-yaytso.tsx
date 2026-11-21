@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { OurBirds } from "@/components/BreedGallery";
 import { BreedPriceGrid, EGG_BREEDS } from "@/components/BreedPrices";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
@@ -102,6 +103,7 @@ function Page() {
         <h2 className="font-serif text-2xl font-semibold md:text-3xl">Породы и цены за штуку</h2>
         <p className="mt-2 text-muted-foreground">Инкубационное яйцо с нашей фермы. Стабильный вывод — около 90%.</p>
         <div className="mt-6"><BreedPriceGrid breeds={EGG_BREEDS} product="инкубационное яйцо" /></div>
+        <div className="mt-10"><OurBirds /></div>
       </Section>
 
       <Section className="border-t border-border">

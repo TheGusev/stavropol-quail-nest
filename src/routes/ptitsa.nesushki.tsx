@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { OurBirds } from "@/components/BreedGallery";
 import { SubcategoryPage } from "@/components/SubcategoryPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/ptitsa/nesushki")({
       image={catBirds}
       imageAlt="Несушки перепелов"
       intro={<>
+        <OurBirds />
         <p>Несушки — самый прямой путь к диетической продукции. Перепела скороспелы и неприхотливы, а молодка на пике яйцекладки даёт яйцо буквально с первого дня после переезда.</p>
         <h2>Почему несушки</h2>
         <ul>

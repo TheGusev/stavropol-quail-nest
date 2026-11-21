@@ -1,0 +1,1 @@
+- Product/breed photos live as compressed JPGs in src/assets (not CDN pointers): the site is self-hosted on Apache, where /__l5e asset URLs don't resolve.

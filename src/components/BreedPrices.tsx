@@ -1,4 +1,8 @@
+import { useState } from "react";
 import { whatsappUrl, telUrl } from "@/lib/contacts";
+import { BREED_PHOTOS } from "@/lib/breed-photos";
+import { Lightbox } from "@/components/BreedGallery";
+import fallbackImg from "@/assets/cat-incubation.jpg";
 
 export interface Breed { name: string; type: "яичная" | "мясная"; price?: string }
 
@@ -14,16 +18,31 @@ export const EGG_BREEDS: Breed[] = [
 export const CHICK_BREEDS = ["Саладон", "Фараон", "Техас", "Дмитровские", "Феникс серебристый", "Феникс золотистый"];
 
 export function BreedPriceGrid({ breeds, product }: { breeds: Breed[]; product: string }) {
+  const [open, setOpen] = useState<string | null>(null);
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {breeds.map((b) => (
-        <div key={b.name} className="flex flex-col rounded-xl border border-border bg-card p-4">
+      {open && <Lightbox photos={BREED_PHOTOS[open] ?? []} title={open} onClose={() => setOpen(null)} />}
+      {breeds.map((b) => {
+        const ps = BREED_PHOTOS[b.name];
+        return (
+        <div key={b.name} className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+          {ps ? (
+            <button onClick={() => setOpen(b.name)} className="relative" aria-label={`Фото породы ${b.name}`}>
+              <img src={ps[0]} alt={`Перепел породы ${b.name}`} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+              {ps.length > 1 && <span className="absolute bottom-2 right-2 rounded-full bg-background/90 px-2 py-0.5 text-xs font-medium">{ps.length} фото</span>}
+            </button>
+          ) : (
+            <img src={fallbackImg} alt="Инкубационное яйцо перепела" loading="lazy" className="aspect-[4/3] w-full object-cover opacity-80" />
+          )}
+          <div className="flex flex-col p-4">
           <span className="text-xs uppercase tracking-wide text-muted-foreground">{b.type} порода</span>
           <span className="mt-1 font-serif text-lg font-semibold">{b.name}</span>
           <span className="mt-2 text-2xl font-bold text-primary">{b.price ?? "по телефону"}</span>
           <a href={whatsappUrl(`Здравствуйте! Интересует ${product}: ${b.name}.`)} target="_blank" rel="noopener" className="mt-3 text-sm font-medium text-primary hover:underline">Заказать в WhatsApp →</a>
+          </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

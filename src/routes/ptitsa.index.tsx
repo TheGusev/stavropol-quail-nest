@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { HERO_FARAON } from "@/lib/breed-photos";
 import { HubPage } from "@/components/HubPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/ptitsa/")({
       title="Птица для разведения"
       kicker="Раздел каталога"
       lead="Здоровая птица под любую задачу — от старта домашнего хозяйства до пополнения родительского стада."
-      image={catPtitsa}
+      image={HERO_FARAON}
       imageAlt="Перепела на ферме"
       intro="Разводим проверенные мясо-яичные линии. Контролируем кормление и здоровье поголовья на каждом этапе. К каждой партии — памятка по содержанию."
       cards={[

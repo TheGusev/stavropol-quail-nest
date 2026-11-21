@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { OurBirds } from "@/components/BreedGallery";
 import { SubcategoryPage } from "@/components/SubcategoryPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/ptitsa/roditelskoe-stado")({
       image={catPtitsa}
       imageAlt="Родительское стадо перепелов"
       intro={<>
+        <OurBirds />
         <p>Родительское стадо — основа собственного разведения. Мы формируем семьи из отборных, высокопродуктивных особей, предназначенных именно для получения инкубационного яйца и обновления стада, а не на мясо.</p>
         <h2>Что вы получаете</h2>
         <ul>

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { HERO_FENIKS } from "@/lib/breed-photos";
 import { HubPage } from "@/components/HubPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/yaytsa/")({
       title="Яйца перепела"
       kicker="Раздел каталога"
       lead="Пищевые и инкубационные перепелиные яйца от собственной фермы."
-      image={catEggs}
+      image={HERO_FENIKS}
       imageAlt="Перепелиные яйца"
       intro="В разделе — два направления: свежие пищевые яйца для ежедневного питания и племенное инкубационное яйцо для вывода собственного поголовья."
       cards={[

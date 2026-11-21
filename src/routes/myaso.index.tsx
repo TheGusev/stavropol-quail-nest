@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { HERO_TEHAS } from "@/lib/breed-photos";
 import { HubPage } from "@/components/HubPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/myaso/")({
       title="Мясо и переработка"
       kicker="Раздел каталога"
       lead="Свежие тушки, замороженные партии и готовая продукция — маринованные, копчёные, для запекания."
-      image={catMyasoGroup}
+      image={HERO_TEHAS}
       imageAlt="Продукция из перепела"
       intro="Перепелятина — диетический деликатес: низкое содержание жира, мягкий вкус, быстрое приготовление. У нас вы найдёте мясо в любом удобном виде — от охлаждённой тушки до готового к подаче маринованного перепела."
       cards={[
