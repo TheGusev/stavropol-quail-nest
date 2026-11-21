@@ -1,3 +1,4 @@
+import { FarmVideo } from "@/components/FarmVideo";
 import { createFileRoute } from "@tanstack/react-router";
 import { PhotoStrip } from "@/components/PhotoStrip";
 import { PackingBlock } from "@/components/PackingBlock";
@@ -86,6 +87,7 @@ function Page() {
               Мы работаем с проверенными линиями, контролируем кормление и здоровье родительского стада, отбираем
               яйцо по форме, размеру и чистоте скорлупы.
             </p>
+            <FarmVideo kind="hatch" />
             <PhotoStrip title="Наш инкубатор — стабильный вывод около 90%" photos={INCUBATOR_PHOTOS} alt="Инкубатор с лотками перепелиных яиц" />
             <h2>Что входит в поставку</h2>
             <ul>

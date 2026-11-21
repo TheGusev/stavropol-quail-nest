@@ -1,3 +1,4 @@
+import { FarmVideo } from "@/components/FarmVideo";
 import { useState } from "react";
 import { Egg, Thermometer, Warehouse, Phone, MessageCircle } from "lucide-react";
 import { Lightbox } from "@/components/BreedGallery";
@@ -29,6 +30,7 @@ export function FarmTeam() {
           </button>
         ))}
       </div>
+      <FarmVideo kind="hatch" />
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
         {[{ i: Warehouse, t: "Свои инкубаторы" }, { i: Egg, t: "Стабильный вывод ~90%" }, { i: Thermometer, t: "Брудер для перепелят" }].map((f) => (
           <div key={f.t} className="flex items-center gap-2 rounded-xl border border-border bg-card p-3 text-sm font-medium">

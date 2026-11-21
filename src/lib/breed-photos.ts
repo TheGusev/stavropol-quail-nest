@@ -7,6 +7,7 @@ import p3 from "@/assets/breeds/faraon-3.jpg";
 import t1 from "@/assets/breeds/tehas-1.jpg";
 import t2 from "@/assets/breeds/tehas-2.jpg";
 import t3 from "@/assets/breeds/tehas-3.jpg";
+import t4 from "@/assets/breeds/tehas-4.jpg";
 import p4 from "@/assets/breeds/faraon-4.jpg";
 import p5 from "@/assets/breeds/faraon-5.jpg";
 import p6 from "@/assets/breeds/faraon-6.jpg";
@@ -22,7 +23,7 @@ export const BREED_PHOTOS: Record<string, string[]> = {
   "Феникс золотистый": [f1, f2, f3],
   "Фараон": [p1, p2, p3, p4, p5, p6, p7],
   "Саладон": [s1],
-  "Техас утяжелённый (белый)": [t1, t2, t3],
+  "Техас утяжелённый (белый)": [t1, t2, t3, t4],
   "Дмитровская": [d1],
 };
 

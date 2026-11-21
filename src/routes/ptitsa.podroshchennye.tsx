@@ -1,3 +1,4 @@
+import { FarmVideo } from "@/components/FarmVideo";
 import { createFileRoute } from "@tanstack/react-router";
 import { PhotoStrip } from "@/components/PhotoStrip";
 import { BROODER_PHOTOS } from "@/lib/chick-photos";
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/ptitsa/podroshchennye")({
       image={BROODER_PHOTOS[0]!}
       imageAlt="Подрощенные перепелята"
       intro={<>
+        <FarmVideo kind="brooder" />
         <PhotoStrip title="Наш брудер" photos={BROODER_PHOTOS} alt="Перепелята в брудере" />
         <ChickBreeds product="подрощенные перепелята" />
         <p>Возраст 2–3 недели — один из самых важных рубежей в развитии перепелов. Птенцы уже окрепли, у них сформировалось оперение, и они менее требовательны к температуре, чем суточные. Это самый «дружелюбный» к новичку вариант.</p>
