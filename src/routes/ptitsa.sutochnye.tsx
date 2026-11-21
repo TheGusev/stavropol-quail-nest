@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ChickBreeds } from "@/components/BreedPrices";
 import { SubcategoryPage } from "@/components/SubcategoryPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/ptitsa/sutochnye")({
       image={catBirds}
       imageAlt="Суточные перепелята"
       intro={<>
+        <ChickBreeds product="суточные перепелята" />
         <p>Суточные цыплята — отличный вариант для быстрого старта разведения с минимальными вложениями. Перепела растут стремительно: уже на 40–50 день начинают нестись и быстро окупают вложения.</p>
         <h2>Кому подойдёт</h2>
         <ul>

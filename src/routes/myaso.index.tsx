@@ -14,7 +14,7 @@ const FAQ = [
   { q: "Делаете ли разделку?", a: "Да, по запросу — целиком, филе, набор для бульона. Под опт обсуждаем индивидуально." },
 ];
 
-export const Route = createFileRoute("/myaso")({
+export const Route = createFileRoute("/myaso/")({
   head: () => ({
     ...buildHead({
       title: "Мясо перепела и продукты переработки",

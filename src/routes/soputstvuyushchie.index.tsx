@@ -15,7 +15,7 @@ const FAQ = [
   { q: "Большие объёмы помёта поставляете?", a: "Да, оптом мешками или россыпью. Согласуем самовывоз или доставку." },
 ];
 
-export const Route = createFileRoute("/soputstvuyushchie")({
+export const Route = createFileRoute("/soputstvuyushchie/")({
   head: () => ({
     ...buildHead({
       title: "Сопутствующие товары — помёт, скорлупа, перо, потроха",

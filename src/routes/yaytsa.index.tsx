@@ -12,7 +12,7 @@ const FAQ = [
   { q: "Доставляете по краю?", a: "Да, по Ставрополю и Михайловску — своим транспортом, по краю — ТК или попутным рейсом." },
 ];
 
-export const Route = createFileRoute("/yaytsa")({
+export const Route = createFileRoute("/yaytsa/")({
   head: () => ({
     ...buildHead({
       title: "Перепелиные яйца — пищевые и инкубационные",

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ExtraContacts } from "@/components/ExtraContacts";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section } from "@/components/PageHero";
 import { LeadForm } from "@/components/LeadForm";
@@ -39,6 +40,7 @@ function Page() {
                 <div className="font-medium">Написать в WhatsApp</div>
               </div>
             </a>
+            <ExtraContacts />
             <a href={`mailto:${EMAIL}`} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 hover:border-primary">
               <Mail className="mt-0.5 h-5 w-5 text-primary" />
               <div>

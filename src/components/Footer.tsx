@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ExtraContacts } from "@/components/ExtraContacts";
 import { ADDRESS, EMAIL, PHONE_DISPLAY, SITE_NAME, telUrl } from "@/lib/contacts";
 
 const COLS = [
@@ -55,6 +56,7 @@ export function Footer() {
               {ADDRESS.region}, {ADDRESS.locality}
             </span>
           </p>
+          <ExtraContacts className="mt-3" />
         </div>
         {COLS.map((c) => (
           <div key={c.title}>

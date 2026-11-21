@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ExtraContacts } from "@/components/ExtraContacts";
 import { PageShell } from "@/components/PageShell";
 import { CtaButtons } from "@/components/CtaButtons";
 import { CategoryCard } from "@/components/CategoryCard";
@@ -265,6 +266,7 @@ function HomePage() {
         <p className="mt-4 text-sm text-muted-foreground">
           Или позвоните: <a href={telUrl()} className="font-medium text-foreground hover:text-primary"><Phone className="mr-1 inline h-4 w-4" />{PHONE_DISPLAY}</a>
         </p>
+        <ExtraContacts className="mt-4 justify-center" />
       </section>
     </PageShell>
   );

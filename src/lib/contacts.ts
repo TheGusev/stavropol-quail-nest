@@ -1,9 +1,11 @@
 // Контакты фермы. Замените значения на реальные при запуске.
 export const SITE_URL = "https://stavropolskiy-perepel.ru";
 export const SITE_NAME = "Ставропольский Перепел";
-export const PHONE_DISPLAY = "+7 (977) 559-72-15";
-export const PHONE_TEL = "+79775597215";
-export const WHATSAPP_NUMBER = "79775597215"; // без + и пробелов
+export const PHONE_DISPLAY = "+7 (988) 756-79-61";
+export const PHONE_TEL = "+79887567961";
+export const WHATSAPP_NUMBER = "79887567961"; // без + и пробелов
+export const AVITO_URL =
+  "https://www.avito.ru/budennovsk/ptitsy/yaytsa_perepelinye_inkubatsionnye_s_fermy_8177951194";
 export const EMAIL = "info@stavropolskiy-perepel.ru";
 export const ADDRESS = {
   region: "Ставропольский край",

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MeatPrices } from "@/components/BreedPrices";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
 import { CtaButtons } from "@/components/CtaButtons";
@@ -32,6 +33,7 @@ function Page() {
       <Section>
         <div className="grid gap-8 md:grid-cols-[1fr,320px]">
           <Prose>
+            <MeatPrices />
             <p>
               Перепелиное мясо — деликатес и ценный диетический продукт. Низкое содержание жира, мягкий вкус,
               быстрое приготовление. Поставляем в охлаждённом виде, без заморозки и без хлорной обработки.

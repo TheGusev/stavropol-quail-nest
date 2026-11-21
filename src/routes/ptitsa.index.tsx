@@ -13,7 +13,7 @@ const FAQ = [
   { q: "Поставляете в любое время года?", a: "Основной сезон — с весны по осень, зимой — по запросу и наличию." },
 ];
 
-export const Route = createFileRoute("/ptitsa")({
+export const Route = createFileRoute("/ptitsa/")({
   head: () => ({
     ...buildHead({
       title: "Птица для разведения — перепелята, несушки, родительское стадо",

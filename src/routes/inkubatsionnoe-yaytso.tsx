@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { BreedPriceGrid, EGG_BREEDS } from "@/components/BreedPrices";
 import { PageShell } from "@/components/PageShell";
 import { PageHero, Section, Prose } from "@/components/PageHero";
 import { PackagingCard } from "@/components/PackagingCard";
@@ -14,7 +15,7 @@ const FAQ: FaqItem[] = [
   { q: "Какой процент оплода вы гарантируете?", a: "В среднем 80–90% при соблюдении режима инкубации. Мы отбираем яйцо по размеру, чистоте и форме." },
   { q: "Какой срок годности инкубационного яйца?", a: "Оптимально заложить в инкубатор в течение 7 дней с даты сбора. Храним при +10…+12 °C." },
   { q: "Можно ли отправить инкубационное яйцо в другой регион?", a: "Да, отправляем транспортной компанией в спецупаковке. Сохранность и аккуратность гарантируем." },
-  { q: "Какие породы перепелов?", a: "Работаем с распространёнными мясо-яичными линиями. Точную породу под заказ уточняйте при оформлении." },
+  { q: "Какие породы и почём?", a: "Яичные: Феникс золотистый 13–14 ₽, Фараон 15 ₽, Саладон 15 ₽. Мясные: Техас утяжелённый 11 ₽, Дмитровская 15 ₽, Радонежская 15 ₽ за штуку." },
   { q: "Даёте ли рекомендации по инкубации?", a: "Да, к каждой партии прикладываем памятку: режимы температуры, влажности, переворота и периоды." },
 ];
 
@@ -95,6 +96,12 @@ function Page() {
             </ul>
           </Prose>
         </div>
+      </Section>
+
+      <Section className="border-t border-border">
+        <h2 className="font-serif text-2xl font-semibold md:text-3xl">Породы и цены за штуку</h2>
+        <p className="mt-2 text-muted-foreground">Инкубационное яйцо с нашей фермы. Стабильный вывод — около 90%.</p>
+        <div className="mt-6"><BreedPriceGrid breeds={EGG_BREEDS} product="инкубационное яйцо" /></div>
       </Section>
 
       <Section className="border-t border-border">
