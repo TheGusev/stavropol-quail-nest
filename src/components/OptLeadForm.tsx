@@ -26,17 +26,23 @@ export type OptLead = z.infer<typeof schema>;
 type Data = OptLead;
 export const optLeadSchema = schema;
 
+function formatAmount(n: number): string {
+  return Number.isInteger(n) ? n.toLocaleString("ru-RU") : String(n);
+}
+
 export function buildWaText(d: Data): string {
-  return [
-    "Здравствуйте! Заявка на опт со страницы /opt/:",
+  const lines = [
+    "Здравствуйте! Заявка на опт со страницы «Опт»:",
     `• Имя: ${d.name}`,
     `• Телефон: ${d.phone}`,
-    d.company ? `• Организация: ${d.company}` : null,
-    `• Продукция: ${d.products.join(", ")}`,
-    `• Объём: ${d.amount} ${d.unit}`,
-    `• Частота: ${d.frequency}`,
-    d.message ? `• Комментарий: ${d.message}` : null,
-  ].filter(Boolean).join("\n");
+  ];
+  if (d.company) lines.push(`• Организация: ${d.company}`);
+  lines.push(`• Продукция (${d.products.length}):`);
+  d.products.forEach((p, i) => lines.push(`   ${i + 1}. ${p}`));
+  lines.push(`• Объём: ${formatAmount(d.amount)} ${d.unit} за поставку`);
+  lines.push(`• Частота поставок: ${d.frequency}`);
+  if (d.message) lines.push(`• Комментарий: ${d.message}`);
+  return lines.join("\n");
 }
 
 export function OptLeadForm() {
@@ -129,7 +135,7 @@ export function OptLeadForm() {
         <div>
           <Label htmlFor="amount">Объём за поставку *</Label>
           <div className="mt-1 flex gap-2">
-            <Input id="amount" name="amount" type="number" inputMode="numeric" min={1} required placeholder="Например, 500" className="flex-1" />
+            <Input id="amount" name="amount" type="number" inputMode="decimal" min={0.1} step="any" required placeholder="Например, 500" className="flex-1" />
             <select name="unit" aria-label="Единица" defaultValue={UNITS[0]} className="h-10 rounded-md border border-input bg-background px-2 text-sm">
               {UNITS.map((u) => <option key={u}>{u}</option>)}
             </select>
