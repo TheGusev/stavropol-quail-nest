@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FarmPhoto, FARM_BROODER } from "@/components/FarmTeam";
+import { PhotoStrip } from "@/components/PhotoStrip";
+import { BROODER_PHOTOS } from "@/lib/chick-photos";
 import { ChickBreeds } from "@/components/BreedPrices";
 import { SubcategoryPage } from "@/components/SubcategoryPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
-import catBirds from "@/assets/cat-birds.jpg";
 
 const FAQ = [
   { q: "Чем подрощенные лучше суточных?", a: "Прошёл самый критический возраст: птенцы окрепли, оперились, менее требовательны к температуре. Сохранность выше." },
@@ -26,10 +26,10 @@ export const Route = createFileRoute("/ptitsa/podroshchennye")({
       group={{ label: "Птица для разведения", to: "/ptitsa" }}
       title="Подрощенные перепелята 2–3 недели"
       lead="Окрепшая птица — критический возраст уже позади. Лучший выбор, если вы только начинаете разведение."
-      image={catBirds}
+      image={BROODER_PHOTOS[0]!}
       imageAlt="Подрощенные перепелята"
       intro={<>
-        <FarmPhoto src={FARM_BROODER} alt="Перепелята в брудере под лампой" caption="Брудер на нашей ферме: тепло и корм с первого дня" />
+        <PhotoStrip title="Наш брудер" photos={BROODER_PHOTOS} alt="Перепелята в брудере" />
         <ChickBreeds product="подрощенные перепелята" />
         <p>Возраст 2–3 недели — один из самых важных рубежей в развитии перепелов. Птенцы уже окрепли, у них сформировалось оперение, и они менее требовательны к температуре, чем суточные. Это самый «дружелюбный» к новичку вариант.</p>
         <h2>Преимущества</h2>

@@ -12,7 +12,7 @@ import { Link } from "@tanstack/react-router";
 import { ShieldCheck, Truck, Sprout, Clock, BadgeCheck, Building2, MessageCircle, Phone } from "lucide-react";
 import heroEggs from "@/assets/hero-eggs.jpg";
 import catEggs from "@/assets/cat-eggs.jpg";
-import catPtitsa from "@/assets/cat-ptitsa-group.jpg";
+import { DAY_CHICKS } from "@/lib/chick-photos";
 import catMyasoGroup from "@/assets/cat-myaso-group.jpg";
 import catSoput from "@/assets/cat-soput-group.jpg";
 import catCages from "@/assets/cat-cages.jpg";
@@ -163,7 +163,7 @@ function HomePage() {
         </div>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <CategoryCard to="/yaytsa" title="Яйца" description="Пищевые и инкубационные перепелиные яйца." image={catEggs} imageAlt="Перепелиные яйца в лотке" />
-          <CategoryCard to="/ptitsa" title="Птица для разведения" description="Суточные, подрощенные, несушки, самцы, родительское стадо." image={catPtitsa} imageAlt="Перепела для разведения" />
+          <CategoryCard to="/ptitsa" title="Птица для разведения" description="Суточные, подрощенные, несушки, самцы, родительское стадо." image={DAY_CHICKS[0]!} imageAlt="Перепелята в ладонях" />
           <CategoryCard to="/myaso" title="Мясо и переработка" description="Охлаждённое, замороженное, маринованные, копчёные, для запекания." image={catMyasoGroup} imageAlt="Продукция из перепела" />
           <CategoryCard to="/soputstvuyushchie" title="Сопутствующие товары" description="Помёт, скорлупа, перо и пух, потроха." image={catSoput} imageAlt="Сопутствующие товары фермы" />
           <CategoryCard to="/korm" title="Корм для перепелов" description="Стартовый комбикорм собственного производства, без накруток." image={catKorm} imageAlt="Корм для перепелов" />

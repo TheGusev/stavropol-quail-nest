@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FarmPhoto, FARM_BROODER } from "@/components/FarmTeam";
+import { PhotoStrip } from "@/components/PhotoStrip";
+import { DAY_CHICKS } from "@/lib/chick-photos";
 import { ChickBreeds } from "@/components/BreedPrices";
 import { SubcategoryPage } from "@/components/SubcategoryPage";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { faqJsonLd } from "@/components/FaqAccordion";
-import catBirds from "@/assets/cat-birds.jpg";
 
 const FAQ = [
   { q: "Когда суточные перепелята начинают нестись?", a: "Уже через 40–50 дней — раньше большинства домашних птиц." },
@@ -27,10 +27,10 @@ export const Route = createFileRoute("/ptitsa/sutochnye")({
       group={{ label: "Птица для разведения", to: "/ptitsa" }}
       title="Суточные перепелята"
       lead="Самый экономичный вариант для тех, кто заводит своё стадо или пополняет хозяйство."
-      image={catBirds}
+      image={DAY_CHICKS[0]!}
       imageAlt="Суточные перепелята"
       intro={<>
-        <FarmPhoto src={FARM_BROODER} alt="Перепелята в брудере под лампой" caption="Брудер на нашей ферме: тепло и корм с первого дня" />
+        <PhotoStrip title="Наши перепелята" photos={DAY_CHICKS} alt="Суточные перепелята в ладонях" />
         <ChickBreeds product="суточные перепелята" />
         <p>Суточные цыплята — отличный вариант для быстрого старта разведения с минимальными вложениями. Перепела растут стремительно: уже на 40–50 день начинают нестись и быстро окупают вложения.</p>
         <h2>Кому подойдёт</h2>
