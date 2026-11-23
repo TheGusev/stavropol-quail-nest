@@ -43,7 +43,7 @@ export const Route = createFileRoute("/inkubatsionnoe-yaytso")({
       ...buildHead({
         title: "Инкубационное перепелиное яйцо — Ставропольский край",
         description:
-          "Племенное инкубационное яйцо перепела с высоким процентом оплода. Отбор по размеру и форме, доставка по краю и в регионы.",
+          "Племенное инкубационное яйцо перепела с высоким процентом оплода. Отбор по размеру и форме, доставка по всей России.",
         path: "/inkubatsionnoe-yaytso/",
       }),
       scripts: [jsonLdScript(faqJsonLd(FAQ)), ...products.map(jsonLdScript)],

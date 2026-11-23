@@ -28,7 +28,7 @@ const PACKAGE_INCLUDES = [
   { icon: BadgePercent, title: "Прямая цена", text: "Без посредников и наценок дистрибьюторов." },
   { icon: Calendar, title: "Гарантия графика", text: "Поставки по согласованным дням, без срывов." },
   { icon: FileCheck, title: "Документы", text: "Договор, закрывающие, ВСД через «Меркурий»." },
-  { icon: Truck, title: "Своя доставка", text: "Ставрополь и Михайловск — наш курьер; край — ТК." },
+  { icon: Truck, title: "Доставка по всей России", text: "Ставрополь и Михайловск — наш курьер; регионы — ТК или Почта России." },
 ];
 
 export const Route = createFileRoute("/opt")({

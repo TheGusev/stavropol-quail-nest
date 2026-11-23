@@ -33,7 +33,17 @@ export function Footer() {
         {CITIES.map((c, i) => (
           <span key={c.to}>{i > 0 && " · "}<Link to={c.to} className="hover:text-primary">{c.label}</Link></span>
         ))}
-        <div className="mt-2">© {new Date().getFullYear()} {SITE_NAME}</div>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+          <span>© {new Date().getFullYear()} {SITE_NAME}</span>
+          <Link to="/privacy" className="hover:text-primary">Политика конфиденциальности</Link>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("open-cookie-settings"))}
+            className="hover:text-primary"
+          >
+            Настройки куки
+          </button>
+        </div>
       </div>
     </footer>
   );
