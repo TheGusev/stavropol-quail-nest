@@ -5,7 +5,6 @@ export const SITE_URL = "https://stavropolskiy-perepel.ru";
 export const ROUTES = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
 
-  { path: "/perepelinye-yaytsa/", changefreq: "weekly", priority: "0.9" },
   { path: "/perepelyata/", changefreq: "weekly", priority: "0.9" },
   { path: "/inkubatsionnoe-yaytso/", changefreq: "weekly", priority: "0.8" },
 

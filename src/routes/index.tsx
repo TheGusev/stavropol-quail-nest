@@ -6,7 +6,6 @@ import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { ADDRESS, EMAIL, PHONE_DISPLAY, PHONE_TEL, SITE_NAME, SITE_URL, telUrl } from "@/lib/contacts";
 import { ArrowRight } from "lucide-react";
-import eggsPack from "@/assets/eggs-pack.jpg";
 import heroQuail from "@/assets/tehas-home.jpg";
 import { DAY_CHICKS } from "@/lib/chick-photos";
 import { INCUBATOR_PHOTOS } from "@/lib/pack-photos";
@@ -25,7 +24,7 @@ export const Route = createFileRoute("/")({
     const seo = buildHead({
       title: `${SITE_NAME} — перепелиные яйца и мясо в Ставропольском крае`,
       description:
-        "Инкубационное и пищевое перепелиное яйцо, перепелята и тушки перепела с нашей фермы. Доставка по краю, опт.",
+        "Инкубационное яйцо, перепелята и тушки перепела с нашей фермы. Доставка по краю, опт.",
       path: "/",
     });
     const graph = {
@@ -75,7 +74,6 @@ export const Route = createFileRoute("/")({
 
 const PRODUCTS = [
   { to: "/inkubatsionnoe-yaytso", title: "Инкубационное яйцо", text: "Феникс, Фараон, Техас и другие породы. От 11 ₽ за штуку.", img: INCUBATOR_PHOTOS[0]! },
-  { to: "/perepelinye-yaytsa", title: "Пищевое яйцо", text: "Свежие яйца с фермы в удобных лотках.", img: eggsPack },
   { to: "/perepelyata", title: "Перепелята", text: "Суточные и подрощенные, разные породы.", img: DAY_CHICKS[0]! },
   { to: "/myaso-perepela", title: "Тушки перепела", text: "850 ₽/кг, опт — 550 ₽/кг.", img: MEAT_PHOTOS[1]! },
 ] as const;
@@ -90,7 +88,7 @@ function HomePage() {
               Перепела с нашей фермы
             </h1>
             <p className="mt-3 text-lg text-foreground/85 animate-fade-in" style={{ animationDelay: "120ms", animationFillMode: "both" }}>
-              Инкубационное и пищевое яйцо, перепелята и тушки. Выращиваем сами в Ставропольском крае.
+              Инкубационное яйцо, перепелята и тушки. Выращиваем сами в Ставропольском крае.
             </p>
             <a href={telUrl()} className="mt-5 block text-2xl font-bold text-primary">{PHONE_DISPLAY}</a>
             <div className="mt-4 flex justify-center"><CtaButtons size="lg" /></div>

@@ -13,7 +13,6 @@ import { Route as StavropolRouteImport } from './routes/stavropol'
 import { Route as PyatigorskRouteImport } from './routes/pyatigorsk'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PerepelyataRouteImport } from './routes/perepelyata'
-import { Route as PerepelinyeYaytsaRouteImport } from './routes/perepelinye-yaytsa'
 import { Route as OptRouteImport } from './routes/opt'
 import { Route as NevinnomysskRouteImport } from './routes/nevinnomyssk'
 import { Route as MyasoPerepelaRouteImport } from './routes/myaso-perepela'
@@ -43,11 +42,6 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PerepelyataRoute = PerepelyataRouteImport.update({
   id: '/perepelyata',
   path: '/perepelyata',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PerepelinyeYaytsaRoute = PerepelinyeYaytsaRouteImport.update({
-  id: '/perepelinye-yaytsa',
-  path: '/perepelinye-yaytsa',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OptRoute = OptRouteImport.update({
@@ -112,7 +106,6 @@ export interface FileRoutesByFullPath {
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
   '/opt': typeof OptRoute
-  '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
   '/perepelyata': typeof PerepelyataRoute
   '/privacy': typeof PrivacyRoute
   '/pyatigorsk': typeof PyatigorskRoute
@@ -129,7 +122,6 @@ export interface FileRoutesByTo {
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
   '/opt': typeof OptRoute
-  '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
   '/perepelyata': typeof PerepelyataRoute
   '/privacy': typeof PrivacyRoute
   '/pyatigorsk': typeof PyatigorskRoute
@@ -147,7 +139,6 @@ export interface FileRoutesById {
   '/myaso-perepela': typeof MyasoPerepelaRoute
   '/nevinnomyssk': typeof NevinnomysskRoute
   '/opt': typeof OptRoute
-  '/perepelinye-yaytsa': typeof PerepelinyeYaytsaRoute
   '/perepelyata': typeof PerepelyataRoute
   '/privacy': typeof PrivacyRoute
   '/pyatigorsk': typeof PyatigorskRoute
@@ -166,7 +157,6 @@ export interface FileRouteTypes {
     | '/myaso-perepela'
     | '/nevinnomyssk'
     | '/opt'
-    | '/perepelinye-yaytsa'
     | '/perepelyata'
     | '/privacy'
     | '/pyatigorsk'
@@ -183,7 +173,6 @@ export interface FileRouteTypes {
     | '/myaso-perepela'
     | '/nevinnomyssk'
     | '/opt'
-    | '/perepelinye-yaytsa'
     | '/perepelyata'
     | '/privacy'
     | '/pyatigorsk'
@@ -200,7 +189,6 @@ export interface FileRouteTypes {
     | '/myaso-perepela'
     | '/nevinnomyssk'
     | '/opt'
-    | '/perepelinye-yaytsa'
     | '/perepelyata'
     | '/privacy'
     | '/pyatigorsk'
@@ -218,7 +206,6 @@ export interface RootRouteChildren {
   MyasoPerepelaRoute: typeof MyasoPerepelaRoute
   NevinnomysskRoute: typeof NevinnomysskRoute
   OptRoute: typeof OptRoute
-  PerepelinyeYaytsaRoute: typeof PerepelinyeYaytsaRoute
   PerepelyataRoute: typeof PerepelyataRoute
   PrivacyRoute: typeof PrivacyRoute
   PyatigorskRoute: typeof PyatigorskRoute
@@ -253,13 +240,6 @@ declare module '@tanstack/react-router' {
       path: '/perepelyata'
       fullPath: '/perepelyata'
       preLoaderRoute: typeof PerepelyataRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/perepelinye-yaytsa': {
-      id: '/perepelinye-yaytsa'
-      path: '/perepelinye-yaytsa'
-      fullPath: '/perepelinye-yaytsa'
-      preLoaderRoute: typeof PerepelinyeYaytsaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/opt': {
@@ -346,7 +326,6 @@ const rootRouteChildren: RootRouteChildren = {
   MyasoPerepelaRoute: MyasoPerepelaRoute,
   NevinnomysskRoute: NevinnomysskRoute,
   OptRoute: OptRoute,
-  PerepelinyeYaytsaRoute: PerepelinyeYaytsaRoute,
   PerepelyataRoute: PerepelyataRoute,
   PrivacyRoute: PrivacyRoute,
   PyatigorskRoute: PyatigorskRoute,

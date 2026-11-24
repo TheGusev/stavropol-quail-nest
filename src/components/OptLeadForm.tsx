@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle2, MessageCircle, Phone } from "lucide-react";
 import { PHONE_DISPLAY, telUrl, whatsappUrl } from "@/lib/contacts";
 
-export const PRODUCTS = ["Пищевое яйцо", "Инкубационное яйцо", "Тушки перепела", "Суточные / подрощенные перепелята"] as const;
+export const PRODUCTS = ["Инкубационное яйцо", "Тушки перепела", "Суточные / подрощенные перепелята"] as const;
 export const UNITS = ["шт.", "кг", "лотков", "голов"] as const;
 export const FREQUENCIES = ["разово (пробная партия)", "1 раз в неделю", "2 раза в неделю", "1 раз в 2 недели", "1 раз в месяц", "по своему графику"] as const;
 
