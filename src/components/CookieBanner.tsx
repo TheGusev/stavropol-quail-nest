@@ -49,6 +49,12 @@ export function CookieBanner() {
     setSettingsOpen(false);
   };
 
+  // «Понятно» подтверждает только необходимые куки — аналитику можно включить в настройках.
+  const acknowledge = () => {
+    saveChoices({ analytics: "denied" });
+    close();
+  };
+
   const acceptAll = () => {
     saveChoices({ analytics: "granted" });
     close();
@@ -69,40 +75,30 @@ export function CookieBanner() {
       ref={panelRef}
       tabIndex={-1}
       role="region"
-      aria-label="Настройки куки"
-      className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-md rounded-2xl border border-border bg-card p-4 shadow-lg outline-none sm:bottom-5"
+      aria-label="Уведомление о куки"
+      className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-2xl outline-none sm:bottom-5"
     >
       {!settingsOpen ? (
-        <>
-          <p className="text-sm leading-relaxed text-foreground">
-            Мы считаем посещения без куки. Если вы согласны, мы также измеряем нажатия и другие
-            действия. Подробнее — в{" "}
-            <Link to="/privacy" className="text-primary underline underline-offset-2">
-              политике конфиденциальности
+        <div className="cookie-card flex flex-col items-stretch gap-3 rounded-2xl border border-border bg-card p-4 shadow-lg sm:flex-row sm:items-center sm:gap-6 sm:p-5">
+          <p className="flex-1 text-[15px] leading-relaxed text-foreground sm:text-base">
+            Используем cookies для работы сайта.{" "}
+            <Link to="/privacy" className="underline underline-offset-4 hover:text-primary">
+              Подробнее
             </Link>
-            .
           </p>
-          <div className="mt-3 flex gap-2">
-            <Button size="sm" className="flex-1" onClick={acceptAll}>
-              Принять все
-            </Button>
-            <Button size="sm" variant="outline" className="flex-1" onClick={rejectAll}>
-              Отклонить все
-            </Button>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              setAnalyticsOn(readChoice("analytics") === "granted");
-              setSettingsOpen(true);
-            }}
-            className="mt-2 w-full text-center text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+          <Button
+            onClick={acknowledge}
+            className="shrink-0 rounded-xl px-7 text-base sm:self-center"
           >
-            Настройки куки
-          </button>
-        </>
+            Понятно
+          </Button>
+        </div>
       ) : (
-        <>
+        <div
+          className="cookie-card rounded-2xl border border-border bg-card p-4 shadow-lg sm:p-5"
+          role="region"
+          aria-label="Настройки куки"
+        >
           <div className="text-sm font-semibold text-foreground">Настройки куки</div>
           {gpcActive() && (
             <p className="mt-2 text-xs text-muted-foreground">
@@ -135,7 +131,15 @@ export function CookieBanner() {
               Закрыть
             </Button>
           </div>
-        </>
+          <div className="mt-2 flex gap-2">
+            <Button size="sm" variant="ghost" className="flex-1" onClick={acceptAll}>
+              Принять все
+            </Button>
+            <Button size="sm" variant="ghost" className="flex-1" onClick={rejectAll}>
+              Отклонить все
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );
