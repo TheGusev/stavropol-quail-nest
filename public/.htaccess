@@ -2,6 +2,7 @@
 # everything else is rewritten to index.html so client-side routing works.
 # 301 со старых (удалённых) разделов на актуальные страницы
 RewriteEngine On
+RewriteRule ^perepelinye-yaytsa/?$ / [R=301,L]
 RewriteRule ^catalog(/.*)?$ / [R=301,L]
 RewriteRule ^yaytsa(/.*)?$ /inkubatsionnoe-yaytso/ [R=301,L]
 RewriteRule ^ptitsa/sutochnye/?$ /perepelyata/ [R=301,L]

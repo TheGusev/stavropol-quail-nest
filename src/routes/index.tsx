@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { FarmTeam } from "@/components/FarmTeam";
 import { PageShell } from "@/components/PageShell";
 import { CtaButtons } from "@/components/CtaButtons";
+import { ExtraContacts } from "@/components/ExtraContacts";
 import { FaqAccordion, faqJsonLd, type FaqItem } from "@/components/FaqAccordion";
 import { buildHead, jsonLdScript } from "@/lib/seo";
 import { ADDRESS, EMAIL, PHONE_DISPLAY, PHONE_TEL, SITE_NAME, SITE_URL, telUrl } from "@/lib/contacts";
@@ -13,8 +14,8 @@ import { MEAT_PHOTOS } from "@/lib/breed-photos";
 
 const FAQ: FaqItem[] = [
   { q: "Как сделать заказ?", a: "Напишите в WhatsApp или позвоните по телефону — мы примем заказ за 1–2 минуты, согласуем дату и способ доставки." },
-    { q: "Как долго хранятся перепелиные яйца?", a: "До 60 дней при температуре +2…+5 °C. Мы передаём яйца возрастом не старше 7 дней с даты сбора." },
-  { q: "Доставляете ли вы по России?", a: "Да, по всей России. По Ставрополю и Михайловску — собственным транспортом, в другие города и регионы — транспортной компанией или Почтой России." },
+  { q: "Какая продукция есть на ферме?", a: "Инкубационные яйца для вывода, суточные и подрощенные перепелята, тушки перепела. Наличие и дату подготовки заказа уточняйте перед покупкой." },
+  { q: "Доставляете ли вы по России?", a: "Да, доставка по всей России. Способ, стоимость и срок согласуем по адресу и виду продукции перед отправкой." },
   { q: "Есть ли документы на продукцию?", a: "Да, ферма оформлена официально, продукция сопровождается ветеринарными документами через систему «Меркурий»." },
   { q: "Можно ли приехать на ферму?", a: "Да, по предварительной договорённости. Мы открыты, показываем процесс и условия содержания птицы." },
 ];
@@ -22,9 +23,9 @@ const FAQ: FaqItem[] = [
 export const Route = createFileRoute("/")({
   head: () => {
     const seo = buildHead({
-      title: `${SITE_NAME} — перепелиные яйца и мясо в Ставропольском крае`,
+      title: `${SITE_NAME} — инкубационные яйца, перепелята и тушки`,
       description:
-        "Инкубационное яйцо, перепелята и тушки перепела с нашей фермы. Доставка по краю, опт.",
+        "Инкубационные яйца, перепелята и тушки перепела с нашей фермы. Розница, опт и доставка по всей России.",
       path: "/",
     });
     const graph = {
@@ -53,7 +54,7 @@ export const Route = createFileRoute("/")({
             postalCode: ADDRESS.postalCode,
             addressCountry: ADDRESS.country,
           },
-          areaServed: ADDRESS.region,
+          areaServed: "Россия",
         },
         {
           "@type": "WebSite",
@@ -88,10 +89,11 @@ function HomePage() {
               Перепела с нашей фермы
             </h1>
             <p className="mt-3 text-lg text-foreground/85 animate-fade-in" style={{ animationDelay: "120ms", animationFillMode: "both" }}>
-              Инкубационное яйцо, перепелята и тушки. Выращиваем сами в Ставропольском крае.
+              Инкубационные яйца, перепелята и тушки. Своя ферма — доставка по всей России.
             </p>
             <a href={telUrl()} className="mt-5 block text-2xl font-bold text-primary">{PHONE_DISPLAY}</a>
             <div className="mt-4 flex justify-center"><CtaButtons size="lg" /></div>
+            <ExtraContacts className="mt-3" />
           </div>
           <img src={heroQuail} alt="Белый перепел породы Техас в руках" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-md" />
         </div>

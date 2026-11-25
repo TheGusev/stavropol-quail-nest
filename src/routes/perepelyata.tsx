@@ -20,7 +20,7 @@ export const Route = createFileRoute("/perepelyata")({
   head: () => ({
     ...buildHead({
       title: "Перепелята суточные и подрощенные — купить с фермы",
-      description: "Суточные и подрощенные перепелята разных пород с нашей фермы в Ставропольском крае. Свой инкубатор и брудер.",
+      description: "Суточные и подрощенные перепелята разных пород с нашей фермы. Доставка по всей России с согласованием условий перевозки живой птицы.",
       path: "/perepelyata/",
     }),
     scripts: [jsonLdScript(faqJsonLd(FAQ))],
@@ -55,7 +55,7 @@ function Page() {
         <h2 className="font-serif text-2xl font-semibold">Вопросы и ответы</h2>
         <div className="mt-4"><FaqAccordion items={FAQ} /></div>
       </Section>
-      <Section><FinalCta title="Заказать перепелят" subtitle="Скажите породу и количество — подскажем цену и дату." text="Здравствуйте! Хочу заказать перепелят." /></Section>
+      <Section><FinalCta title="Заказать перепелят" subtitle="Доставка по всей России. Скажите породу, количество и адрес — согласуем цену, дату и перевозку." text="Здравствуйте! Хочу заказать перепелят." /></Section>
     </PageShell>
   );
 }

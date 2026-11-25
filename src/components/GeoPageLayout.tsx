@@ -19,10 +19,10 @@ export function GeoPageLayout({
 }) {
   return (
     <PageShell>
-      <PageHero kicker={region} title={`Перепелиные яйца в ${city} — доставка с фермы`} lead={intro} />
+      <PageHero kicker={`${region} · Доставка по всей России`} title={`Инкубационные яйца, перепелята и тушки в ${city}`} lead={intro} />
       <Section>
         <Prose>{body}</Prose>
-        <div className="mt-8"><CtaButtons text={`Здравствуйте! Хочу заказать перепелиные яйца, доставка ${city}.`} /></div>
+        <div className="mt-8"><CtaButtons text={`Здравствуйте! Интересуют инкубационные яйца, перепелята или тушки. Доставка: ${city}.`} /></div>
       </Section>
       <Section className="border-t border-border">
         <h2 className="font-serif text-2xl font-semibold">Частые вопросы — {city}</h2>
